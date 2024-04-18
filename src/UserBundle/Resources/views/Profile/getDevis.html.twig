@@ -1,0 +1,147 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Devis Transporteur{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/demenagementCtrl.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+{% set demenagement = annonce.getObject() %}
+<!-- CONTENT -->
+<div class="inscription_form modal_connexion_container creer_annonce col-xs-12 col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8" ng-controller="demenagementReservationCtrl" ng-init="getDevis('{{ devis.id }}')">
+    <h1>Devis d'un transporteur</h1>
+
+    <div class=" col-xs-12 reservation">  
+            <div class="bloc_info row">
+
+                <h2>Recapitulatif trajet</h2>
+                <div class="from col-sm-6">
+                    <p>Départ : <span>{{ demenagement.depart.ville.nom }}</span></p>
+                    <p>Lieu de rendez-vous : {{ demenagement.rendezVous.adresse }}</p>
+                </div>
+                <div class="to col-sm-6">
+                    <p>Arrivée : <span>{{ demenagement.arrivee.ville.nom }}</span></p>
+                    <p>Lieu de dépot : {{ demenagement.depot.adresse }}</p>
+                </div>
+                
+                <div class="date_prix row">
+                    <div class="date col-sm-6">
+                        <p>Date : <span>{{ demenagement.joursUnique|date("d/m/Y") }}</span></p>
+                        <p>Heure de départ : <span>{{ demenagement.joursUnique|date('h:i') }}</span></p>
+                    </div>
+                    
+                    <div class="prix col-sm-6">
+                        <p>Budget : <span>{{ demenagement.budgetApproximatif }}€</span></p>
+                    </div>
+                </div>
+                
+
+                
+            </div>
+            <div class="bloc_info row">
+                
+                <form method="POST" action="{{ path('profile_devis_get', {'devisId':devis.id, 'annonceId':annonce.id}) }}">
+
+                <h2>Afficher le devis</h2>
+{#                 <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_date">Date de départ</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <input type="text" class="form-control" disabled="true" name="reservation_date" id="reservation_date" ng-model="reservation.date" value='{[{ annonce.JoursUnique | date:"EE dd MM" }]}' />
+                    </div>
+                </div> #}
+
+                <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_depart">Lieu de départ</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <input type="text" class="form-control" id="reservation_depart" name="depart[adresse]" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='place.depart' ng-change="loadPlace('depart')" disabled="true"/>
+
+                        <input type="hidden" name="depart[latitude]" id="depart_latitude" value="">
+                        <input type="hidden" name="depart[longitude]" id="depart_longitude" value="">
+                        <input type="hidden" name="depart[street_number]" id="depart_street_number" value="">
+                        <input type="hidden" name="depart[route]" id="depart_route" value="">
+                        <input type="hidden" name="depart[locality]" id="depart_locality"value="">
+                        <input type="hidden" name="depart[administrative_area_level_1]" id="depart_administrative_area_level_1" value="">
+                        <input type="hidden" name="depart[country]" id="depart_country" value="">
+                        <input type="hidden" name="depart[postal_code]" id="depart_postal_code" value="">
+                        <input type="hidden" name="depart[place_id]" id="depart_place_id" value="">
+                        <input type="hidden" name="depart[adresse]" id="depart_adresse" value="">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_arrivee">Lieu d'arrivée</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <input type="text" class="form-control" id="reservation_arrivee" name="arrivee[adresse]" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='place.arrivee' ng-change="loadPlace('arrivee')" disabled="true"/>
+                        <input type="hidden" name="arrivee[latitude]" id="arrivee_latitude" value="">
+                        <input type="hidden" name="arrivee[longitude]" id="arrivee_longitude" value="">
+                        <input type="hidden" name="arrivee[street_number]" id="arrivee_street_number" value="">
+                        <input type="hidden" name="arrivee[route]" id="arrivee_route" value="">
+                        <input type="hidden" name="arrivee[locality]" id="arrivee_locality"value="">
+                        <input type="hidden" name="arrivee[administrative_area_level_1]" id="arrivee_administrative_area_level_1" value="">
+                        <input type="hidden" name="arrivee[country]" id="arrivee_country" value="">
+                        <input type="hidden" name="arrivee[postal_code]" id="arrivee_postal_code" value="">
+                        <input type="hidden" name="arrivee[place_id]" id="arrivee_place_id" value="">
+                        <input type="hidden" name="arrivee[adresse]" id="arrivee_adresse" value="">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_distance">Distance / Durée</label>
+                    <div class="col-xs-6 col-sm-2">
+                        <input type="text" class="form-control" disabled="true" name="reservation_distanceTxt" id="reservation_distanceTxt" ng-model="reservation.distanceTxt" disabled="true" />
+                        <input type="hidden" name="reservation_distance" id="reservation_distance" value="{[{ reservation.distance }]}" />
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <input type="text" class="form-control" disabled="true" name="reservation_dureeTxt" id="reservation_dureeTxt" ng-model="reservation.dureeTxt" disabled="true" />
+                        <input type="hidden" name="reservation_duree" id="reservation_duree" value="{[{ reservation.duree }]}" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_prix">Son tarif (En Euros)</label>
+                    <div class="col-xs-6 col-sm-2">
+                        <input type="number" class="form-control" name="reservation_prix" id="reservation_prix" disabled="true" ng-model="reservation.prix" />
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <input type="text" class="form-control" name="reservation_tarification" id="reservation_tarification" disabled="true" ng-model="reservation.devis" />
+                    </div>
+                </div>
+
+                <input type="hidden" name="reservation_transporteur" id="reservation_transporteur" ng-model="annonce.Transporteur" />
+                <div class="col-xs-12 facture_container">
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Prix trajet</div>
+                        <div class="col-sm-4 item">{[{ reservation.devis }]}</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-4 item">{{ devis.prixUnitaire }}€</div>
+                        <div class="col-sm-4 item">x {[{ getValue() }]}</div>
+                        <div class="col-sm-4 item">{[{ getTotal() }]}€</div>
+                    </div>
+                    <div class="total row">
+                        <div class="col-sm-offset-8 col-sm-4 item">{[{ getTotal() }]}€ TTC</div>
+                    </div>
+                    <input type="hidden" name="reservation_prix" id="reservation_prix" value="{[{ reservation.prix }]}" />
+                    <input type="hidden" name="reservation_total" id="reservation_total" value="{[{ getTotal() }]}" />
+                    <input type="hidden" name="reservation_date" id="reservation_date" value="{[{ reservation.date }]}" />
+
+                    <input type="submit" name="reservation_confirmer_online" id="reservation_confirmer_online" class="button_payer col-xs-12 col-sm-offset-8 col-sm-4" value="Payer en ligne">
+
+                    <input type="submit" name="reservation_confirmer_direct" id="reservation_confirmer_direct" class="button_payer col-xs-12 col-sm-offset-8 col-sm-4" value="Payer sur place">
+
+                    <input type="submit" name="reservation_supprimer" id="reservation_supprimer" class="button_payer col-xs-12 col-sm-offset-8 col-sm-4" value="Refuser">
+                </div>
+
+                </form>
+                
+
+                
+            </div>    
+    </div>       
+</div>
+<!-- FIN CONTENT -->
+{% endblock %}

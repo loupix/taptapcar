@@ -1,0 +1,261 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Demenagement{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/demenagementCtrl.js') }}"></script>
+
+<script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+<script type="text/javascript" src="//assets.pinterest.com/js/pinit.js"></script>
+<script type="text/javascript" src="https://platform.tumblr.com/v1/share.js"></script>
+
+{% endblock %}
+
+{% set currentPath = path(app.request.attributes.get('_route'),
+        app.request.attributes.get('_route_params')) %}
+
+
+{% block body %}
+<!-- CONTENT -->
+    <main ng-controller="demenagementAnnonceCtrl" ng-init="getAnnonce('{{ demenagement.id }}')">
+        <div class="template_annonce_container col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6">
+            <div class="info_principale">
+
+                <div class="socialShare">
+                    <div class="fb-share-button" data-href="{{ currentPath }}" data-layout="button_count" data-size="small" data-mobile-iframe="true"></div>
+
+                    <a twitter  data-lang="en" data-count='horizontal' data-url='{{ currentPath }}' data-via='notsosleepy' data-size="medium" data-text='Formidrive - Déménagement' ></a>
+
+                    <div gplus class="g-plus" data-size="tall" data-annotation="bubble" data-href='{{ currentPath }}' data-action='share'></div>
+                </div>
+
+
+                {% if not demenagement.transporteur %}
+                <h1>Déménagement</h1>
+                <h2 class="place">{{ demenagement.depart.ville.nom }} - {{ demenagement.arrivee.ville.nom }}</h2>
+                
+                {% else %}
+                <h1 style="margin-bottom:5px;font-size:1.5em;"><i class="fa fa-car" style="background-color:#34a0b2;float:left;"></i> <span style="line-height:20px;">{{ demenagement.nomSociete }}</span></h1>
+                <h2 class="place">{{ demenagement.lieu.ville.nom }}</h2>
+                {% endif %}
+
+
+                <div class="row info">
+                    <div class="col-sm-3"><i class="fa fa-calendar"></i> <span>Date :</span></div>
+                    {% if demenagement.joursUnique %}
+                    <div class="col-sm-9 date">{{ demenagement.joursUnique|date("d/m/Y") }} à {{ demenagement.heureUnique|date('h:i') }}</div>
+                    {% else %}
+                    <div class="col-sm-9 date">{{ demenagement.genNameDate()|join(", ") }} entre {{ demenagement.heureAller|date('H:i') }} et {{ demenagement.heureRetour|date('H:i') }}</div>
+                    {% endif %}
+                </div>
+
+
+
+                {% if demenagement.transporteur %}
+                
+
+               <div class="row info">
+                    {% if demenagement.tarification != "devis" %}
+                    <div class="col-sm-3"><i class="fa fa-eur"></i> <span>Prix :</span></div>
+                    <div class="col-sm-9 prix">{{ demenagement.tarif }} €</div>
+                    {% else %}
+                    <div class="col-sm-3"><i class="fa fa-eur"></i> <span>Sur devis</span></div>
+                    {% endif %}
+                </div>
+                <div class="row info">
+                    <div class="col-sm-3 "><i class="fa fa-map-marker"></i> <span>Ville :</span></div>
+                    <div class="col-sm-9 prix">{{ demenagement.lieu.ville.nom }}</div>
+                </div>
+
+
+                {% if demenagement.hauteur or demenagement.largeur or demenagement.longueur or demenagement.volume or demenagement.paiements or demenagement.flexibilite or demenagement.utilitaire %}
+                <div class="row info details">
+                    <div class="col-sm-3"><i class="fa fa-plus"></i><span>Détails :</span></div>
+                    <div class="list_detail col-sm-9">
+                        {% if demenagement.hauteur %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            Hauteur : {{ demenagement.hauteur | taille }}
+                        </div>
+                        {% endif %}
+
+                        {% if demenagement.largeur %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            Largeur : {{ demenagement.largeur | taille }}
+                        </div>
+                        {% endif %}
+
+                        {% if demenagement.longueur %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            Longueur : {{ demenagement.longueur | taille }}
+                        </div>
+                        {% endif %}
+
+                        {% if demenagement.volume %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            Volume : {{ demenagement.volume | volume }} m2
+                        </div>
+                        {% endif %}
+
+                        {% if demenagement.paiements %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            Paiements par {{ demenagement.paiements|join(", ") }}
+                        </div>
+                        {% endif %}
+
+                        {% if demenagement.flexibilite %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            Horraire : {{ demenagement.flexibilite }}
+                        </div>
+                        {% endif %}
+
+
+                        {% if demenagement.utilitaire %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            Utilitaire : {{ demenagement.utilitaire == "avec" ? "Camion avec hayon" : "Camion sans hayon" }}
+                        </div>
+                        {% endif %}
+                </div>
+                {% endif %}
+
+
+                
+
+
+                
+
+                {% else %}
+                <div class="row info">
+                    <div class="col-sm-3 "><i class="fa fa-eur"></i> <span>Budget :</span></div>
+                    <div class="col-sm-9 prix">{{ demenagement.budgetApproximatif }} Euros</div>
+                </div>
+                <div class="row info">
+                    <div class="col-sm-3 "><i class="fa fa-map-marker"></i> <span>Départ :</span></div>
+                    <div class="col-sm-9 to">{{ demenagement.rendezVous.adresse }}</div>
+                </div>
+                <div class="row info">
+                    <div class="col-sm-3 "><i class="fa fa-arrow-right"></i> <span>Arrivée :</span></div>
+                    <div class="col-sm-9 from">{{ demenagement.depot.adresse }}</div>
+                </div>
+                {% endif %}
+                
+                <div class="info_complementaire row">
+                <h2>Infos complémentaires de l'annonceur</h2>
+                <div class="bloc_info col-xs-12">
+                   {{ demenagement.infosdivers }}
+                </div>
+           
+                  <!--  <div class="col-sm-3"><i class="fa fa-plus"></i> <span>Détails :</span></div>
+                    <div class="list_detail col-sm-9">
+                        <div><i class="fa fa-circle-o"></i> Animaux acceptés</div>
+                        <div><i class="fa fa-circle-o"></i> Pas de cigarette à bord</div>
+                        <div><i class="fa fa-circle-o"></i> Je peux manger à bord</div>
+                    </div>-->
+                </div>
+            </div>
+            <div class="info_annonceur row">
+                <h2><a href="{{ path('profile_get',{'id':demenagement.annonce.auteur.id}) }}">{{ demenagement.annonce.auteur.nom }} {{ demenagement.annonce.auteur.prenom }}</a></h2>
+                <div class="col-xs-12 col-sm-3 col-md-2 bloc_photo">
+                    <div style='background: url("{{ demenagement.annonce.auteur.profile.photo.src }}") center center no-repeat; background-size:cover;' class="photo"></div>
+                </div>
+                <div class="col-xs-12 col-sm-9 col-md-10">
+                    <div class="main_info col-sm-8">
+                        <p class="info age"><i class="fa fa-male"></i> {{ demenagement.annonce.auteur.getAge() }} ans</p>
+                        {% if demenagement.annonce.auteur.profile.ville %}
+                        <p class="info"><i class="fa fa-map-marker"></i> {{ demenagement.annonce.auteur.profile.ville.nom }} - {{ demenagement.annonce.auteur.profile.ville.departement.nom }}</p>
+                        {% endif %}
+
+                        {% if demenagement.transporteur %}
+
+                        <label class="info" for="star"><i class="fa fa-thumbs-up"></i> Note
+                            <i class="fa" ng-class="{'fa-star':annonce.Annonce.Auteur.Note >= 1, 'fa-star-o':annonce.Annonce.Auteur.Note < 1}"></i>
+                            <i class="fa" ng-class="{'fa-star':annonce.Annonce.Auteur.Note >= 2, 'fa-star-o':annonce.Annonce.Auteur.Note < 2}"></i>
+                            <i class="fa" ng-class="{'fa-star':annonce.Annonce.Auteur.Note >= 3, 'fa-star-o':annonce.Annonce.Auteur.Note < 3}"></i>
+                            <i class="fa" ng-class="{'fa-star':annonce.Annonce.Auteur.Note >= 4, 'fa-star-o':annonce.Annonce.Auteur.Note < 4}"></i>
+                        </label>
+
+                        {% endif %}
+
+
+                        {% if demenagement.annonce.auteur.verifie %}
+                        <p class="info"><i class="fa fa-address-card"></i><span class="label label-info">Profile vérifié</span></p>
+                        {% else %}
+                        <p class="info"><i class="fa fa-address-card"></i><span class="label label-warning">Profile non vérifié</span></p>
+                        {% endif %}
+
+
+                        {% if demenagement.annonce.auteur.profile.vehicule and  demenagement.transporteur %}
+                        <p class="info"><i class="fa fa-car"></i> Voiture : {{ demenagement.annonce.auteur.profile.vehicule.modele }} {{ demenagement.annonce.auteur.profile.vehicule.marque }}</p>
+                        <p class="info"><i class="fa fa-road"></i> {{ demenagement.annonce.auteur.profile.vehicule.kilometrage }} km | {{ demenagement.annonce.auteur.profile.vehicule.places }} places</p>
+                        {% endif %}
+
+                        <p class="info"><i class="fa fa-car"></i> Annonces publiées : {{ demenagement.annonce.auteur.annonces|length }}</p>
+                        <p class="info"><i class="fa fa-car"></i> Dernière connexion : {{ demenagement.annonce.auteur.lastLogin|localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EE dd LLL") }}</p>
+                        <p class="info"><i class="fa fa-car"></i> Date d'insription : {{ demenagement.annonce.auteur.createdAt|localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EE dd LLL") }}</p>
+
+                    </div>
+                    <div class="main_info col-sm-4">
+{#                         <p class="info"><i class="fa fa-envelope"></i> williamthomas2@gmail.com</p>
+                        <p class="info"><i class="fa fa-phone"></i> 06 74 89 57 41</p>
+                        <p class="info"><i class="fa fa-map"></i> 8 Rue Jeanne d'Arc</p>-->
+ #}                        
+                        
+                    </div>
+                </div>
+            </div>
+            <!--<div class="info_complementaire row">
+                <h2>Infos complémentaires de l'annonceur</h2>
+                <div class="bloc_info col-xs-12">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis fugiat similique sint quo consequuntur fugit ipsa ab facilis, illo maiores deleniti, cum accusamus animi laudantium itaque, distinctio quae aspernatur excepturi voluptas nihil nisi expedita modi ullam.
+                </div>
+            </div>-->
+            <div class="message_container row">
+                <h2>Discutez avec l'annonceur</h2>
+                <!-- POST REPONSE ANNONCEUR -->
+                <div class="commentaire col-xs-12 col-sm-9" 
+                    ng-repeat="message in messages"
+                    ng-class="{'annonceur_post':message.Sender.Id == user.Id, 'question_post':message.Sender.Id != user.Id}">
+                    <a href="profil.html"><p class=" title">{[{ message.Sender.Prenom }]} {[{ message.Sender.Nom }]}</p></a>
+                    <p class="date">{[{ message.CreatedAt.date }]}</p>
+                    <div class="content">
+                        {[{ message.Body }]}
+                    </div>
+                    <div class="arrow"></div>
+                    <a class="remove_comment" href="#" ng-click="removeMessage(message.Id)"><i class="fa fa-times" aria-hidden="true"></i></a>
+                </div>
+                <!-- POST REPONSE ANNONCEUR -->
+                
+            </div>
+            <!-- Commentaire du profil -->
+        <div class="comment_container row">
+            <form>
+                <h3>Posez une question à <a href="">{{ demenagement.annonce.auteur.prenom }}</a></h3>
+                <input type="hidden" ng-model="message.thread" />
+                <textarea class="col-xs-12" name="commentaire" id="commentaire" cols="30" rows="5" placeholder="Votre message ici" ng-model="message.text"></textarea>
+                <input class="envoyer" type="submit" name="envoyer" value="Envoyer" ng-click="sendMessage()">    
+            </form>
+        </div>
+        <!-- FIN Commentaire du profil -->
+
+
+        </div>
+        </div>
+        <div class="pas_membre_container deja_membre reserve col-xs-12 col-sm-3 col-md-2" ng-hide="user.Id==annonce.Auteur.Id">
+            <p>Déjà inscrit</p>
+            {% if demenagement.transporteur %}
+            <a href="{{ path('annonce_demenagement_reservation', {'id':demenagement.id}) }}">Faire une réservation</a>
+            {% else %}
+            <a href="{{ path('annonce_demenagement_reservation', {'id':demenagement.id}) }}">Emettre un devis</a>
+            {% endif %}
+        </div>
+    </main>
+    <!-- FIN CONTENT -->
+{% endblock %}

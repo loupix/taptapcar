@@ -1,0 +1,17 @@
+services:
+#    user.example:
+#        class: UserBundle\Example
+# #        arguments: ["@service_id", "plain_value", "%parameter%"]
+#     app.form.registration:
+#         class: UserBundle\Form\UserType
+#         tags:
+#             - { name: form.type, alias: app_user_registration }
+
+    # MyNotification:
+    #     class: UserBundle\Service\MyNotification
+    #     arguments: [@doctrine.orm.entity_manager, @session]
+    user.oauth.user_provider:
+        class: UserBundle\Security\User\Provider\UserProvider
+        arguments:
+            userManager: "@fos_user.user_manager"
+            arguments: ['%api_facebook_id%']

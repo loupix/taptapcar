@@ -1,0 +1,58 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Admin - Fees{% endblock %}
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/adminCtrl.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+
+<!-- CONTENT -->
+	<div class="admin_container col-xs-12 col-md-offset-2 col-md-8" ng-controller="adminFeesCtrl" ng-init="init()">
+
+		{% include 'AdminBundle:Admin:header.html.twig' %}
+		<div class="col col-md-8">
+			<div class="row">
+				<div class="col col-md-4 bg-success">
+					<p>Societe : {[{ parts.entreprise }]} %</p>
+				</div>
+
+				<div class="col col-md-4 bg-info">
+					<p>Webmaster : {[{ parts.webmaster }]} %</p>
+				</div>
+
+				<div class="col col-md-4 bg-warning">
+					<p>Commercial : {[{ parts.commercial }]} %</p>
+				</div>
+			</div>
+		</div>
+		<div class="col col-md-4">
+			<a href="{{ path('admin_admin_distribution') }}" class="btn btn-default btn-sm">
+				Distribution ds bénéfices
+			</a>
+
+			<a href="{{ path('admin_admin_paiement') }}" class="btn btn-default btn-sm">
+				Paiement
+			</a>
+		</div>
+
+		<br />
+		<br />
+		<br />
+		<br />
+
+		<table class="table table-striped">
+			<th>
+				<td>Type</td>
+				<td>Auteur</td>
+				<td>Creer</td>
+				<td>Supprimer</td>
+			</th>
+		</table>
+
+	</div>
+
+{% endblock %}

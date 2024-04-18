@@ -1,0 +1,86 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Mon profile{% endblock %}
+
+{% block body %}
+    <!-- CONTENT -->
+    <!-- Contenu profil -->
+    <div class="profil_container col-xs-12 col-md-offset-2 col-md-8">
+
+    	{% include 'UserBundle:Profile:menu_profile.html.twig' %}
+
+        <!-- info profil -->
+        <div class="info_profil row">
+            <div class=" col-sm-6">
+                <div class="photo col-md-offset-1" style="background:url('{{ user.profile.photo.src }}') center center no-repeat; background-size:cover;"></div>
+                <div class="button_modif col-sm-9">
+                    <a href="{{ path('profile_modification_profile') }}">Modifier mon profil</a>
+                </div>
+                <div class="button_modif col-sm-9">
+                    <a href="{{ path('profile_modification_user') }}">Gestion du compte</a>
+                </div>
+            </div>
+            <div class="main_info col-sm-6">
+                <h1>{{ user.prenom }} {{ user.nom }}</h1>
+
+                {% if user.profile.ville %}
+                <p class="info"><i class="fa fa-map-marker"></i> {{ user.profile.ville.nom }} | {{ user.profile.ville.departement.nom }} </p>
+                {% endif %}
+
+
+                <p class="info age"><i class="fa fa-male"></i> {{ user.getAge() }} ans</p>
+                
+                <label class="info" for="star"><i class="fa fa-thumbs-up"></i> Note
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                </label>
+                {% if user.profile.vehicule %}
+                <p class="info"><i class="fa fa-car"></i> Modèle de véhicule : {{ user.profile.vehicule.modele }} </p>
+                <p class="info"><i class="fa fa-car"></i> Marque : {{ user.profile.vehicule.marque }}</p>
+                <p class="info"><i class="fa fa-road"></i> {{ user.profile.vehicule.kilometrage }} km | {{ user.profile.vehicule.places }} places</p>
+                {% endif %}
+                <h2>Coordonnées</h2>
+                <div class="main_info">
+                    <p class="info"><i class="fa fa-envelope"></i> {{ user.email }}</p>
+                    {% if user.profile.telephone %}
+                    <p class="info"><i class="fa fa-phone"></i> {{ user.profile.telephone }}</p>
+                    {% endif %}
+                    {% if user.profile.ville %}
+                    <p class="info">{{ user.profile.ville.postalCode }} {{ user.profile.ville.nom }}</p>
+                    {% endif %}
+                </div>
+            
+        </div>
+    </div>
+    <!-- FIN info profil -->
+    <!-- Commentaire du profil -->
+        <div class="comment_container row">
+{#             <form action="profil.html" method="post">
+                <h3>Laisser un avis ou poser une question à William</h3>
+                <p class="note-submit">Notez le !
+                    <input class="star star-5" id="star-5" type="radio" name="star"/>
+                    <label class="star star-5" for="star-5"></label>
+
+                    <input class="star star-4" id="star-4" type="radio" name="star"/>
+                    <label class="star star-4" for="star-4"></label>
+
+                    <input class="star star-3" id="star-3" type="radio" name="star"/>
+                    <label class="star star-3" for="star-3"></label>
+
+                    <input class="star star-2" id="star-2" type="radio" name="star"/>
+                    <label class="star star-2" for="star-2"></label>
+
+  
+
+                </p>
+                <input type="hidden" name="profil" value="Mon profil">
+                <textarea class="col-xs-12" name="commentaire" id="commentaire" cols="30" rows="5" placeholder="Votre message ici"></textarea>
+                <input class="envoyer" type="submit" name="envoyer" value="Envoyer">
+            </form> #}
+        </div>
+        <!-- FIN Commentaire du profil -->
+    </div>
+    <!-- FIN CONTENT -->
+{% endblock %}

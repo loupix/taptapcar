@@ -1,0 +1,10 @@
+
+        <ul class="menu row">
+            <li class="profil_menu_item col-md-2 col-sm-2 {% if app.request.get('_route') == 'admin_admin_users' %}is-selected{% endif %}"><a href="{{ path('admin_admin_users') }}">Utilisateurs</a></li>
+            <li class="profil_menu_item col-md-2 col-sm-2 {% if app.request.get('_route') == 'admin_admin_annonces' %}is-selected{% endif %}"><a href="{{ path('admin_admin_annonces') }}">Annonces</a></li>
+            <li class="profil_menu_item col-md-2 col-sm-2 {% if app.request.get('_route') == 'admin_admin_reservations' %}is-selected{% endif %}"><a href="{{ path('admin_admin_reservations') }}">Réservations</a></li>
+            <li class="profil_menu_item col-md-2 col-sm-2 {% if app.request.get('_route') == 'admin_admin_paiements' %}is-selected{% endif %}"><a href="{{ path('admin_admin_paiements') }}">Paiements</a></li>
+            <li class="profil_menu_item col-md-2 col-sm-2 {% if app.request.get('_route') == 'admin_admin_contacts' %}is-selected{% endif %}"><a href="{{ path('admin_admin_contacts') }}">Contacts</a></li>
+<!--             <li class="profil_menu_item col-xs-10 {% if app.request.get('_route') == 'admin_admin_fees' %}is-selected{% endif %}"><a href="{{ path('admin_admin_fees') }}">Fees</a></li>
+ -->{#             <li class="profil_menu_item col-xs-12 {% if app.request.get('_route') == 'admin_admin_erreurs' %}is-selected{% endif %}"><a href="{{ path('admin_admin_erreurs') }}">Erreurs</a></li>
+ #}        </ul>

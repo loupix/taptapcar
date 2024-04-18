@@ -1,0 +1,273 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Recherche de covoiturage{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/covoiturageCtrl.js') }}"></script>
+{% endblock %}
+
+
+
+{% block body %}
+ <!-- CONTENT -->
+    <main class="main list_page" ng-controller="covoiturageRechercheCtrl" ng-init="loadRecherche()">
+        <div class="search_container row">
+            <div class="home_search list_search col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+                <div class="form_container">
+                    {{ form_start(formRecherche) }}
+                        <div class="search_container">
+
+                            <div class="search from col-sm-3">
+                                <i class="fa fa-map-marker"></i>
+                                <input type="text" id="from" name="from" placeholder="De" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='place.depart' ng-change="loadPlace('from')"  />
+                            </div>
+                            <div class="search to col-sm-3">
+                                <i class="fa fa-arrow-right"></i>
+                                <input type="text" id="to" name="to" placeholder="A" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='place.arrivee' ng-change="loadPlace('to')" />
+                            </div>
+                            <div class="search date col-sm-3">
+                                <i class="fa fa-calendar"></i>
+                                {{ form_widget(formRecherche.place.date, {'attr':{'class':'datepicker', 'ng-model':'recherche.date' }})}}
+                            </div>
+                            {{ form_widget(formRecherche.search, {'attr':{'class':'recherche search col-sm-3', 'value':'Rechercher', 'ng-click':'loadRecherche()'}})}}
+                        </div>
+                        <div style="display:none">{{ form_rest(formRecherche) }}</div>
+                    {{ form_end(formRecherche) }}
+                </div>
+            </div>
+        </div>
+        <div class="liste_container col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <!-- SIDEBAR  -------------- -->
+            <!-- SIDEBAR  -------------- -->
+            <div class="sidebar_container col-md-4">
+                <div class="top">Filtrer les résultats<i id="button_menu_filtre" class="fa fa-chevron-circle-down"></i></div>
+                <div class="sidebar_content row">
+                    <form class="form_container" action="">
+                        <div class="col-sm-6 col-md-12 filtre_item category">
+                            <h3>Bagages autorisés</h3>
+                            <div class="row">
+                                <input type="radio" name="annonce_bagage" id="sac" value="sac" ng-model="recherche.bagages" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="sac"><i class="fa fa-suitcase"></i> Petits sacs</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_bagage" id="bagage" value="bagage" ng-model="recherche.bagages" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="bagage"><i class="fa fa-suitcase"></i> Bagages à main</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_bagage" id="valise" value="valise" ng-model="recherche.bagages" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="valise"><i class="fa fa-suitcase"></i> Valises</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-12 filtre_item category">
+                            <h3>Préférences</h3>
+                            <div>
+                                <input value="fumer" name="elements_autorise" type="radio" class="category" id="fumer" ng-model="recherche.preferences" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="fumer"><i class="fa fa-fire"></i>Je peux fumer</label>
+                            </div>
+                            <div>
+                                <input value="animal" name="elements_autorise" type="radio" class="category" id="animal" ng-model="recherche.preferences" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="animal"><i class="fa fa-paw"></i>Animaux autorisés</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_preference" id="cafe" value="cafe" ng-model="recherche.preferences" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="cafe"><i class="fa fa-coffee"></i> Pause café</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_preference" id="dejeuner" value="dejeuner" ng-model="recherche.preferences" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="dejeuner"><i class="fa fa-cutlery"></i> Pause dejeuner</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_preference" id="musique" value="musique" ng-model="recherche.preferences" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="musique"><i class="fa fa-music"></i> Musique</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_preference" id="detour" value="detour" ng-model="recherche.preferences" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="detour"><i class="fa fa-flag"></i> Détours</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_preference" id="fille" value="fille" ng-model="recherche.preferences" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="fille"><i class="fa fa-venus"></i> Je ne souhaite voyager qu'avec des filles</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-12 filtre_item prix">
+                            <h3>Prix</h3>
+                            <div>
+                                <input id="faible" name="prix" type="radio" ng-model="recherche.prix" value="faible" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="faible">
+                                    <i class="fa fa-eur"></i> Meilleurs prix
+                                </label>
+                            </div>
+                            <div>
+                                <input id="moyen" name="prix" type="radio" ng-model="recherche.prix" value="moyen" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="moyen">
+                                    <i class="fa fa-eur"></i>
+                                    <i class="fa fa-eur"></i> Prix moyens
+                                </label>
+                            </div>
+                            <div>
+                                <input id="eleve" name="prix" type="radio" ng-model="recherche.prix" value="eleve" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="eleve">
+                                    <i class="fa fa-eur"></i>
+                                    <i class="fa fa-eur"></i>
+                                    <i class="fa fa-eur"></i> Prix élevés</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-12 filtre_item note">
+                            <h3>Note de l'annonceur</h3>
+                            <div>
+                                <input id="star4" name="note" type="radio" ng-model="recherche.note" value="4" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="star4">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i> Exceptionnel
+                                </label>
+                            </div>
+                            <div>
+                                <input id="star3" name="note" type="radio" ng-model="recherche.note" value="3" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="star3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i> Super
+                                </label>
+                            </div>
+                            <div>
+                                <input id="star2" name="note" type="radio" ng-model="recherche.note" value="2" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="star2">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i> Bien
+                                </label>
+                            </div>
+                            <div>
+                                <input id="star1" name="note" type="radio" ng-model="recherche.note" value="1" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="star1">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i> A éviter
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- FIN SIDEBAR  -------------- -->
+            <!-- FIN SIDEBAR  -------------- -->
+            <div class="annonces_container col-md-8 ">
+                <!-- Systeme de TRI  -->
+                <!-- Systeme de TRI  -->
+                <div class="tri_container row">
+                    <div class="info col-sm-4">
+                        <div>Distance : {[{ calculeDistance() }]}km</div>
+{#                         <div>Durée : {[{ calculeDuree() }]}</div>
+ #}                    </div>
+                    <div class="tri col-sm-8">
+                        <div class="trier-par">Trier par :</div>
+                        <div class="tri_choix">
+                            <input id="heuredecroissant" value="DESC" name="triHeure" type="radio" ng-model="recherche._tri.heure" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label class="decroiss" for="heuredecroissant"><i class="fa fa-clock-o"></i><i class="fa fa-long-arrow-down"></i></label>
+                        </div>
+                        <div class="tri_choix">
+                            <input id="heurecroissant" value="ASC" name="triHeure" type="radio" ng-model="recherche._tri.heure"  ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label class="croiss" for="heurecroissant"><i class="fa fa-clock-o"></i><i class="fa fa-long-arrow-up"></i></label>
+                        </div>
+                        <div class="tri_choix">
+                            <input id="prixdecroissant" value="DESC" name="triPrix" type="radio" ng-model="recherche._tri.prix" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label class="decroiss" for="prixdecroissant"><i class="fa fa-eur"></i><i class="fa fa-long-arrow-down"></i>
+                            </label>
+                        </div>
+                        <div class="tri_choix">
+                            <input id="prixcroissant" value="ASC" name="triPrix" type="radio" ng-model="recherche._tri.prix" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label class="croiss" for="prixcroissant"><i class="fa fa-eur"></i><i class="fa fa-long-arrow-up"></i></label>
+                        </div>
+                    </div>
+                </div>
+                <!-- FIN Systeme de TRI  -->
+                <!-- FIN Systeme de TRI  -->
+
+                <div class="row" ng-if="recherche.enCours==true">
+                    <div class="col-md-6 col-md-offset-3">
+                        <h2>Recherche en cours</h2>
+                    </div>
+                </div>
+
+
+                <div class="row" ng-if="recherche.enCours==false && totalItems==0">
+                    <div class="col-md-6 col-md-offset-3">
+                        <h2>Aucuns résultats</h2>
+                    </div>
+                </div>
+
+                <div class="row" ng-if="recherche.enCours==true && recherche._erreur > 0 ">
+                    <div class="col-md-6 col-md-offset-3">
+                        <h2>Oupss ! Erreur {[{ recherche._erreur }]}</h2>
+                        <br />
+                        <p><a href="{{ path('app_contact') }}">Contacter l'administrateur</a>
+                    </div>
+                </div>
+
+                <!-- Boucle a faire dans la div annonces -->
+                <div class="annonces" ng-repeat="covoiturage in annonces" ng-id="recherche.enCours==false">
+                    <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                    <!-- BLOC D'UNE ANNONCE UNIQUE -->
+
+                    <a ng-href="{[{ covoiturage.Url }]}">
+                        <article class="row" ng-click="go(covoiturage)">
+                            <div class="bloc_photo col-sm-4">
+                                <div class="photo_annonce" style="background: #fff url({[{ covoiturage.Annonce.Auteur.Profile.Photo.Src }]}) center center no-repeat;
+                            background-size:cover"></div>
+                                <div class="name">
+                                    <h4>{[{ covoiturage.Annonce.Auteur.Nom }]} {[{ covoiturage.Annonce.Auteur.Prenom }]}</h4>
+                                    <p>{[{ covoiturage.Annonce.Auteur.Age }]} ans</p>
+                                    <p>
+                                        <i ng-class="x<covoiturage.Annonce.Auteur.Note ? 'fa fa-star' : 'fa fa-star-o'" ng-repeat="x in [0,1,2,3]"></i>
+                                    </p>
+                                    <p ng-if="covoiturage.Annonce.Auteur.Profile.Vehicule">{[{ covoiturage.Annonce.Auteur.Profile.Vehicule.Modele }]} {[{ covoiturage.Annonce.Auteur.Profile.Vehicule.Marque }]}</p>
+                                </div>
+                                <a class="profil_link" href="/user/profile/get/{[{ covoiturage.Annonce.Auteur.Id }]} ">Voir le profil complet</a>
+                            </div>
+                            <div class="bloc_info col-sm-8">
+                                <div class="trajet_bloc col-xs-9">
+                                    <div class="date" ng-if="!covoiturage.Regulier">{[{ covoiturage.DateUnique*1000 | date:"EEE dd MMM" }]} à {[{ covoiturage.DateUnique*1000 | date:"HH:mm" }]}</div>
+
+                                    <div class="date" ng-if="covoiturage.Regulier">{[{ covoiturage.JoursAller.join(', ') }]} à {[{ covoiturage.HeureAller*1000 | date:"HH:mm" }]}</div>
+
+
+                                    <div class="trajet">{[{ covoiturage.Depart.Ville.Nom }]} <i class="fa fa-long-arrow-right"></i> {[{ covoiturage.Arrivee.Ville.Nom }]}</div>
+                                    <div class="info_trajet">RDV {[{ covoiturage.RendezVous.Adresse }]}</div>
+                                    <div class="category"><i class="fa fa-taxi"></i> Covoiturage</div>
+                                </div>
+                                <div class="prix_bloc col-xs-3">
+                                    <div class="prix"><span>{[{ covoiturage.Cout }]}€</span> par place</div>
+                                    <div class="place_restantes"><span>{[{ covoiturage.PlacesRestantes }]}/{[{ covoiturage.NbPlaces }]}</span> places restantes</div>
+                                </div>
+                            </div>
+                        </article>
+                    </a>
+                    <!-- FIN BLOC D'UNE ANNONCE UNIQUE -->
+                    <!-- FIN BLOC D'UNE ANNONCE UNIQUE -->
+                </div>
+                <!-- Systeme de pagination -->
+                <!-- Systeme de pagination -->
+                <div class="bottom_annonces row" ng-if="totalItems > 0">
+                    <div class="info col-md-4 col-xs-12 ">{[{ getMinPage() }]} à {[{ getMaxPage() }]} sur {[{ totalItems }]} résultats</div>
+                    <div class="pagination col-xs-12 col-md-8">
+                        <ul uib-pagination boundary-links="true"
+                            class="pagination-sm" 
+                            ng-model="$parent.currentPage" ng-change="pageChanged()"
+                            total-items="totalItems" items-per-page="maxSize"
+                            max-size="5" force-ellipses="true"></ul>
+                    </div>
+                </div>
+                <!-- Fin Systeme de pagination -->
+                <!-- Fin Systeme de pagination -->
+            </div>
+        </div>
+    </main>
+    <!-- FIN CONTENT -->
+{% endblock %}

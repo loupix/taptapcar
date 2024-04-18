@@ -1,0 +1,68 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+	<!-- CONTENT -->
+    <div class="inscription_form modal_connexion_container col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4">
+
+        {% if error is defined %}
+        <h3>{{ error|trans([], 'FOSUserBundle') }}</h3>
+        {% endif %}
+
+ {#        <h3>Inscrivez vous avez Facebook</h3>
+        <div class="facebook fb_inscription col-xs-12">
+            <a href=""><i class="fa fa-facebook-square"></i>S'inscrire avec Facebook</a>
+            <p>L'application ne pourra pas publier sur votre mur facebook</p>
+        </div> #}
+        <h3>Inscrivez vous gratuitement en moins de 30 secondes avec votre adresse email</h3>
+        <!-- Formulaire d'inscription -->
+        <!-- Formulaire d'i
+
+Inscrivez vous avez Facebook
+
+
+
+S'inscrire avec Facebook
+
+L'application ne pourra pas publier sur votre mur facebooknscription -->
+        
+        {{ form_start(form) }}
+            {{ form_widget(form.prenom, {'attr':{'class':'connexion_input col-xs-12 col-sm-6'}})}}
+            {{ form_widget(form.nom, {'attr':{'class':'connexion_input col-xs-12 col-sm-6'}})}}
+
+            {{ form_errors(form.prenom) }}
+            {{ form_errors(form.nom) }}
+
+            {{ form_errors(form.anneeNaissance) }}
+            {{ form_label(form.anneeNaissance, "Année de naissance")}}
+            {{ form_widget(form.anneeNaissance, {'attr':{'class':'age_select col-xs-12'}})}}
+
+            {{ form_errors(form.email) }}
+            {{ form_widget(form.email, {'attr':{'class':'connexion_input col-xs-12'}})}}
+
+            {{ form_errors(form.plainPassword.first) }}
+            {{ form_widget(form.plainPassword.first, {'attr':{'class':'connexion_input col-xs-12','placeholder':'Mot de passe'}})}}
+
+            {{ form_errors(form.plainPassword.second) }}
+            {{ form_widget(form.plainPassword.second, {'attr':{'class':'connexion_input col-xs-12','placeholder':'Confirmation du mot de passe'}})}}
+            
+            <br style="clear:both;">
+            {{ form_errors(form.conditionSite) }}
+            {{ form_widget(form.conditionSite, {'attr':{'class':'col-md-1'}})}}
+            {{ form_label(form.conditionSite, "J'accepte les conditions d'utilisation de Formidrive")}}
+            
+
+            <input type="submit" value="{{ 'registration.submit'|trans({}, 'FOSUserBundle') }}" class="connexion_submit col-xs-12" onclick="fos_user_registration_form.submit();" />
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+        <!-- FIN Formulaire d'inscription -->
+        <!-- FIN Formulaire d'inscription -->
+        
+    </div>
+    <div class="pas_membre_container deja_membre col-xs-12 col-sm-3 col-md-2">
+        <p>Déjà inscrit ?</p>
+        <a class="pas_membre" id="deja_membre">Connectez vous </a>
+    </div>
+    <!-- FIN CONTENT -->
+{% endblock %}

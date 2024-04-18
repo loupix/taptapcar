@@ -1,0 +1,299 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Modifier annonce de covoiturage{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/covoiturageCtrl.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+    <!-- CONTENT -->
+    <!-- MODAL DE CHOIX -->
+    <div class="inscription_form modal_connexion_container creer_annonce col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6">
+        <h1>Annonce de covoiturage</h1>
+       <!-- <p class="info_creation col-xs-12 col-sm-8 col-sm-offset-2">
+            N'oublies pas de selectionner la catégorie souhaitée. Si tu as besoins d'informations pour savoir comment publier une annonce, regardes ce <a href="template_info_comment.html">tutoriel</a>
+        </p>-->
+        {% if not covoiturage.regulier %}
+        <!-- TRAJET UNIQUE -->
+        <!-- TRAJET UNIQUE -->
+        <div class="trajet_unique_form col-xs-12 is-open">
+            <h1>Trajet unique</h1>
+            {{ form_start(form, {'attr':{'ng-controller':'covoiturageModifCtrl', 'id':'formUnique'}}) }}
+
+                {# Les erreurs générales du formulaire. #}
+                {{ form_errors(form) }}
+
+                <div class="bloc_info row" ng-init="init('{{ covoiturage.id }}')">
+                    <h2>Votre trajet</h2>
+                    {{ form_label(form.depart, "Départ", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.depart) }}
+                    <input type="text" id="uniqueDepart" name="uniqueDepart" class="connexion_input col-xs-12 col-sm-8" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='placeUnique.depart' ng-change="loadPlaceUnique('depart')" placeholder="De"  />
+
+
+                    {{ form_label(form.rendezVous, "Rendez-vous", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.rendezVous) }}
+                    <input type="text" id="uniqueRendezVous" name="uniqueRendezVous" class="connexion_input col-xs-12 col-sm-8" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='placeUnique.rendezVous' ng-change="loadPlaceUnique('rendezVous')" placeholder="De"  />
+
+
+                    {{ form_label(form.arrivee, "Arrivée", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.arrivee) }}
+                    <input type="text" id="uniqueArrivee" name="uniqueArrivee" class="connexion_input col-xs-12 col-sm-8" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='placeUnique.arrivee' ng-change="loadPlaceUnique('arrivee')" placeholder="A"  />
+
+
+                    {{ form_label(form.depot, "Dépot", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.depot) }}
+                    <input type="text" id="uniqueDepot" name="uniqueDepot" class="connexion_input col-xs-12 col-sm-8" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='placeUnique.depot' ng-change="loadPlaceUnique('depot')" placeholder="A"  />
+
+                </div>
+                <div class="bloc_info row">
+                    <h2>Date et heure</h2>
+                    {{ form_label(form.dateUnique, "Date", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.dateUnique) }}
+                    {{ form_widget(form.dateUnique, {'attr':{'class':'connexion_input col-xs-12 col-sm-8 datepicker'}})}}
+
+
+                    {{ form_label(form.heureUnique, "Heure", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.heureUnique) }}
+                    {{ form_widget(form.heureUnique, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+                     <!-- <div class="info_important col-xs-12" for="annonce_prix">Si il s'agit d'une annonce taxi ou VTC, le prix correspond au prix par personne par kilomètre.</div>-->
+                </div>
+                <div class="bloc_info detail row">
+                    <h2>Détails concernant le trajet</h2>
+                    <div class="detail_sub_bloc row">
+                        <h3>Bagages autorisés</h3>
+                        {{ form_errors(form.bagages) }}
+                        {% for i in 0..form.bagages|length-1 %}
+                        <div class="row">
+                            {{ form_widget(form.bagages[i], {'attr':{'class':'connexion_input col-xs-2 col-sm-1'}})}}
+                            {{ form_label(form.bagages[i], "", {'label_attr':{'class':'col-xs-10 col-sm-11'}})}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="detail_sub_bloc row">
+                        <h3>Préférences</h3>
+                        {{ form_errors(form.preferences) }}
+                        {% for i in 0..form.preferences|length-1 %}
+                        <div class="row">
+                            {{ form_widget(form.preferences[i], {'attr':{'class':'connexion_input col-xs-2 col-sm-1'}})}}
+                            {{ form_label(form.preferences[i], "", {'label_attr':{'class':'col-xs-10 col-sm-11'}})}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="bloc_info row">
+                    {{ form_label(form.repondSous, "Je part à", {'label_attr':{'class':'col-xs-12 col-sm-5'}})}}
+                    {{ form_errors(form.repondSous) }}
+                    {{ form_widget(form.repondSous, {'attr':{'class':'connexion_input col-xs-12 col-sm-5'}})}}
+                </div>
+                
+                <div class="bloc_info row">
+                    {{ form_label(form.autoroute, "Je prend l'autoroute", {'label_attr':{'class':'col-xs-12 col-sm-5'}})}}
+                    {{ form_errors(form.autoroute) }}
+                    {{ form_widget(form.autoroute, {'attr':{'class':'connexion_input col-xs-12 col-sm-5'}})}}
+                </div>
+
+                
+                <div class="bloc_info row">
+                    <h2>Tarif</h2>
+                    
+                    {{ form_label(form.cout, "Coût du trajet", {'label_attr':{'class':'col-xs-12 col-sm-5'}})}}
+                    {{ form_errors(form.cout) }}
+                    {{ form_widget(form.cout, {'attr':{'class':'connexion_input col-xs-12 col-sm-5'}})}}
+                </div>
+
+                <div class="bloc_info row">
+                    {{ form_label(form.nbPlaces, "Nombres de places", {'label_attr':{'class':'col-xs-12 col-sm-5'}})}}
+                    {{ form_errors(form.nbPlaces) }}
+                    {{ form_widget(form.nbPlaces, {'attr':{'class':'col-xs-5'}})}}
+
+                </div>
+
+                </div>
+                <div class="bloc_info info_complementaire row">
+                    <h2>Informations complémentaires</h2>
+
+                    {{ form_label(form.infosdivers, "Vous pouvez indiquez aux personnes des informations complémentaires, comme un lieu de rendez-vous plus précis, ou encore les lieux que vous pouvez desservir, etc.. ", {'label_attr':{'class':'col-xs-12'}})}}
+                    {{ form_errors(form.infosdivers) }}
+                    {{ form_widget(form.infosdivers, {'attr':{'class':'connexion_input col-xs-12'}})}}
+                </div>
+                <div class="bloc_info row">
+                    {{ form_widget(form.modif, {'attr': {'class': 'connexion_submit col-xs-12 col-sm-offset-8 col-sm-4'}}) }}
+                    {{ form_widget(form.supprime, {'attr': {'class': 'connexion_submit col-xs-12 col-sm-offset-8 col-sm-4'}}) }}
+                </div>
+            <div style="display:none">{{ form_rest(form) }}</div>
+            {{ form_end(form) }}
+        </div>
+        <!-- FIN TRAJET UNIQUE -->
+        <!-- FIN TRAJET UNIQUE -->
+        {% else %}
+        <!-- TRAJET REGULIER -->
+        <!-- TRAJET REGULIER -->
+        <div class="trajet_unique_form col-xs-12 is-open">
+            <h1>Trajet regulier</h1>
+                {{ form_start(form, {'attr':{'ng-controller':'covoiturageModifCtrl', 'id':'formRegulier'}}) }}
+                <div class="bloc_info detail row" ng-init="init('{{ covoiturage.id }}')">
+                    <h2>Votre rôle</h2>
+                    {{ form_errors(form.role) }}
+                    {% for i in 0..form.role|length-1 %}
+                    <div class="row">
+                        {{ form_widget(form.role[i], {'attr':{'class':'connexion_input col-xs-2 col-sm-1'}}) }}
+                        {{ form_label(form.role[i], "", {'label_attr':{'class':'col-xs-10 col-sm-11'}}) }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="bloc_info row">
+                    <h2>Votre trajet</h2>
+                    {{ form_label(form.depart, "Départ", {'label_attr':{'class':'col-xs-12 col-sm-4'}}) }}
+                    {{ form_errors(form.depart) }}
+                    <input type="text" id="regulierDepart" name="regulierDepart" class="connexion_input col-xs-12 col-sm-8" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='placeRegulier.depart' ng-change="loadPlaceRegulier('depart')" required="required" placeholder="De"   />
+
+
+                    {{ form_label(form.rendezVous, "Rendez-vous", {'label_attr':{'class':'col-xs-12 col-sm-4'}}) }}
+                    {{ form_errors(form.rendezVous) }}
+                    <input type="text" id="regulierRendezVous" name="regulierRendezVous" class="connexion_input col-xs-12 col-sm-8" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='placeRegulier.rendezVous' ng-change="loadPlaceRegulier('rendezVous')" required="required" placeholder="De"   />
+
+
+                    {{ form_label(form.arrivee, "Arrivée", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.arrivee) }}
+                    <input type="text" id="regulierArrivee" name="regulierArrivee" class="connexion_input col-xs-12 col-sm-8" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='placeRegulier.arrivee' ng-change="loadPlaceRegulier('arrivee')" required="required" placeholder="A"   />
+
+
+                    {{ form_label(form.depot, "Dépot", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.depot) }}
+                    <input type="text" id="regulierDepot" name="regulierDepot" class="connexion_input col-xs-12 col-sm-8" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='placeRegulier.depot' ng-change="loadPlaceRegulier('depot')" required="required" placeholder="A"  />
+                </div>
+                <div class="bloc_info detail row">
+                    <div class="detail_sub_bloc row gestion_jours_container">
+                    <h2>Jours</h2>
+                    <p>Précisez les jours durant lesquels vous effecturez un covoiturage (cochez les cases)</p>
+                    <!-- Systeme de CHECKBOX POUR LE CHOIX DES JOURS (attention) -->
+                        <div class="liste_jour col-sm-12 col-xs-4">
+                            <div class="col-sm-offset-2 col-sm-1">Lun</div>
+                            <div class="col-sm-1 col-xs-12">Mar</div>
+                            <div class="col-sm-1 col-xs-12">Mer</div>
+                            <div class="col-sm-1 col-xs-12">Jeu</div>
+                            <div class="col-sm-1 col-xs-12">Ven</div>
+                            <div class="col-sm-1 col-xs-12">Sam</div>
+                            <div class="col-sm-1 col-xs-12">Dim</div>
+                        </div>
+                        <div class="aller col-sm-12 col-xs-4">
+                            <p class="col-sm-2 col-xs-12">Aller</p>
+                            {{ form_errors(form.jours_aller) }}
+                            {% for i in 0..form.jours_aller|length-1 %}
+                            {{ form_widget(form.jours_aller[i]) }}
+                            {{ form_label(form.jours_aller[i], ' ', {'label_attr':{'class':'col-sm-1 col-xs-12'}}) }}
+                            {% endfor %}
+
+                        </div>
+                        <div class="retour col-sm-12 col-xs-4">
+                            <p class="col-sm-2">Retour</p>
+                            {{ form_errors(form.jours_retour) }}
+                            {% for i in 0..form.jours_retour|length-1 %}
+                            {{ form_widget(form.jours_retour[i]) }}
+                            {{ form_label(form.jours_retour[i], ' ', {'label_attr':{'class':'col-sm-1 col-xs-12'}}) }}
+                            {% endfor %}
+                        </div>
+                    <!-- FIN Systeme de CHECKBOX POUR LE CHOIX DES JOURS (attention) -->
+                    </div>
+                    <div class="detail_sub_bloc row">
+                    <h2>Flexibilité</h2>
+                        {{ form_errors(form.flexibilite) }}
+                        {% for i in 0..form.flexibilite|length-1 %}
+                        <div class="row">
+                            {{ form_widget(form.flexibilite[i], {'attr':{'class':'connexion_input col-xs-2 col-sm-1'}})}}
+                            {{ form_label(form.flexibilite[i], "", {'label_attr':{'class':'col-xs-10 col-sm-11'}}) }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="detail_sub_bloc row horaires">
+                        <h2>Horaires</h2>
+                        {{ form_label(form.heureAller, "Heure Aller", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                        {{ form_errors(form.heureAller) }}
+                        {{ form_widget(form.heureAller, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+                        {{ form_label(form.heureRetour, "Heure Retour", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                        {{ form_errors(form.heureRetour) }}
+                        {{ form_widget(form.heureRetour, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+                    </div>
+                </div>
+
+
+                <div class="bloc_info detail row">
+                    <h2>Détails concernant le trajet</h2>
+                    <div class="detail_sub_bloc row">
+                        <h3>Bagages autorisés</h3>
+                        {{ form_errors(form.bagages) }}
+                        {% for i in 0..form.bagages|length-1 %}
+                        <div class="row">
+                            {{ form_widget(form.bagages[i], {'attr':{'class':'connexion_input col-xs-2 col-sm-1'}})}}
+                            {{ form_label(form.bagages[i], "", {'label_attr':{'class':'col-xs-10 col-sm-11'}})}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="detail_sub_bloc row">
+                        <h3>Préférences</h3>
+                        {{ form_errors(form.preferences) }}
+                        {% for i in 0..form.preferences|length-1 %}
+                        <div class="row">
+                            {{ form_widget(form.preferences[i], {'attr':{'class':'connexion_input col-xs-2 col-sm-1'}})}}
+                            {{ form_label(form.preferences[i], "", {'label_attr':{'class':'col-xs-10 col-sm-11'}})}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="bloc_info row">
+                    {{ form_label(form.repondSous, "Je part à", {'label_attr':{'class':'col-xs-12 col-sm-5'}})}}
+                    {{ form_errors(form.repondSous) }}
+                    {{ form_widget(form.repondSous, {'attr':{'class':'connexion_input col-xs-12 col-sm-5'}})}}
+                </div>
+                <div class="bloc_info row">
+                    {{ form_label(form.autoroute, "Je prend l'autoroute", {'label_attr':{'class':'col-xs-12 col-sm-5'}})}}
+                    {{ form_errors(form.autoroute) }}
+                    {{ form_widget(form.autoroute, {'attr':{'class':'connexion_input col-xs-12 col-sm-5'}})}}
+                </div>
+
+
+                <div class="bloc_info row">
+                    <h2>Tarif</h2>
+                    {{ form_label(form.cout, "Coût du trajet", {'label_attr':{'class':'col-xs-12 col-sm-5'}})}}
+                    {{ form_errors(form.cout) }}
+                    {{ form_widget(form.cout, {'attr':{'class':'connexion_input col-xs-12 col-sm-5'}})}}
+                </div>
+                <div class="bloc_info row">
+                    {{ form_label(form.nbPlaces, "Nombres de places", {'label_attr':{'class':'col-xs-12 col-sm-5'}})}}
+                    {{ form_errors(form.nbPlaces) }}
+                    {{ form_widget(form.nbPlaces, {'attr':{'class':'col-xs-5'}})}}
+
+                </div>
+                <div class="bloc_info info_complementaire row">
+                    <h2>Informations complémentaires</h2>
+
+                    {{ form_label(form.infosdivers, "Vous pouvez indiquez aux personnes des informations complémentaires, comme un lieu de rendez-vous plus précis, ou encore les lieux que vous pouvez desservir, etc.. ", {'label_attr':{'class':'col-xs-12'}})}}
+                    {{ form_errors(form.infosdivers) }}
+                    {{ form_widget(form.infosdivers, {'attr':{'class':'connexion_input col-xs-12'}})}}
+                </div>
+                <div class="bloc_info row">
+                    {{ form_widget(form.modif, {'attr': {'class': 'connexion_submit col-xs-12 col-sm-offset-8 col-sm-4'}}) }}
+                    {{ form_widget(form.supprime, {'attr': {'class': 'connexion_submit col-xs-12 col-sm-offset-8 col-sm-4'}}) }}
+                </div>
+            <div style="display:none">{{ form_rest(form) }}</div>
+            {{ form_end(form) }}
+        </div>
+        <!-- FIN TRAJET REGULIER -->
+        <!-- FIN TRAJET REGULIER -->
+        {% endif %}
+    </div>
+    <!-- FIN CONTENT -->
+{% endblock %}
+
+
+
+

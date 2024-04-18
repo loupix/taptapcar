@@ -1,0 +1,16 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: 127.0.0.1
+    database_port: null
+    database_name: formidrive
+    database_user: root
+    database_password: lolo
+    mailer_transport: gmail
+    mailer_host: smtp.gmail.com
+    mailer_user: formidrive@gmail.com
+    mailer_password: taptapcar
+    secret: 704f5715039a16f5361809dde873b2469c943fd9
+    api_facebook_id: 1536244146393977
+    api_facebook_secret: 7acdf8fb0a9cccadd7f5378bea973e63
+    api_google_id: taptapcar-157814
+    api_google_secret: AIzaSyBEBW_t3MvbLz1lGyaNL2lmdW3TDwR2Rm8

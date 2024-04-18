@@ -1,0 +1,24 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Contacter Taptapcar{% endblock %}
+
+{% block body %}
+    <!-- CONTENT -->
+        <!-- MOT DE PASSE OUBLIE -->
+        <div class="contact modal_connexion_container col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4">  
+            {{ form_start(contactForm) }}
+                <h1><center>Contacter Taptapcar</center></h1>
+                <div>Qu'il s'agisse d'un problème que vous avez rencontrez ou d'une information qu'il vous manque, n'hésitez pas à nous contacter</div>
+                {{ form_widget(contactForm.email, {'attr':{'class':'connexion_input col-xs-12'}})}}
+                {{ form_widget(contactForm.nom, {'attr':{'class':'connexion_input col-xs-12 col-sm-5'}})}}
+                {{ form_widget(contactForm.prenom, {'attr':{'class':'connexion_input col-xs-12 col-sm-offset-2 col-sm-5'}})}}
+
+                {{ form_widget(contactForm.objet, {'attr':{'class':'connexion_input col-xs-12'}})}}
+                {{ form_widget(contactForm.message, {'attr':{'class':'col-xs-12'}})}}
+                {{ form_widget(contactForm.save, {'attr':{'class':'connexion_submit col-sm-offset-8 col-sm-4 col-xs-12'}})}}
+            {{ form_rest(contactForm) }}
+            {{ form_end(contactForm) }}
+        </div>
+         <!-- FIN MOT DE PASSE OUBLIE -->
+   <!-- FIN CONTENT -->
+{% endblock %}

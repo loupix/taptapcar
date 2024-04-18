@@ -1,0 +1,357 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Reservation Déménagement{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/demenagementCtrl.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+<!-- CONTENT -->
+<div class="inscription_form modal_connexion_container creer_annonce col-xs-12 col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8" ng-controller="demenagementReservationCtrl" ng-init="getAnnonce({{ demenagement.id }})">
+    <h1>Reservation</h1>
+    <p class="info_creation col-xs-12 col-sm-8 col-sm-offset-2">
+        Si tu as besoins d'informations pour savoir comment effectuer une reservation, regardes ce <a href="{{ path('app_ccm') }}">tutoriel</a>
+    </p>
+
+    <div class=" col-xs-12 reservation">  
+            <div class="bloc_info row">
+                {% if demenagement.transporteur %}
+                <h1 style="margin-bottom:5px;font-size:1.5em;"><i class="fa fa-car" style="background-color:#34a0b2;float:left;"></i> <span style="line-height:20px;">{{ demenagement.nomSociete }}</span></h1>
+                <h2>Recapitulatif transporteur</h2>
+                <div class="from col-sm-6">
+                    <p>Ville : <span>{{ demenagement.lieu.ville.nom }}</span></p>
+                </div>
+                <div class="date_prix row">
+                    <div class="date col-sm-6">
+                        <p>Date : <span>{{ demenagement.genNameDate()|join(", ") }}</span></p>
+                        <p>Heures : <span>entre {{ demenagement.heureAller|date('H:i') }} et {{ demenagement.heureRetour|date('H:i') }}</span></p>
+                    </div>
+                    
+                    <div class="prix col-sm-6">
+                        <p>Tarif : <span>{{ demenagement.tarif }}€</span></p>
+                    </div>
+                </div>
+
+
+                {% else %}
+                <h2>Recapitulatif trajet</h2>
+                <div class="from col-sm-6">
+                    <p>Départ : <span>{{ demenagement.depart.ville.nom }}</span></p>
+                    <p>Lieu de rendez-vous : {{ demenagement.rendezVous.adresse }}</p>
+                </div>
+                <div class="to col-sm-6">
+                    <p>Arrivée : <span>{{ demenagement.arrivee.ville.nom }}</span></p>
+                    <p>Lieu de dépot : {{ demenagement.depot.adresse }}</p>
+                </div>
+                
+                <div class="date_prix row">
+                    <div class="date col-sm-6">
+                        <p>Date : <span>{{ demenagement.joursUnique|date("d/m/Y") }}</span></p>
+                        <p>Heure de départ : <span>{{ demenagement.joursUnique|date('h:i') }}</span></p>
+                    </div>
+                    
+                    <div class="prix col-sm-6">
+                        <p>Budget : <span>{{ demenagement.budgetApproximatif }}€</span></p>
+                    </div>
+                </div>
+                {% endif %}
+                
+
+                
+            </div>
+            <div class="bloc_info row">
+                
+                <form method="POST" action="{{ path('annonce_demenagement_reservation', {'id':demenagement.id}) }}">
+
+                {% if demenagement.transporteur %}
+                <h2>Réservation</h2>
+
+                <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_dateDepart">Choix de la date</label>
+                    <div class="col-xs-12 col-sm-3">
+
+                        <input type="text" class="form-control datepickerSpec" id="datepickerSpec" name="reservation_dateDepart" placeholder="Date" ng-model="disponnibilite.dateDepart" ng-change="isDispo({{ demenagement.id }})" required="true"/>
+
+                    </div>
+
+                    <div class="col-xs-12 col-sm-2" ng-init="isDispo({{ demenagement.id }})">
+                        <input type="time" class="form-control" name="reservation_heureDepart" id="reservation_heureDepart" ng-model="disponnibilite.heureDepart" required="true"
+                        ng-change="isDispo({{ demenagement.id }})" ng-value="{{ demenagement.heureAller|date('H:i') }}" />
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="text-warning" ng-if="disponnibilite.dispo==false">Non disponnible à cette heure</div>
+                        <div class="text-success" ng-if="disponnibilite.dispo==true">Disponnible à cette heure</div>
+                        <div class="text-danger" ng-if="disponnibilite._erreur != false">Erreur {[{disponnibilite._erreur}]} </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_depart">Lieu de rendez-vous</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <input type="text" class="form-control" id="reservation_depart" name="depart[adresse]" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='place.depart' ng-change="loadPlace('depart')" required="true"/>
+                        <input type="hidden" name="depart[latitude]" id="depart_latitude" value="">
+                        <input type="hidden" name="depart[longitude]" id="depart_longitude" value="">
+                        <input type="hidden" name="depart[street_number]" id="depart_street_number" value="">
+                        <input type="hidden" name="depart[route]" id="depart_route" value="">
+                        <input type="hidden" name="depart[locality]" id="depart_locality"value="">
+                        <input type="hidden" name="depart[administrative_area_level_1]" id="depart_administrative_area_level_1" value="">
+                        <input type="hidden" name="depart[country]" id="depart_country" value="">
+                        <input type="hidden" name="depart[postal_code]" id="depart_postal_code" value="">
+                        <input type="hidden" name="depart[place_id]" id="depart_place_id" value="">
+                        <input type="hidden" name="depart[adresse]" id="depart_adresse" value="">
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_arrivee">Lieu d'arrivée</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <input type="text" class="form-control" id="reservation_arrivee" name="arrivee[adresse]" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='place.arrivee' ng-change="loadPlace('arrivee')" required="true"/>
+                        <input type="hidden" name="arrivee[latitude]" id="arrivee_latitude" value="">
+                        <input type="hidden" name="arrivee[longitude]" id="arrivee_longitude" value="">
+                        <input type="hidden" name="arrivee[street_number]" id="arrivee_street_number" value="">
+                        <input type="hidden" name="arrivee[route]" id="arrivee_route" value="">
+                        <input type="hidden" name="arrivee[locality]" id="arrivee_locality"value="">
+                        <input type="hidden" name="arrivee[administrative_area_level_1]" id="arrivee_administrative_area_level_1" value="">
+                        <input type="hidden" name="arrivee[country]" id="arrivee_country" value="">
+                        <input type="hidden" name="arrivee[postal_code]" id="arrivee_postal_code" value="">
+                        <input type="hidden" name="arrivee[place_id]" id="arrivee_place_id" value="">
+                        <input type="hidden" name="arrivee[adresse]" id="arrivee_adresse" value="">
+                    </div>
+                </div>
+
+
+                <div class="col-xs-12 facture_container">
+                    {% if demenagement.tarification=="Par kilomètres" %}
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Tarif par Km</div>
+                        <div class="col-sm-4 item">Distance</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-4 item">{[{ reservation.prix }]}€</div>
+                        <div class="col-sm-4 item">{[{ reservation.distance }]} Km</div>
+                        <div class="col-sm-4 item">{[{ getTotal() }]}€</div>
+                    </div>
+
+                    {% elseif demenagement.tarification=="Par heures" %}
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Tarif par Heure</div>
+                        <div class="col-sm-4 item">Duree</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-4 item">{[{ reservation.prix }]}€</div>
+                        <div class="col-sm-4 item">{[{ reservation.dureeTxt }]}</div>
+                        <div class="col-sm-4 item">{[{ getTotal() }]}€</div>
+                    </div>
+
+                    {% elseif demenagement.tarification=="Par places" %}
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Prix trajet</div>
+                        <div class="col-sm-4 item">Nombres de places</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-4 item">{[{ reservation.prix }]}€</div>
+                        <div class="col-sm-4 item">{[{ reservation.nbPlaces }]} Km</div>
+                        <div class="col-sm-4 item">{[{ getTotal() }]}€</div>
+                    </div>
+
+                    {% elseif demenagement.tarification=="Prix unique" %}
+                    <div class="infos row">
+                        <div class="col-sm-6 item">Prix trajet</div>
+                        <div class="col-sm-6 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-6 item">{[{ reservation.prix }]}€</div>
+                        <div class="col-sm-6 item">{[{ getTotal() }]}€</div>
+                    </div>
+
+                    {% else %}
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Prix trajet</div>
+                        <div class="col-sm-4 item">Nombres de places</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="infos row">
+                        <div class="col-sm-4 item">{[{ reservation.prix }]}€</div>
+                        <div class="col-sm-4 item">{[{ reservation.nbPlaces }]}</div>
+                        <div class="col-sm-4 item">{[{ getTotal() }]}€</div>
+                    </div>
+                    {% endif %}
+                    <div class="total row">
+                        <div class="col-sm-offset-8 col-sm-4 item">{[{ getTotal() }]}€ TTC</div>
+                    </div>
+                    <input type="hidden" name="reservation_typeCout" value="{{ demenagement.tarification }}" />
+                    <input type="hidden" name="reservation_prix" value="{[{ reservation.prix }]}" />
+                    <input type="hidden" name="reservation_distance" value="{[{ reservation.distance }]}" />
+                    <input type="hidden" name="reservation_duree" value="{[{ reservation.duree }]}" />
+                    <input type="hidden" name="reservation_places" value="{[{ reservation.nbPlaces }]}" />
+                    <input type="hidden" name="reservation_date" value="{[{ reservation.date }]}" />
+                    
+                    <input type="submit" name="reservation_confirmer_online" class="button_payer col-xs-12 col-sm-offset-8 col-sm-4" value="Paiement en ligne">
+                    <input type="submit" name="reservation_confirmer_surPlace" class="button_payer_surplace col-xs-12 col-sm-offset-8 col-sm-4" value="Paiement sur place">
+                </div>
+
+                </form>
+
+
+
+
+                {% else %}
+                <h2>Faire un devis</h2>
+{#                 <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_date">Date de départ</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <input type="text" class="form-control" disabled="true" name="reservation_date" id="reservation_date" ng-model="reservation.date" value='{[{ annonce.JoursUnique | date:"EE dd MM" }]}' />
+                    </div>
+                </div> #}
+
+                <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_depart">Lieu de départ</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <input type="text" class="form-control" id="reservation_depart" name="depart[adresse]" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='place.depart' ng-change="loadPlace('depart')" disabled="true"/>
+
+                        <input type="hidden" name="depart[latitude]" id="depart_latitude" value="">
+                        <input type="hidden" name="depart[longitude]" id="depart_longitude" value="">
+                        <input type="hidden" name="depart[street_number]" id="depart_street_number" value="">
+                        <input type="hidden" name="depart[route]" id="depart_route" value="">
+                        <input type="hidden" name="depart[locality]" id="depart_locality"value="">
+                        <input type="hidden" name="depart[administrative_area_level_1]" id="depart_administrative_area_level_1" value="">
+                        <input type="hidden" name="depart[country]" id="depart_country" value="">
+                        <input type="hidden" name="depart[postal_code]" id="depart_postal_code" value="">
+                        <input type="hidden" name="depart[place_id]" id="depart_place_id" value="">
+                        <input type="hidden" name="depart[adresse]" id="depart_adresse" value="">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_arrivee">Lieu d'arrivée</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <input type="text" class="form-control" id="reservation_arrivee" name="arrivee[adresse]" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='place.arrivee' ng-change="loadPlace('arrivee')" disabled="true"/>
+                        <input type="hidden" name="arrivee[latitude]" id="arrivee_latitude" value="">
+                        <input type="hidden" name="arrivee[longitude]" id="arrivee_longitude" value="">
+                        <input type="hidden" name="arrivee[street_number]" id="arrivee_street_number" value="">
+                        <input type="hidden" name="arrivee[route]" id="arrivee_route" value="">
+                        <input type="hidden" name="arrivee[locality]" id="arrivee_locality"value="">
+                        <input type="hidden" name="arrivee[administrative_area_level_1]" id="arrivee_administrative_area_level_1" value="">
+                        <input type="hidden" name="arrivee[country]" id="arrivee_country" value="">
+                        <input type="hidden" name="arrivee[postal_code]" id="arrivee_postal_code" value="">
+                        <input type="hidden" name="arrivee[place_id]" id="arrivee_place_id" value="">
+                        <input type="hidden" name="arrivee[adresse]" id="arrivee_adresse" value="">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_distance">Distance / Durée</label>
+                    <div class="col-xs-6 col-sm-2">
+                        <input type="text" class="form-control" disabled="true" name="reservation_distanceTxt" id="reservation_distanceTxt" ng-model="reservation.distanceTxt" disabled="true" />
+                        <input type="hidden" name="reservation_distance" id="reservation_distance" value="{[{ reservation.distance }]}" />
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <input type="text" class="form-control" disabled="true" name="reservation_dureeTxt" id="reservation_dureeTxt" ng-model="reservation.dureeTxt" disabled="true" />
+                        <input type="hidden" name="reservation_duree" id="reservation_duree" value="{[{ reservation.duree }]}" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_prix">Votre devis (En Euros)</label>
+                    <div class="col-xs-6 col-sm-2">
+                        <input type="number" step="0.01" class="form-control" name="reservation_prix" id="reservation_prix" ng-model="reservation.prix" required="true" />
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <select class="form-control" name="reservation_tarification" id="reservation_tarification" ng-model="reservation.devis" require="true">
+                            <option value="Par Kilomètres">Par Kilomètres</option>
+                            <option value="Par heures">Par heures</option>
+                            <option value="Prix unique">Prix unique</option>
+                        </select>
+                    </div>
+                </div>
+
+                <input type="hidden" name="reservation_transporteur" id="reservation_transporteur" ng-model="annonce.Transporteur" />
+                <div class="col-xs-12 facture_container">
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Prix trajet</div>
+                        <div class="col-sm-4 item">{[{ reservation.devis }]}</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-4 item">{[{ reservation.prix }]}€</div>
+                        <div class="col-sm-4 item">x {[{ getValue() }]}</div>
+                        <div class="col-sm-4 item">{[{ getTotalDevis() }]}€</div>
+                    </div>
+                    <div class="total row">
+                        <div class="col-sm-offset-8 col-sm-4 item">{[{ getTotalDevis() }]}€ TTC</div>
+                    </div>
+                    <input type="hidden" name="reservation_prix" id="reservation_prix" value="{[{ reservation.prix }]}" />
+                    <input type="hidden" name="reservation_total" id="reservation_total" value="{[{ getTotalDevis() }]}" />
+                    <input type="hidden" name="reservation_distance" value="{[{ reservation.distance }]}" />
+                    <input type="hidden" name="reservation_duree" value="{[{ reservation.duree }]}" />
+                    <input type="hidden" name="reservation_date" id="reservation_date" value="{[{ reservation.date }]}" />
+                    <input type="submit" name="reservation_confirmer" id="reservation_confirmer" class="button_payer col-xs-12 col-sm-offset-8 col-sm-4" value="Confirmez">
+                </div>
+
+                </form>
+
+
+                {% endif %}
+                
+
+                
+            </div>    
+    </div>       
+</div>
+{% if demenagement.transporteur %}
+<div class="pas_membre_container deja_membre annule-reservation col-xs-12 col-sm-3 col-md-2">
+        <p>Retour vers la page d'annonce</p>
+        <a id="annule-reservation-button" href="{{ path('annonce_demenagement_get', {'id':demenagement.id}) }}">Annuler la réservation</a>
+</div>
+{% else %}
+<div class="pas_membre_container deja_membre annule-reservation col-xs-12 col-sm-3 col-md-2">
+        <p>Retour vers la page d'annonce</p>
+        <a id="annule-reservation-button" href="{{ path('annonce_demenagement_get', {'id':demenagement.id}) }}">Annuler le devis</a>
+</div>
+{% endif %}
+<!-- FIN CONTENT -->
+{% endblock %}
+
+
+{% block javascripts %}
+{{ parent() }}
+    {% if demenagement.transporteur %}
+    <script>
+        var array = [];
+        {% set dateReg = demenagement.genDateRegulier() %}
+        {% for i in 0..300 %}
+        {% if dateReg[i] is defined and dateReg[i] is not null %}
+        array.push("{{ dateReg[i].date|date('Y-m-d') }}");
+        {% endif %}
+        {% endfor %}
+        $(document).ready(function(){
+            $(".datepickerSpec").datepicker({ 
+                dateFormat: 'yy-mm-dd',
+                beforeShowDay: function(date){
+                    var string = jQuery.datepicker.formatDate('yy-mm-dd', date);
+                    return [ array.indexOf(string) !== -1 ]
+                },
+                closeText: 'Fermer',
+                prevText: 'Précédent',
+                nextText: 'Suivant',
+                currentText: 'Aujourd\'hui',
+                monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+                monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
+                dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+                dayNamesShort: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
+                dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+                weekHeader: 'Sem.',
+            });
+        });
+    </script>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% block modal_connexion %}
+        <!-- MODAL DE CONNEXION -->
+        <div style="z-index:1000 !important" class="modal_connexion_container connexion col-sm-offset-6 col-sm-6 col-md-offset-8 col-md-4 col-lg-offset-9 col-lg-3">  
+            <h3>Connectez-vous</h3>
+            <h3>{{ error }}</h3>
+{#                 <div class="submit facebook col-xs-12">
+                    {{ facebook_login_button({'autologoutlink': true, 'label':'Connexion avec Facebook', 'size':'large'}) }}
+                </div>
+ #}         <a href="{{ path('hwi_oauth_service_redirect', {'service': 'facebook' }) }}" alt="Sign in with Facebook">
+                <i class="fa fa-facebook"></i> Sign in with Facebook</a>   
+            <form action="{{ path("fos_user_security_check") }}" method="post">
+                <input type="mail" id="username" name="_username" class="connexion_input col-xs-12" placeholder="Mon email">
+                <input type="password" id="password" name="_password" class="connexion_input col-xs-12" placeholder="Mon mot de passe">
+                <input type="checkbox" id="remember_me" name="_remember_me">
+                <label class="souvenir" for="connexion_se_souvenir">Se souvenir de moi</label>
+
+                <input type="submit" class="connexion_submit col-xs-12" name="connexion_submit" value="Se connecter">
+                <a class="col-xs-12 oublie" href="mdp_oublie.html">Mot de passe oublié</a>
+            </form>
+            <div class="pas_membre_container col-xs-12">
+                <p>Pas encore membre?</p>
+                <a class="pas_membre" href="">Inscrivez-vous</a>
+            </div>
+        </div>
+         <!-- FIN MODAL DE CONNEXION -->
+{% endblock %}

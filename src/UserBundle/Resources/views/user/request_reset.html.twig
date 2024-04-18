@@ -1,0 +1,28 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Perte de mot de pass{% endblock %}
+
+{% block body %}
+
+  <!-- CONTENT -->
+        <!-- MOT DE PASSE OUBLIE -->
+        <div class="mdp_oublie modal_connexion_container col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4">  
+            {% if invalid_username is defined %}
+                <p>{{ 'Mauvais email'|trans({'%username%': invalid_username}, 'FOSUserBundle') }}</p>
+            {% endif %}
+            {% if email is defined %}
+                <p>{{ 'un email vient de vous être envoyer'|trans({'%email%': email}, 'FOSUserBundle') }}</p>
+            {% endif %}
+            {% if password is defined %}
+                <p>{{ 'Un email a déjà étais envoyer'|trans({'%password%': password}, 'FOSUserBundle') }}</p>
+            {% endif %}
+            <form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request">
+                <div>Saisissez votre adresse email, et nous vous enverrons un message avec votre nouveau mot de passe</div>
+                <input type="mail" id="username" name="username" class="connexion_input col-xs-12" placeholder="Mon email">
+
+                <input type="submit" class="connexion_submit col-sm-offset-8 col-sm-4 col-xs-12" name="mdp_oublie_submit" value="Envoyer">
+            </form>
+        </div>
+         <!-- FIN MOT DE PASSE OUBLIE -->
+   <!-- FIN CONTENT -->
+{% endblock %}

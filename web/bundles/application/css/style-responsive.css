@@ -1,0 +1,194 @@
+/* Extra small devices (phones, less than 768px) */
+
+@media (max-width: 767px) {
+    .paiements_container article div{
+        font-size: 13px !important;
+    }
+    .paiements_container article{
+        border-bottom: 1px solid rgba(0,0,0,0.15);
+        margin-bottom: 20px !important;
+        box-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+    }
+    .paiements_container article div p{
+        text-align: center !important;
+    }
+    .creer_annonce h2{
+        font-size: 21px;
+    }
+    .home_search h1 p{
+    font-size: 20px !important;
+    line-height:30px;
+}
+    .logo_intro{
+    height: 35px;
+    width: 200px;
+    margin-left: 0px;
+    }
+
+    .comment_container textarea{
+        max-width: 100% !important;
+        width: 100%;
+    }
+    .inscription_form{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    .creer_annonce .bloc_info.detail{
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .liste_jour div{
+        height: 50px;
+    }
+    .gestion_jours_container .aller, .gestion_jours_container .retour{
+        margin-top: -50px;
+        padding: 0;
+    }
+    .gestion_jours_container .aller label, .gestion_jours_container .retour label{
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+    nav.main_menu ul li {
+        display: block;
+        text-align: center;
+    }
+    nav.main_menu ul li .sub_menu_1{
+        width: 100%;
+    }
+    nav.main_menu ul li .sub_menu_1 li{
+        width: 100%;
+
+    }
+    nav.main_menu ul li .sub_menu_1 li a{
+        text-align: center; 
+    }
+    .slider_container {
+        height: 700px;
+    }
+    .home_search h1 {
+        font-size: 25px;
+        text-align: center;
+    }
+    .home_search .form_container .checkbox div {
+        width: 100%;
+    }
+    .form_container {
+        padding: 25px !important;
+    }
+    .home_search .form_container .checkbox label {
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 0px;
+        text-align: center;
+        font-size: 13px;
+        padding: 15px 5px;
+    }
+    .home_search .form_container .recherche {
+        margin-top: 20px !important;
+        width: 100%;
+    }
+    .intro_container {
+        background: #eee;
+    }
+    .sidebar_container .top{
+    	font-size: 17px;
+    	padding-left: 15px;
+    	padding-right: 30px;
+    	text-align: left;
+    }
+    .sidebar_container .sidebar_content {
+        padding: 0px;
+    }
+    .annonces_container .trier-par {
+        display: block !important;
+    }
+    .annonces article p {
+        font-size: 14px;
+    }
+    .annonces article {
+        padding: 10px;
+    }
+    .annonces article .bloc_photo {
+        border: none;
+    }
+    .annonces article .trajet_bloc .date {
+        margin-top: 10px;
+        font-size: 16px;
+    }
+    .annonces article .trajet_bloc .trajet {
+        font-size: 14px;
+    }
+    .annonces article .prix_bloc .prix,
+    .annonces article .prix_bloc .place_restantes {
+        font-size: 12px;
+    }
+    .annonces article .profil_link {
+        padding: 7px 3px;
+        font-size: 13px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+    .annonces article .category,
+    .annonces article .info_trajet {
+        font-size: 14px;
+    }
+    .annonces article .bloc_info {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .bottom_annonces .info {
+        text-align: center;
+    }
+    footer .copyright_container, footer .copyright_container ul{
+        text-align: center !important;
+    }
+    footer .social_container li:first-child{
+    display: block;
+    }
+    .sidebar_container .top .fa{
+    display: block !important;
+}
+.sidebar_content{
+    display: none;
+
+}
+.sidebar_content.is-open{
+    display: block;
+}
+.intro_item_container{
+    text-align: center !important;
+}
+.template_annonce_container .info_annonceur h2{
+    text-align: center;
+}
+.template_annonce_container .info_annonceur .bloc_photo .photo{
+    margin: auto;
+    margin-bottom: 25px;
+}
+}
+
+
+/* Small devices (tablets, 768px and up) */
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .sidebar_container .top .fa{
+    display: block !important;
+}
+.sidebar_content{
+    display: none;
+}
+.sidebar_content.is-open{
+    display: block;
+}
+.intro_item_container{
+    text-align: center;
+}
+}
+
+
+/* Medium devices (desktops, 992px and up) */
+
+@media (min-width: 992px) and (max-width: 1199px) {}
+
+
+/* Large devices (large desktops, 1200px and up) */
+
+@media (min-width: 1200px) {}

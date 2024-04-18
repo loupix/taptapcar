@@ -1,0 +1,163 @@
+{% extends "::base.html.twig" %}
+
+
+{% set annonce = devis.annonce %}
+{% set object = annonce.getObject() %}
+
+
+{% block title %}Devis de {{ annonce.getType() }}{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/annonceCtrl.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+<!-- CONTENT -->
+<div class="inscription_form modal_connexion_container creer_annonce col-xs-12 col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8" ng-controller="devisCtrl" ng-init="getDevis('{{ devis.id }}');">
+    <h1>Devis de {{ annonce.getType() }}</h1>
+
+    <div class=" col-xs-12 reservation">  
+            <div class="bloc_info row">
+                <h2>Recapitulatif trajet</h2>
+                {% if annonce.getType() == "Vtc" or annonce.getType() == "Taxi" %}
+                {% set object = annonce.getObject() %}
+
+                <div class="from col-sm-6">
+                    <p>Départ : <span>{{ object.ville.nom }}</span></p>
+                </div>
+                
+
+
+                <div class="date_prix row">
+                    <div class="date col-sm-6">
+                        <p>Date : <span>{{ object.date|date("d/m/Y") }}</span></p>
+                        <p>Heure de départ : <span>{{ object.date|date('h:i') }}</span></p>
+                    </div>
+                    <div class="prix col-sm-6">
+                        <p>Prix : <span>{{ object.cout }}€ / place</span></p>
+                    </div>
+                </div>
+
+
+
+                {% elseif annonce.getType() == "Demenagement" or annonce.getType() == "Covoiturage" %}
+				{% set object = annonce.getObject() %}
+
+                <div class="from col-sm-6">
+                    <p>Départ : <span>{{ object.depart.ville.nom }}</span></p>
+                    <p>Lieu de rendez-vous : {{ object.rendezVous.adresse }}</p>
+                </div>
+                <div class="to col-sm-6">
+                    <p>Arrivée : <span>{{ object.arrivee.ville.nom }}</span></p>
+                    <p>Lieu de dépot : {{ object.depot.adresse }}</p>
+                </div>
+
+
+                <div class="date_prix row">
+                    <div class="date col-sm-6">
+                        <p>Date : <span>{{ object.joursUnique|date("d/m/Y") }}</span></p>
+                        <p>Heure de départ : <span>{{ object.joursUnique|date('h:i') }}</span></p>
+                    </div>
+                    
+                    <div class="prix col-sm-6">
+                        <p>Budget : <span>{{ object.budgetApproximatif }}€</span></p>
+                    </div>
+                </div>
+
+                {% endif %}
+
+
+                
+
+                
+            </div>
+            <div class="bloc_info row">
+                <h2>Confirmation</h2>
+                <form method="POST" action="#">
+                <div class="col-xs-12 facture_container">
+                    
+                {% if devis.typeDevis=="Par Kilomètres" %}
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Tarif par Km</div>
+                        <div class="col-sm-4 item">Distance</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-4 item">{[{ devis.PrixUnitaire }]}€</div>
+                        <div class="col-sm-4 item">{[{ devis.Distance }]} Km</div>
+                        <div class="col-sm-4 item">{[{ devis.Montant }]}€</div>
+                    </div>
+
+                    {% elseif devis.typeDevis=="Par heures" %}
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Tarif par Heure</div>
+                        <div class="col-sm-4 item">Duree</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-4 item">{[{ devis.PrixUnitaire }]}€</div>
+                        <div class="col-sm-4 item">{[{ devis.Duree*1000 | date:"hh:mm" }]}</div>
+                        <div class="col-sm-4 item">{[{ devis.Montant }]}€</div>
+                    </div>
+
+                    {% elseif devis.typeDevis=="Par places" %}
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Prix trajet</div>
+                        <div class="col-sm-4 item">Nombres de places</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-4 item">{[{ devis.PrixUnitaire }]}€</div>
+                        <div class="col-sm-4 item">{[{ devis.NbPlaces }]} Km</div>
+                        <div class="col-sm-4 item">{[{ devis.Montant }]}€</div>
+                    </div>
+
+                    {% elseif devis.typeDevis=="Prix unique" %}
+                    <div class="infos row">
+                        <div class="col-sm-6 item">Prix trajet</div>
+                        <div class="col-sm-6 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-6 item">{[{ devis.PrixUnitaire }]}€</div>
+                        <div class="col-sm-6 item">{[{ devis.Montant }]}€</div>
+                    </div>
+
+                    {% else %}
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Prix trajet</div>
+                        <div class="col-sm-4 item">Nombres de places</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="infos row">
+                        <div class="col-sm-4 item">{[{ devis.PrixUnitaire }]}€</div>
+                        <div class="col-sm-4 item">{[{ devis.NbPlaces }]}</div>
+                        <div class="col-sm-4 item">{[{ devis.Montant }]}€</div>
+                    </div>
+                    {% endif %}
+
+
+                    <div class="total row">
+                        <div class="col-sm-offset-8 col-sm-4 item">{[{ devis.Montant }]}€ TTC</div>
+                    </div>
+                    <input type="hidden" name="reservation_prix" value="{[{ devis.PrixUnitaire }]}" />
+                    <input type="hidden" name="reservation_places" value="{[{ devis.NbPlaces }]}" />
+                    <input type="hidden" name="reservation_distance" value="{[{ devis.Distance }]}" />
+                    <input type="hidden" name="reservation_duree" value="{[{ devis.Duree }]}" />
+
+                    <input type="button" name="reservation_valider" class="button_payer col-xs-12 col-sm-offset-8 col-sm-4 ng-hide" value="Valider" ng-click="accepter('{{ devis.id }}', true)" ng-show="devis.EnCours">
+
+                    <input type="button" name="reservation_refuser" class="button_payer col-xs-12 col-sm-offset-8 col-sm-4 ng-hide" value="Refuser" ng-click="refuser('{{ devis.id }}', true)" ng-show="devis.EnCours">
+
+                    <a href="{{ path('user_reservation_pdfdevis',{'devisId':devis.id}) }}" target="_blank" class="button_pdf col-xs-12 col-sm-offset-8 col-sm-4"><i class="fa fa-file-pdf-o">&nbsp;</i>Télécharger le PDF</a>
+                </div>
+
+                </form>
+            </div>    
+    </div>       
+</div>
+<!-- FIN CONTENT -->
+
+{% endblock %}

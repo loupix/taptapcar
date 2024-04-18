@@ -1,0 +1,49 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Mes informations{% endblock %}
+
+{% block body %}
+	<!-- CONTENT -->
+    <!-- Contenu profil -->
+    <div class="profil_container col-xs-12 col-md-offset-2 col-md-8">
+        
+        {% include 'UserBundle:Profile:menu_profile.html.twig' %}
+        
+        <!-- AVIS profil -->
+        <div class="modification_container col-xs-12 inscription_form modal_connexion_container">
+                <h2>Modification du profil</h2>
+
+                {{ form_start(form, {'attr':{'id':'formProfile'}}) }}
+
+                {{ form_label(form.nom, "Nom", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                {{ form_errors(form.nom) }}
+                {{ form_widget(form.nom, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+                {{ form_label(form.prenom, "Prenom", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                {{ form_errors(form.prenom) }}
+                {{ form_widget(form.prenom, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+
+                {{ form_label(form.anneeNaissance, "Annee de naissance", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                {{ form_errors(form.anneeNaissance) }}
+                {{ form_widget(form.anneeNaissance, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+                {{ form_label(form.email, "Adresse email", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                {{ form_errors(form.email) }}
+                {{ form_widget(form.email, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+                {{ form_label(form.plainPassword.first, "Mot de passe", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                {{ form_errors(form.plainPassword.first) }}
+                {{ form_widget(form.plainPassword.first, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+                {{ form_label(form.plainPassword.second, "Confirmation du mot de pass", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                {{ form_errors(form.plainPassword.second) }}
+                {{ form_widget(form.plainPassword.second, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+            <div style="display:none">{{ form_rest(form) }}</div>
+                    <input type="submit" class="submit_modification col-sm-offset-8 col-sm-4 col-xs-12" value="Enregistrer">
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

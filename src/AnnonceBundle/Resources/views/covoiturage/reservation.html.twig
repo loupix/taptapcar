@@ -1,0 +1,142 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Reservation Covoiturage{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/covoiturageCtrl.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<!-- CONTENT -->
+<div class="inscription_form modal_connexion_container creer_annonce col-xs-12 col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8" ng-controller="covoiturageReservationCtrl" ng-init="getAnnonce({{ covoiturage.id }})">
+    <h1>Reservation</h1>
+    <p class="info_creation col-xs-12 col-sm-8 col-sm-offset-2">
+        Si tu as besoins d'informations pour savoir comment effectuer une reservation, regardes ce <a href="{{ path('app_ccm') }}">tutoriel</a>
+    </p>
+
+    <div class=" col-xs-12 reservation">  
+            <div class="bloc_info row">
+                <h2>Recapitulatif trajet</h2>
+                <div class="from col-sm-6">
+                    <p>Départ : <span>{{ covoiturage.depart.ville.nom }}</span></p>
+                    <p>Lieu de rendez-vous : {{ covoiturage.rendezVous.adresse }}</p>
+                </div>
+                <div class="to col-sm-6">
+                    <p>Arrivée : <span>{{ covoiturage.arrivee.ville.nom }}</span></p>
+                    <p>Lieu de dépot : {{ covoiturage.depot.adresse }}</p>
+                </div>
+                
+                <div class="date_prix row">
+                    {% if covoiturage.dateUnique %}
+                    <div class="date col-sm-6">
+                        <p>Date : <span>{{ covoiturage.dateUnique|date("d/m/Y") }}</span></p>
+                        <p>Heure de départ : <span>{{ covoiturage.heureAller|date('h:i') }}</span></p>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="prix col-sm-6">
+                        <p>Prix : <span>{{ covoiturage.cout }}€ / place</span></p>
+                    </div>
+                </div>
+                
+
+                
+            </div>
+            <div class="bloc_info row">
+                <h2>Paiement</h2>
+                <form method="POST" action="{{ path('annonce_covoiturage_reservation', {'id':covoiturage.id}) }}">
+                <div class="row">
+                    {% if covoiturage.regulier %}
+                    <label class="col-xs-12 col-sm-5" for="reservation_date">Choix de la date</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <input type="text" class="form-control datepickerSpec" id="datepickerSpec" name="reservation_dateDepart" placeholder="Date" ng-model="disponnibilite.dateDepart" ng-change="isDispo({{ covoiturage.id }})" required="true"/>
+                    </div>
+                    <br /><br />
+                    {% else %}
+                    <input type="hidden" name="reservation_date" ng-model="reservation.date" value='{{ covoiturage.dateUnique | date("Y-m-d") }}' />
+                    {% endif %}
+                </div>
+
+                <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_nombre_place">Nombres de places</label>
+                    <select class="col-xs-12 col-sm-5" name="reservation_nombre_place" id="reservation_nombre_place" ng-model="reservation.nbPlaces">
+                    	{% for i in 1 .. covoiturage.nbPlaces %}
+                        <option value="{{ i }}">{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-xs-12 facture_container">
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Prix trajet</div>
+                        <div class="col-sm-4 item">Nombres de places</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-4 item">{[{ reservation.prix }]}€</div>
+                        <div class="col-sm-4 item">x {[{ reservation.nbPlaces }]}</div>
+                        <div class="col-sm-4 item">{[{ getTotal() }]}€</div>
+                    </div>
+                    <div class="total row">
+                        <div class="col-sm-offset-8 col-sm-4 item">{[{ getTotal() }]}€ TTC</div>
+                    </div>
+                    <input type="hidden" name="reservation_prix" value="{[{ reservation.prix }]}" />
+                    <input type="hidden" name="reservation_places" value="{[{ reservation.nbPlaces }]}" />
+                    <input type="hidden" name="reservation_date" value="{[{ reservation.date }]}" />
+                    <input type="submit" name="reservation_confirmer_online" class="button_payer col-xs-12 col-sm-offset-8 col-sm-4" value="Paiement en ligne">
+                    <input type="submit" name="reservation_confirmer_surPlace" class="button_payer_surplace col-xs-12 col-sm-offset-8 col-sm-4" value="Paiement sur place">
+                </div>
+
+                </form>
+            </div>    
+    </div>       
+</div>
+<div class="pas_membre_container deja_membre annule-reservation col-xs-12 col-sm-3 col-md-2">
+        <p>Retour vers la page d'annonce</p>
+        <a id="annule-reservation-button" href="{{ path('annonce_covoiturage_get', {'id':covoiturage.id}) }}">Annuler la réservation</a>
+</div>
+<!-- FIN CONTENT -->
+{% endblock %}
+
+
+
+
+
+
+{% block javascripts %}
+{{ parent() }}
+    {% if covoiturage.regulier %}
+    <script>
+        var array = [];
+        {% set dateReg = covoiturage.genDateRegulier() %}
+        {% for i in 0..300 %}
+        {% if dateReg[i] is defined and dateReg[i] is not null %}
+        array.push("{{ dateReg[i].date|date('d-m-Y') }}");
+        {% endif %}
+        {% endfor %}
+        $(document).ready(function(){
+            $(".datepickerSpec").datepicker({ 
+                dateFormat: 'dd-mm-yy',
+                beforeShowDay: function(date){
+                    var string = jQuery.datepicker.formatDate('dd-mm-yy', date);
+                    return [ array.indexOf(string) !== -1 ]
+                },
+                closeText: 'Fermer',
+                prevText: 'Précédent',
+                nextText: 'Suivant',
+                currentText: 'Aujourd\'hui',
+                monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+                monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
+                dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+                dayNamesShort: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
+                dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+                weekHeader: 'Sem.',
+            });
+            $(".datepickerSpec").datepicker("setDate", new Date());
+        });
+    </script>
+    {% endif %}
+
+{% endblock %}

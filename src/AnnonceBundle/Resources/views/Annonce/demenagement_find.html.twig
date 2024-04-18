@@ -1,0 +1,387 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Recherche de déménagements{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/demenagementCtrl.js') }}"></script>
+{% endblock %}
+
+
+
+{% block body %}
+   <!-- CONTENT -->
+    <main class="main list_page" ng-controller="demenagementRechercheCtrl" ng-init="loadRecherche()">
+        <div class="search_container row">
+            <div class="home_search list_search col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+                <div class="form_container">
+                    {{ form_start(formRecherche) }}
+                        <div class="search_container">
+                            <div class="search date col-sm-offset-2 col-sm-4">
+                                <i class="fa fa-circle-o-notch"></i>
+                                {{ form_widget(formRecherche.rayon.radius, {'attr':{'ng-model':'recherche.rayon'}})}}
+                            </div>
+                            {{ form_widget(formRecherche.search, {'attr':{'class':'recherche search col-sm-3', 'value':'Rechercher', 'ng-click':'loadRecherche()'}})}}
+                        </div>
+                    <div style="display:none">{{ form_rest(formRecherche) }}</div>
+                    {{ form_end(formRecherche) }}
+                </div>
+            </div>
+        </div>
+        <div class="liste_container col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <!-- SIDEBAR  -------------- -->
+            <!-- SIDEBAR  -------------- -->
+            <div class="sidebar_container col-md-4">
+                <div class="top">Filtrer les résultats<i id="button_menu_filtre" class="fa fa-chevron-circle-down"></i></div>
+                <div class="sidebar_content row">
+                    <form class="form_container" action="">
+                        <!-- VOLUME DU VEHICULE FILTRE -->
+                        <div class="col-sm-6 col-md-12 filtre_item transporteur">
+                            <h3>Je recherche</h3>
+                            <div class="row">
+                                <input type="radio" name="annonce_transporteur" id="trans" ng-model="recherche.transporteur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="true" >
+                                <label for="trans">Un transporteur</label>
+                            </div>
+
+                            <div class="row">
+                                <input type="radio" name="annonce_transporteur" id="dem" ng-model="recherche.transporteur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="false" >
+                                <label for="dem">Un déménagement</label>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-12 filtre_item volume">
+                            <h3>Volume du vehicule</h3>
+                            <div class="row">
+                                <input type="radio" name="annonce_volume" id="0_5" ng-model="recherche.volume" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:0,max:5}" >
+                                <label for="0_5">Moins de 5m²</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_volume" id="5_10" ng-model="recherche.volume" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:5,max:10}">
+                                <label for="5_10">Entre 5m² et 10m²</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_volume" id="10_20" ng-model="recherche.volume" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:10,max:20}">
+                                <label for="10_20">Entre 10m² et 20m²</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_volume" id="20_35" ng-model="recherche.volume" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:20,max:35}">
+                                <label for="20_35">Entre 20m² et 35m²</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_volume" id="50_80" ng-model="recherche.volume" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:50,max:80}">
+                                <label for="50_80">Entre 50m² et 80m²</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_volume" id="80more" ng-model="recherche.volume" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:80,max:false}">
+                                <label for="80more">Plus de 80m²</label>
+                            </div>
+                        </div>
+                        <!-- HAUTEUR DU VEHICULE FILTRE -->
+                        <div class="col-sm-6 col-md-12 filtre_item hauteur">
+                            <h3>Hauteur du vehicule</h3>
+                            <div class="row">
+                                <input type="radio" name="annonce_hauteur" id="240under" ng-model="recherche.hauteur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:0,max:240}">
+                                <label for="240under">Moins de 2m40</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_hauteur" id="240" ng-model="recherche.hauteur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:false,max:240}">
+                                <label for="240">2m40</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_hauteur" id="270" ng-model="recherche.hauteur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:false,max:270}">
+                                <label for="270">2m70</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_hauteur" id="320" ng-model="recherche.hauteur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:false,max:320}">
+                                <label for="320">3m20</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_hauteur" id="380" ng-model="recherche.hauteur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:false,max:380}">
+                                <label for="380">3m80</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_hauteur" id="380more" ng-model="recherche.hauteur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:380,max:false}">
+                                <label for="380more">Plus de 3m80</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-12 filtre_item category">
+                            <h3>Largeur du vehicule</h3>
+                            <div class="row">
+                                <input type="radio" name="annonce_largeur" id="190under" ng-model="recherche.largeur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:0,max:190}">
+                                <label for="190under">Moins de 1m90</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_largeur" id="1m90" ng-model="recherche.largeur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:false,max:190}">
+                                <label for="190">1m90</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_largeur" id="220" ng-model="recherche.largeur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:false,max:220}">
+                                <label for="220">2m20</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_largeur" id="230" ng-model="recherche.largeur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:false,max:230}">
+                                <label for="230">2m30</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_largeur" id="250" ng-model="recherche.largeur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:false,max:250}">
+                                <label for="250">2m50</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_largeur" id="2m70" ng-model="recherche.largeur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:false,max:270}">
+                                <label for="2m70">2m70</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_largeur" id="270more" ng-model="recherche.largeur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:270,max:false}">
+                                <label for="270more">Plus de 2m70</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-12 filtre_item category">
+                            <h3>Longueur du vehicule</h3>
+                            <div class="row">
+                                <input type="radio" name="annonce_longueur" id="590under" ng-model="recherche.longueur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:0,max:590}">
+                                <label for="590under">Moins de 5m90</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_longueur" id="590" ng-model="recherche.longueur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:false,max:590}">
+                                <label for="590">5m90</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_longueur" id="700" ng-model="recherche.longueur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:false,max:700}">
+                                <label for="700">7m00</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_longueur" id="800" ng-model="recherche.longueur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:false,max:800}">
+                                <label for="800">8m00</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_longueur" id="1000" ng-model="recherche.longueur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:false,max:1000}">
+                                <label for="1000">10m00</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_longueur" id="1850" ng-model="recherche.longueur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:false,max:1850}">
+                                <label for="1850">18m50</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_longueur" id="1850more" ng-model="recherche.longueur" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:1850,max:false}">
+                                <label for="1850more">Plus de 18m50</label>
+                            </div>
+                        </div>
+ {#                        <div class="col-sm-6 col-md-12 filtre_item prix">
+                            <h3>Budget approximatif</h3>
+                            <div>
+                                <input id="faible" name="prix" type="radio" ng-model="recherche.budget" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:20,max:300}">
+                                <label for="faible">
+                                    <i class="fa fa-eur"></i> 20 - 300 euros
+                                </label>
+                            </div>
+                            <div>
+                                <input id="moyen" name="prix" type="radio" ng-model="recherche.budget" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:300,max:800}">
+                                <label for="moyen">
+                                    <i class="fa fa-eur"></i>
+                                    <i class="fa fa-eur"></i> 300 - 800 euros
+                                </label>
+                            </div>
+                            <div>
+                                <input id="eleve" name="prix" type="radio" ng-model="recherche.budget" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:800,max:1500}">
+                                <label for="eleve">
+                                    <i class="fa fa-eur"></i>
+                                    <i class="fa fa-eur"></i>800 - 1500 euros
+                                </label>
+                            </div>
+                            <div>
+                                <input id="eleve+" name="prix" type="radio" ng-model="recherche.budget" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:1500,max:2000}">
+                                <label for="eleve+">
+                                    <i class="fa fa-eur"></i>
+                                    <i class="fa fa-eur"></i>
+                                    <i class="fa fa-eur"></i> 1500 - 5000 euros</label>
+                            </div>
+                            <div>
+                                <input id="eleve++" name="prix" type="radio" ng-model="recherche.budget" ng-click="uncheck($event)" ng-change="loadRecherche()" value="{min:5000,max:false}">
+                                <label for="eleve++">
+                                    <i class="fa fa-eur"></i>
+                                    <i class="fa fa-eur"></i>
+                                    <i class="fa fa-eur"></i> 5000 et plus</label>
+                            </div>
+                        </div> #}
+                        <div class="col-sm-6 col-md-12 filtre_item note">
+                            <h3>Note de l'annonceur</h3>
+                            <div>
+                                <input id="star4" name="note" type="radio" ng-model="recherche.note" value="4" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="star4">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i> Exceptionnel
+                                </label>
+                            </div>
+                            <div>
+                                <input id="star3" name="note" type="radio" ng-model="recherche.note" value="3" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="star3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i> Super
+                                </label>
+                            </div>
+                            <div>
+                                <input id="star2" name="note" type="radio" ng-model="recherche.note" value="2" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="star2">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i> Bien
+                                </label>
+                            </div>
+                            <div>
+                                <input id="star1" name="note" type="radio" ng-model="recherche.note" value="1" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="star1">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i> A éviter
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- FIN SIDEBAR  -------------- -->
+            <!-- FIN SIDEBAR  -------------- -->
+            <div class="annonces_container col-md-8 ">
+                <!-- Systeme de TRI  -->
+                <!-- Systeme de TRI  -->
+
+                
+
+                <div class="tri_container row">
+                    <div class="info col-sm-4">
+                        <div>{[{ totalItems }]} Transporteur(s) trouvé(s)</div>
+                        <div>dans votre zone</div>
+                    </div>
+                    <div class="tri col-sm-8">
+                        <div class="trier-par">Trier par :</div>
+                        <div class="tri_choix">
+                            <input id="heuredecroissant" value="DESC" name="triHeure" type="radio" ng-model="recherche._tri.heure" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label class="decroiss" for="heuredecroissant"><i class="fa fa-clock-o"></i><i class="fa fa-long-arrow-down"></i></label>
+                        </div>
+                        <div class="tri_choix">
+                            <input id="heurecroissant" value="ASC" name="triHeure" type="radio" ng-model="recherche._tri.heure"  ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label class="croiss" for="heurecroissant"><i class="fa fa-clock-o"></i><i class="fa fa-long-arrow-up"></i></label>
+                        </div>
+                        <div class="tri_choix">
+                            <input id="prixdecroissant" value="DESC" name="triPrix" type="radio" ng-model="recherche._tri.prix" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label class="decroiss" for="prixdecroissant"><i class="fa fa-eur"></i><i class="fa fa-long-arrow-down"></i>
+                            </label>
+                        </div>
+                        <div class="tri_choix">
+                            <input id="prixcroissant" value="ASC" name="triPrix" type="radio" ng-model="recherche._tri.prix" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label class="croiss" for="prixcroissant"><i class="fa fa-eur"></i><i class="fa fa-long-arrow-up"></i></label>
+                        </div>
+                    </div>
+                </div>
+                <!-- FIN Systeme de TRI  -->
+                <!-- FIN Systeme de TRI  -->
+
+                <!-- BOUCLE a faire a l'interieur de la div annonces -->
+                <div class="row" ng-if="recherche.enCours==true">
+                    <div class="col-md-6 col-md-offset-3">
+                        <h2>Recherche en cours</h2>
+                    </div>
+                </div>
+
+
+                <div class="row" ng-if="recherche.enCours==false && totalItems==0">
+                    <div class="col-md-6 col-md-offset-3">
+                        <h2>Aucuns résultats</h2>
+                    </div>
+                </div>
+
+
+                <div class="row" ng-if="recherche.enCours==false && recherche._erreur > 0 ">
+                    <div class="col-md-6 col-md-offset-3">
+                        <h2>Oupss ! Erreur {[{ recherche._erreur }]}</h2>
+                        <br />
+                        <p><a href="{{ path('app_contact') }}">Contacter l'administrateur</a>
+                    </div>
+                </div>
+
+
+
+                <div class="annonces" ng-repeat="demenagement in annonces" ng-if="recherche.enCours==false">
+                    <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                    <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                    <a ng-href="{[{ demenagement.Url }]}">
+                        <article class="row" ng-click="go(demenagement)">
+                            <div class="bloc_photo col-sm-4">
+                                <div class="photo_annonce" style="background: #fff url({[{ demenagement.Annonce.Auteur.Profile.Photo.Src }]}) center center no-repeat;
+                            background-size:cover"></div>
+                                <div class="name">
+                                    <h4>{[{ demenagement.Annonce.Auteur.Nom }]} {[{ demenagement.Annonce.Auteur.Prenom }]}</h4>
+                                    <p>{[{ demenagement.Annonce.Auteur.Age }]} ans</p>
+                                    <p ng-hide="!demenagement.Transporteur">
+                                        <i ng-class="x<demenagement.Annonce.Auteur.Note ? 'fa fa-star' : 'fa fa-star-o'" ng-repeat="x in [0,1,2,3]"></i>
+                                    </p>
+                                    <p ng-if="demenagement.Annonce.Auteur.Profile.Vehicule" ng-hide="!demenagement.Transporteur">{[{ demenagement.Annonce.Auteur.Profile.Vehicule.Modele }]} {[{ demenagement.Annonce.Auteur.Profile.Vehicule.Marque }]}</p>
+                                </div>
+                                <a class="profil_link" href="/user/profile/get/{[{ demenagement.Annonce.Auteur.Id }]} ">Voir le profil complet</a>
+                            </div>
+
+
+                            <div class="bloc_info col-sm-8" ng-if="!demenagement.Transporteur">
+                                <div class="trajet_bloc col-xs-7">
+                                    <div class="date">{[{ demenagement.JoursUnique*1000 | date:"EEE d MMM"}]} à {[{ demenagement.HeureUnique*1000 | date:"HH:mm"}]}</div>
+
+                                    <div class="trajet">{[{ demenagement.Depart.Ville.Nom }]} <i class="fa fa-long-arrow-right"></i> {[{ demenagement.Arrivee.Ville.Nom }]}</div>
+                                    <div class="info_trajet">RDV {[{ demenagement.RendezVous.Adresse }]}</div>
+                                    <div class="category"><i class="fa fa-truck"></i> Demenagement</div>
+                                </div>
+                                <div class="prix_bloc col-xs-5">
+                                    <div class="prix"><span style="font-size:1.8em;">{[{ demenagement.BudgetApproximatif }]}€</span></div>
+                                    <br />
+                                    <span class="label label-success">Recherche un transporteur</span>
+                                </div>
+                            </div>
+
+
+                            <div class="bloc_info col-sm-8" ng-if="demenagement.Transporteur">
+                                <div class="trajet_bloc col-xs-9">
+                                    <span>Horraire {[{ demenagement.Flexibilite }]}</span>
+                                    <div class="date">{[{ demenagement.NameAller }]} entre {[{ demenagement.HeureAller*1000 | date:"HH:mm"}]} et {[{ demenagement.HeureRetour*1000 | date:"HH:mm"}]}</div>
+
+                                    <div class="trajet">{[{ demenagement.Lieu.Ville.Nom }]}</div>
+                                    <div class="info_trajet">{[{ demenagement.Lieu.Adresse }]}</div>
+                                    <div class="category"><i class="fa fa-truck"></i> Demenagement</div>
+                                </div>
+                                <div class="prix_bloc col-xs-3">
+                                    <span class="label label-info">Je suis un transporteur</span>
+{#                                     <div class="prix"><span>{[{ demenagement.tarif }]}€</span> par place</div>
+                                    <div class="place_restantes"><span>{[{ demenagement.PlacesRestantes }]}/{[{ demenagement.Annonce.NbPlaces }]}</span> places restantes</div>
+ #}                                </div>
+                            </div>
+
+
+                        </article>
+                    </a>
+                    <!-- FIN BLOC D'UNE ANNONCE UNIQUE -->
+                    <!-- FIN BLOC D'UNE ANNONCE UNIQUE -->
+                </div>
+                <!-- Systeme de pagination -->
+                <!-- Systeme de pagination -->
+                <div class="bottom_annonces row" ng-if="totalItems > 0">
+                    <div class="info col-md-4 col-xs-12 ">{[{ getMinPage() }]} à {[{ getMaxPage() }]} sur {[{ totalItems }]} résultats</div>
+                    <div class="pagination col-xs-12 col-md-8">
+                        <ul uib-pagination boundary-links="true"
+                            class="pagination-sm" 
+                            ng-model="$parent.currentPage" ng-change="pageChanged()"
+                            total-items="totalItems" items-per-page="maxSize"
+                            max-size="5" force-ellipses="true"></ul>
+                    </div>
+                </div>
+                <!-- Fin Systeme de pagination -->
+                <!-- Fin Systeme de pagination -->
+            </div>
+        </div>
+    </main>
+    <!-- FIN CONTENT -->
+{% endblock %}

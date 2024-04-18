@@ -1,0 +1,70 @@
+# To get started with security, check out the documentation:
+# http://symfony.com/doc/current/security.html
+security:
+
+    encoders:
+        FOS\UserBundle\Model\UserInterface: bcrypt
+
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+
+    # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+    providers:
+        chain_provider:
+            chain:
+                providers: [fos_userbundle]
+        fos_userbundle:
+            id: fos_user.user_provider.username_email
+        in_memory:
+            memory: ~
+
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        secured_area:
+            pattern: ^/
+            form_login:
+                provider: fos_userbundle
+                login_path: fos_user_security_login
+                check_path: fos_user_security_check
+                always_use_default_target_path: false
+                default_target_path: homepage
+                use_referer : true
+            oauth:
+                resource_owners:
+                    facebook:           "/login/check-facebook"
+                    google:             "/login/check-google"
+                login_path:        /login
+                failure_path:      /login
+                check_path:        /login_check
+
+                oauth_user_provider:
+                    service: hwi_oauth.user.provider.fosub_bridge
+                    
+            logout:
+                path:       fos_user_security_logout
+                target:     /
+            remember_me:
+                key:            %secret%
+            anonymous:          true
+            logout:             true
+
+
+
+    access_control:
+        - { path: ^/secured/.*, role: [IS_AUTHENTICATED_FULLY] }
+        - { path: ^/facebook/,  role: ROLE_FACEBOOK}
+        - { path: ^/admin, role: ROLE_ADMIN}
+        - { path: ^/api/admin, role: ROLE_ADMIN}
+        - { path: ^/_console, role: ROLE_ADMIN}
+        - { path: ^/(login$|login_check$|register|resetting|reservation$|paiement), role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/annonce$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/annonce/(taxi$|vtc$|covoiturage$|demenagement$|ajout$), role: ROLE_USER }
+        - { path: ^/annonce/(taxi|vtc|covoiturage|demenagement)/[1-9]*/(reservation$|paiement$|devis$|modifier$), role: ROLE_USER }
+        - { path: ^/(user$|message$|messages$|profile$), role: ROLE_USER }
+        - { path: ^/user/.*, role: ROLE_USER }

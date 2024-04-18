@@ -1,0 +1,205 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Annonce de Covoiturage{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/covoiturageCtrl.js') }}"></script>
+
+<script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+<script type="text/javascript" src="//assets.pinterest.com/js/pinit.js"></script>
+<script type="text/javascript" src="https://platform.tumblr.com/v1/share.js"></script>
+
+{% endblock %}
+
+{% set currentPath = path(app.request.attributes.get('_route'),
+        app.request.attributes.get('_route_params')) %}
+
+
+{% block body %}
+<!-- CONTENT -->
+    <main ng-controller="covoiturageAnnonceCtrl" ng-init="getAnnonce('{{ covoiturage.id }}')">
+        <div class="template_annonce_container col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6">
+            <div class="info_principale">
+
+                <div class="socialShare">
+                    <div class="fb-share-button" data-href="{{ currentPath }}" data-layout="button_count" data-size="small" data-mobile-iframe="true"></div>
+
+                    <a twitter  data-lang="en" data-count='horizontal' data-url='{{ currentPath }}' data-via='notsosleepy' data-size="medium" data-text='Formidrive - Covoiturage' ></a>
+
+                    <div gplus class="g-plus" data-size="tall" data-annotation="bubble" data-href='{{ currentPath }}' data-action='share'></div>
+                </div>
+
+                <h1>Covoiturage {{ covoiturage.regulier ? "régulier" : "unique" }}</h1>
+                <h2 class="place">De {{ covoiturage.depart.ville.nom }} à {{ covoiturage.arrivee.ville.nom }}</h2>
+                <div class="row info">
+                    <div class="col-sm-3"><i class="fa fa-calendar"></i> <span>Date :</span></div>
+                    {% if not covoiturage.regulier %}
+                    <div class="col-sm-9 date">{{ covoiturage.dateUnique|date("d/m/Y") }} à {{ covoiturage.heureUnique|date('h:i') }}</div>
+                    {% else %}
+                    <div class="col-sm-9 date">{{ covoiturage.genNameDate()|join(", ") }} à {{ covoiturage.heureAller|date('h:i') }}</div>
+                    {% endif %}
+                </div>
+
+               <div class="row info">
+                    <div class="col-sm-3 "><i class="fa fa-eur"></i> <span>Prix :</span></div>
+                    <div class="col-sm-9 prix">{{ covoiturage.cout }} €</div>
+                </div>
+                <div class="row info">
+                    <div class="col-sm-3"><i class="fa fa-map-marker"></i> <span>Départ :</span></div>
+                    <div class="col-sm-9 to">{{ covoiturage.rendezVous.adresse }}</div>
+                </div>
+                <div class="row info">
+                    <div class="col-sm-3"><i class="fa fa-arrow-right"></i> <span>Arrivée :</span></div>
+                    <div class="col-sm-9 from">{{ covoiturage.depot.adresse }}</div>
+                </div>
+
+                {% if covoiturage.repondSous %}
+                <div class="row info">
+                    <div class="col-sm-3"><i class="fa fa-plus"></i><span>Je part à :</span></div>
+                    <div class="col-sm-9 to">{{ covoiturage.repondSous }}</div>
+                </div>
+                {% endif %}
+
+
+                <div class="row info details">
+                    <div class="col-sm-3"><i class="fa fa-plus"></i><span>Détails :</span></div>
+                    <div class="list_detail col-sm-9">
+
+                        {% if covoiturage.role %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            {{ covoiturage.role }}
+                        </div>
+                        {% endif %}
+
+                        {% if covoiturage.autoroute %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            Je prend l'autoroute
+                        </div>
+                        {% else %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            Je ne prend pas l'autoroute
+                        </div>
+                        {% endif %}
+
+
+                        {% if covoiturage.bagages %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            {{ covoiturage.bagages|join(', ') }}
+                        </div>
+                        {% endif %}
+
+
+                        {% if covoiturage.preferences %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            {{ covoiturage.preferences|join(', ') }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                
+                <div class="info_complementaire row">
+                <h2>Infos complémentaires de l'annonceur</h2>
+                {% if covoiturage.infosdivers %}
+                <div class="bloc_info col-xs-12">
+                   {{ covoiturage.infosdivers }}
+                </div>
+                {% endif %}
+                
+                </div>
+
+            </div>
+            <div class="info_annonceur row">
+                <h2><a href="{{ path('profile_get',{'id':covoiturage.annonce.auteur.id}) }}">{{ covoiturage.annonce.auteur.nom }} {{ covoiturage.annonce.auteur.prenom }}</a></h2>
+                <div class="col-xs-12 col-sm-3 col-md-2 bloc_photo">
+                    <div style='background: url("{{ covoiturage.annonce.auteur.profile.photo.src }}") center center no-repeat; background-size:cover;' class="photo"></div>
+                </div>
+                <div class="col-xs-12 col-sm-9 col-md-10">
+                    <div class="main_info col-sm-8">
+                        <p class="info age"><i class="fa fa-male"></i> {{ covoiturage.annonce.auteur.getAge() }} ans</p>
+                        {% if covoiturage.annonce.auteur.profile.ville %}
+                        <p class="info"><i class="fa fa-map-marker"></i> {{ covoiturage.annonce.auteur.profile.ville.nom }} - {{ covoiturage.annonce.auteur.profile.ville.departement.nom }}</p>
+                        {% endif %}
+
+                        <label class="info" for="star"><i class="fa fa-thumbs-up"></i> Note
+                            <i class="fa" ng-class="{'fa-star':annonce.Annonce.Auteur.Note >= 1, 'fa-star-o':annonce.Annonce.Auteur.Note < 1}"></i>
+                            <i class="fa" ng-class="{'fa-star':annonce.Annonce.Auteur.Note >= 2, 'fa-star-o':annonce.Annonce.Auteur.Note < 2}"></i>
+                            <i class="fa" ng-class="{'fa-star':annonce.Annonce.Auteur.Note >= 3, 'fa-star-o':annonce.Annonce.Auteur.Note < 3}"></i>
+                            <i class="fa" ng-class="{'fa-star':annonce.Annonce.Auteur.Note >= 4, 'fa-star-o':annonce.Annonce.Auteur.Note < 4}"></i>
+                        </label>
+
+
+                        {% if covoiturage.annonce.auteur.verifie %}
+                        <p class="info"><i class="fa fa-address-card"></i><span class="label label-info">Profile vérifié</span></p>
+                        {% else %}
+                        <p class="info"><i class="fa fa-address-card"></i><span class="label label-warning">Profile non vérifié</span></p>
+                        {% endif %}
+
+
+                        {% if covoiturage.annonce.auteur.profile.vehicule %}
+                        <p class="info"><i class="fa fa-car"></i> Model : {{ covoiturage.annonce.auteur.profile.vehicule.marque }}</p>
+                        <p class="info"><i class="fa fa-car"></i> Marque : {{ covoiturage.annonce.auteur.profile.vehicule.modele }}</p>
+                        <p class="info"><i class="fa fa-road"></i> {{ covoiturage.annonce.auteur.profile.vehicule.kilometrage }} km | {{ covoiturage.annonce.auteur.profile.vehicule.places }} places</p>
+                        {% endif %}
+
+
+                        <p class="info"><i class="fa fa-car"></i> Annonces publiées : {{ covoiturage.annonce.auteur.annonces|length }}</p>
+                        <p class="info"><i class="fa fa-car"></i> Dernière connexion : {{ covoiturage.annonce.auteur.lastLogin|localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EE dd LLL") }}</p>
+                        <p class="info"><i class="fa fa-car"></i> Date d'insription : {{ covoiturage.annonce.auteur.createdAt|localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EE dd LLL") }}</p>
+
+
+                    </div>
+                    <div class="main_info col-sm-4">
+{#                         <p class="info"><i class="fa fa-envelope"></i> williamthomas2@gmail.com</p>
+                        <p class="info"><i class="fa fa-phone"></i> 06 74 89 57 41</p>
+                        <p class="info"><i class="fa fa-map"></i> 8 Rue Jeanne d'Arc</p>-->
+ #}                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="message_container row">
+                <h2>Discutez avec l'annonceur</h2>
+                <!-- POST REPONSE ANNONCEUR -->
+                <div class="commentaire col-xs-12 col-sm-9" 
+                    ng-repeat="message in messages"
+                    ng-class="{'annonceur_post':message.Sender.Id == user.Id, 'question_post':message.Sender.Id != user.Id}">
+                    <a href="profil.html"><p class=" title">{[{ message.Sender.Prenom }]} {[{ message.Sender.Nom }]}</p></a>
+                    <p class="date">{[{ message.CreatedAt.date }]}</p>
+                    <div class="content">
+                        {[{ message.Body }]}
+                    </div>
+                    <div class="arrow"></div>
+                    <a class="remove_comment" href="#" ng-click="removeMessage(message.Id)"><i class="fa fa-times" aria-hidden="true"></i></a>
+                </div>
+                <!-- POST REPONSE ANNONCEUR -->
+                
+            </div>
+            <!-- Commentaire du profil -->
+        <div class="comment_container row">
+            <form>
+                <h3>Posez une question à <a href="">{{ covoiturage.annonce.auteur.prenom }}</a></h3>
+                <input type="hidden" ng-model="message.thread" />
+                <textarea class="col-xs-12" name="commentaire" id="commentaire" cols="30" rows="5" placeholder="Votre message ici" ng-model="message.text"></textarea>
+                <input class="envoyer" type="submit" name="envoyer" value="Envoyer" ng-click="sendMessage()">    
+            </form>
+        </div>
+        <!-- FIN Commentaire du profil -->
+
+
+        </div>
+        <div class="pas_membre_container deja_membre reserve col-xs-12 col-sm-3 col-md-2" ng-hide="user.Id==annonce.Auteur.Id">
+            <p>Déjà inscrit</p>
+            <a href="{{ path('annonce_covoiturage_reservation', {'id':covoiturage.id}) }}">Réserver</a>
+        </div>
+    </main>
+    <!-- FIN CONTENT -->
+{% endblock %}

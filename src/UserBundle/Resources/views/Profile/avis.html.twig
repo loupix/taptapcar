@@ -1,0 +1,48 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Mes avis{% endblock %}
+
+{% block body %}
+    <!-- CONTENT -->
+    <!-- Contenu profil -->
+    <div class="profil_container col-xs-12 col-md-offset-2 col-md-8">
+        
+        {% include 'UserBundle:Profile:menu_profile.html.twig' %}
+        
+        <!-- AVIS profil -->
+         <div class="avis_profil" ng-controller="profileAvisCtrl" ng-init="getAll('{{ user.id }}')">
+                <h1>Les avis laissés à {{ user.prenom }}</h1>
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <article class="row" ng-repeat="avi in avis">
+                    <a href=""><h3>Par <span>{[{ avi.Auteur.Prenom }]} {[{ avi.Auteur.Nom }]}</span></h3></a>
+                    <p class="date">{[{ avi.CreatedAt * 1000 | date:'EEE d MMM  H:m' }]}</p>
+                    <p class="note">Note :
+                        <i ng-class="x<avi.Note ? 'fa fa-star' : 'fa fa-star-o'" ng-repeat="x in [1,2,3,4]"></i>
+                    </p>
+                    <p class="avis_content">{[{ avi.Message }]}</p>
+                </article>
+        </div>
+        <!-- Commentaire du profil -->
+{#         <div class="comment_container row">
+            {{ form_start(form) }}
+                <h3>Laissez un avis ou poser une question à {{ user.prenom }} {{ user.nom }}</h3>
+                
+                <p class="note-submit">
+                    {%for i in form.note|length %}
+                    <input class="star star-{{ i }}" id="star-{{ i }}" type="radio" name="star" ng-model="note" ng-value="{{ i }}" />
+                    <label class="star star-{{ i }}" for="star-{{ i }}"></label>
+                    {% endfor %}
+                </p>
+
+                {{ form_errors(form.message) }}
+                {{ form_widget(form.message, {'attr':{'class':'col-xs-12', 'ng-model':'message'}})}}
+                <input type="hidden" name="userId" ng-model="userId" value="{{ user.id }}" />
+                <input class="envoyer" type="submit" name="envoyer" value="Envoyer">
+            {{ form_end(form) }}
+        </div> #}
+        <!-- FIN Commentaire du profil -->
+    </div>
+    <!-- FIN AVIS -->
+    <!-- FIN CONTENT -->
+{% endblock %}

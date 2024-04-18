@@ -1,0 +1,16 @@
+
+        <!-- Menu_profil -->
+        <ul class="row">
+            <li class="profil_menu_item col-md-2 col-sm-2 {% if app.request.get('_route') == 'profile_accueil' %}is-selected{% endif %}"><a href="{{ path('profile_accueil') }}">Profil</a></li>
+            
+            <li class="profil_menu_item col-md-2 col-sm-2 {% if app.request.get('_route') == 'profile_annonces' %}is-selected{% endif %}"><a href="{{ path('profile_annonces') }}">Annonces</a></li>
+
+            <li class="profil_menu_item col-md-2 col-sm-2 {% if app.request.get('_route') == 'profile_reservations' %}is-selected{% endif %}"><a href="{{ path('profile_reservations') }}">Réservations</a></li>
+
+            <li class="profil_menu_item col-md-2 col-sm-2 {% if app.request.get('_route') == 'profile_avis' %}is-selected{% endif %}"><a href="{{ path('profile_avis') }}">Avis</a></li>
+            
+            <li class="profil_menu_item col-md-2 col-sm-2 {% if app.request.get('_route') == 'profile_notifications' %}is-selected{% endif %}"><a href="{{ path('profile_notifications') }}">Notifications</a></li>
+
+            <li class="profil_menu_item col-md-2 col-sm-2 {% if app.request.get('_route') == 'profile_paiements' %}is-selected{% endif %}"><a href="{{ path('profile_paiements') }}">Paiements</a></li>
+        </ul>
+        <!-- FIN Menu_profil -->

@@ -1,0 +1,44 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Mes notifications{% endblock %}
+
+{% block body %}
+	<!-- CONTENT -->
+
+	<div class="profil_container col-xs-12 col-md-offset-2 col-md-8">
+        
+        {% include 'UserBundle:Profile:menu_profile.html.twig' %}
+        
+        <!-- AVIS profil -->
+        <div class="modification_container col-xs-12 inscription_form modal_connexion_container">
+        	{% for notif in notifications %}
+        		{% if not notif.lue %}
+        		<article class="row alert alert-info">
+        		{% else %}
+        		<article class="row alert alert-default">
+        		{% endif %}
+        			<div class="col-sm-2 col-xs-6 trajet">
+        				{{ notif.createdAt | localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EE dd LLL") }}
+        			</div>
+        			<div class="col-sm-6 col-xs-18 trajet">
+        				{{ notif.texte }}
+
+
+        				{% if notif.type=="annonce" %}
+        				<a href="{{path('annonce_annonce_get', {'annonceId':notif.annonce.id}) }}" class="alert-link">Voir l'annonce</a>
+                        {% elseif notif.type=="reservation" %}
+                        <a href="{{path('user_reservation_getreservation', {'reservationId':notif.reservation.id}) }}" class="alert-link">Voir la réservation</a>
+                        {% elseif notif.type=="devis" %}
+                        <a href="{{path('user_reservation_getdevis', {'devisId':notif.devis.id}) }}" class="alert-link">Voir le devis</a>
+                        {% endif %}
+        			</div>
+{#         			<div class="col-sm-4 col-xs-12 trajet">
+        				<button type="button" class="btn btn-default">Effacer</button>
+        			</div>
+ #}        		</article>
+        	{% endfor %}
+        </div>
+
+    </div>
+
+{% endblock %}

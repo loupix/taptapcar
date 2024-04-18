@@ -1,0 +1,146 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Mes annonces{% endblock %}
+
+{% block body %}
+    <!-- CONTENT -->
+    <div class="profil_container col-xs-12 col-md-offset-2 col-md-8">
+        
+        {% include 'UserBundle:Profile:menu_profile.html.twig' %}
+
+        <div class="annonces annonces_profil mes_annonces">
+            <h2>Mes annonces en cours</h2>
+            <!-- BLOC D'UNE ANNONCE UNIQUE -->
+            <!-- BLOC D'UNE ANNONCE UNIQUE -->
+            {% for annonce in annonces %}
+            {% if annonce.taxi %}
+            <a class="lien_article row" href="{{ path('annonce_annonce_get', {'annonceId':annonce.id})}}">
+                <div class="row bloc_annonce col-sm-12">
+                    <div class="trajet row">
+                        <div class="from col-sm-4">Taxi</div>
+                        <div class="col-sm-3">{{ annonce.taxi.ville.nom }}</div>
+                    </div>
+                    <div class="info row">
+                        <div class="date col-sm-4">Horraires : {{ annonce.taxi.heureDebut | date("H:i")}} à {{ annonce.taxi.heureFin | date("H:i")}}</div>
+                        <div class="prix col-sm-3">
+                            {% if annonce.taxi.typeTarif != "Au compteur" %}
+                            Tarif de jours : {{ annonce.taxi.tarifJour }}€ 
+                            <br />Tarif de nuit : {{ annonce.taxi.tarifNuit }}€
+                            <br />{{ annonce.taxi.typeTarif }}
+                            {% else %}
+                            Au compteur
+                            {% endif %}
+                        </div>
+                        <form action="{{ path('annonce_modifier',{'annonceId':annonce.id}) }}">
+                            <input data-toggle="modal" data-target="#confirm-submit" type="submit" class="modif col-sm-offset-1 col-sm-3" value="Modifier cette annonce">
+                        </form>
+                    </div>
+                </div>
+            </a>
+            {% elseif annonce.vtc %}
+            <a class="lien_article row" href="{{ path('annonce_annonce_get', {'annonceId':annonce.id})}}">
+                <div class="row bloc_annonce col-sm-12">
+                    <div class="trajet row">
+                        <div class="from col-sm-4">Vtc</div>
+                        <div class="col-sm-3">{{ annonce.vtc.ville.nom }}</div>
+                    </div>
+                    <div class="info row">
+                        <div class="date col-sm-4">Horraires : {{ annonce.vtc.heureDebut | date("H:i")}} à {{ annonce.vtc.heureFin | date("H:i")}}</div>
+                        <div class="prix col-sm-3">
+                            Tarif de jours : {{ annonce.vtc.tarifJour }}€
+                            <br />Tarif de nuit : {{ annonce.vtc.tarifNuit }}€
+                            <br />{{ annonce.vtc.typeTarif }}
+                        </div>
+                        <form action="{{ path('annonce_modifier',{'annonceId':annonce.id}) }}">
+                            <input data-toggle="modal" data-target="#confirm-submit" type="submit" class="modif col-sm-offset-1 col-sm-3" value="Modifier cette annonce">
+                        </form>
+                    </div>
+                </div>
+            </a>
+            {% elseif annonce.covoiturage %}
+            <a class="lien_article row" href="{{ path('annonce_annonce_get', {'annonceId':annonce.id})}}">
+                <div class="row bloc_annonce col-sm-12">
+                    <div class="trajet row">
+                        <div class="from col-sm-4">Covoiturage {% if annonce.covoiturage.regulier %}régulier{% else %}unique{% endif %}</div>
+                        <div class="col-sm-3">{{ annonce.covoiturage.depart.ville.nom }}</div>
+                    </div>
+                    <div class="info row">
+                        <div class="date col-sm-4">&nbsp;</div>
+                        <div class="prix col-sm-3">Prix : {{ annonce.covoiturage.cout }}€</div>
+                        <form action="{{ path('annonce_modifier',{'annonceId':annonce.id}) }}">
+                            <input data-toggle="modal" data-target="#confirm-submit" type="submit" class="modif col-sm-offset-1 col-sm-3" value="Modifier cette annonce">
+                        </form>
+                    </div>
+                </div>
+            </a>
+            {% elseif annonce.demenagement %}
+            <a class="lien_article row" href="{{ path('annonce_annonce_get', {'annonceId':annonce.id})}}">
+                <div class="row bloc_annonce col-sm-12">
+                    <div class="trajet row">
+                        <div class="from col-sm-4">{% if annonce.demenagement.transporteur %}Transporteur{% else %}Déménagement{% endif %}</div>
+                        {% if annonce.demenagement.transporteur %}
+                        <div class="col-sm-3">{{ annonce.demenagement.ville.nom }}</div>
+                        {% else %}
+                        <div class="col-sm-3">{{ annonce.demenagement.depart.ville.nom }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="info row">
+                        {% if annonce.demenagement.transporteur %}
+                        <div class="date col-sm-4">Horraires : {{ annonce.demenagement.heureAller | date("H:i")}} à {{ annonce.demenagement.heureRetour | date("H:i")}}</div>
+                        <div class="prix col-sm-3">Prix : {{ annonce.demenagement.tarif }}€ {{ annonce.demenagement.tarification }}</div>
+                        {% else %}
+                        <div class="date col-sm-4">Date : {{ annonce.demenagement.joursUnique | date("d/m/Y")}} à {{ annonce.demenagement.heureUnique | date("H:i")}}</div>
+                        <div class="prix col-sm-3">Prix : Sur devis</div>
+                        {% endif %}
+                        <form action="{{ path('annonce_modifier',{'annonceId':annonce.id}) }}">
+                            <input data-toggle="modal" data-target="#confirm-submit" type="submit" class="modif col-sm-offset-1 col-sm-3" value="Modifier cette annonce">
+                        </form>
+                    </div>
+                </div>
+            </a>
+
+            {% else %}
+            <a class="lien_article row" href="annonce.html">
+{#                 <div class="row bloc_annonce col-sm-12">
+                    <div class="trajet row">
+                        <div class="from col-sm-5">Non</div>
+                        <div class="col-sm-2"><i class="fa fa-long-arrow-right"></i></div>
+                        <div class="to col-sm-5">La Rochelle</div>
+                    </div>
+                    <div class="info row">
+                        <div class="date col-sm-5">Date : 05/09/2016</div>
+                        <div class="prix col-sm-2">Prix : 5€</div>
+                        <input type="submit" class="cancel col-sm-offset-1 col-sm-3" value="Supprimer cette annonce">
+                    </div>
+                </div> #}
+            </a>
+
+            {% endif %}
+
+            {% endfor %}
+            <!-- FIN BLOC D'UNE ANNONCE UNIQUE -->
+            <!-- FIN BLOC D'UNE ANNONCE UNIQUE -->
+
+            
+{#             <h2>Mes anciennes annonces</h2>
+            <!-- BLOC D'UNE ANNONCE UNIQUE -->
+            <!-- BLOC D'UNE ANNONCE UNIQUE -->
+            <a class="ancienne lien_article row" href="annonce.html">
+                <div class="row bloc_annonce col-sm-12">
+                    <div class="trajet row">
+                        <div class="from col-sm-5">Nice</div>
+                        <div class="col-sm-2"><i class="fa fa-long-arrow-right"></i></div>
+                        <div class="to col-sm-5">Paris</div>
+                    </div>
+                    <div class="info row">
+                        <div class="date col-sm-5">Date : 21/09/2016</div>
+                        <div class="prix col-sm-offset-2 col-sm-5">Prix : 56€</div>
+                    </div>
+                </div>
+            </a> #}
+            <!-- FIN BLOC D'UNE ANNONCE UNIQUE -->
+            <!-- FIN BLOC D'UNE ANNONCE UNIQUE -->
+        </div>
+    </div>
+    <!-- FIN CONTENT -->
+{% endblock %}

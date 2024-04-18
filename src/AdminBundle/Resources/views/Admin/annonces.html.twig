@@ -1,0 +1,56 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Admin - Les annonces{% endblock %}
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/adminCtrl.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+<!-- CONTENT -->
+    <div class="admin_container col-xs-12 col-md-offset-2 col-md-8" ng-controller="adminAnnoncesCtrl" ng-init="loadAnnonces()">
+        
+        {% include 'AdminBundle:Admin:header.html.twig' %}
+
+        <table class="table table-striped">
+            <thead>
+            	<th>
+            		<td>Type</td>
+            		<td>Auteur</td>
+            		<td>Creer</td>
+                    <td>Activer</td>
+                    <td>Supprimer</td>
+            	</th>
+            </thead>
+            <tbody>
+            	<tr ng-repeat="annonce in annonces">
+                    <td>{[{ annonde.Id }]}
+            		<td>{[{ annonce.Type }]}</td>
+            		<td>{[{ annonce.Auteur.Nom }]} {[{ annonce.Auteur.Prenom }]}</td>
+            		<td>{[{ annonce.CreatedAt*1000 | date:"EEE dd MMM"}]}</td>
+                    <td><div class="btn" ng-class="{'btn-warning':annonce.Actif, 'btn-info':!annonce.Actif}" ng-click="activeAnnonce(annonce.Id);">{[{ annonce.Actif ? 'Desactiver' : 'Activer' }]}</div></td>
+                    <td><div class="btn btn-danger" ng-click="delAnnonce(annonce.Id);">Supprimer</div></td>
+            	</tr>
+            </tbody>
+        </table>
+
+
+        <div class="bottom_annonces row" ng-if="totalItems > 0">
+            <div class="info col-md-4 col-xs-6">{[{ getMinPage() }]} à {[{ getMaxPage() }]} sur {[{ totalItems }]} résultats</div>
+            <div class="pagination col-md-8 col-xs-12">
+                <ul uib-pagination boundary-links="true"
+                    class="pagination-sm" 
+                    ng-model="$parent.currentPage" ng-change="pageChanged()"
+                    total-items="totalItems" items-per-page="maxSize"
+                    max-size="5" force-ellipses="true" ></ul>
+            </div>
+        </div>
+
+
+    </div>
+
+    
+
+{% endblock %}

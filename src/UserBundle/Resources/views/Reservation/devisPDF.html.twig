@@ -1,0 +1,141 @@
+<style type="text/css">
+    table { 
+        width: 100%; 
+        color: #717375; 
+        font-family: helvetica; 
+        line-height: 5mm; 
+        border-collapse: collapse; 
+    }
+    h2 { margin: 0; padding: 0; }
+    p { margin: 5px; }
+ 
+    .border th { 
+        border: 1px solid #000;  
+        color: white; 
+        background: #000; 
+        padding: 5px; 
+        font-weight: normal; 
+        font-size: 14px; 
+        text-align: center; 
+        }
+    .border td { 
+        border: 1px solid #CFD1D2; 
+        padding: 5px 10px; 
+        text-align: center; 
+    }
+    .no-border { 
+        border-right: 1px solid #CFD1D2; 
+        border-left: none; 
+        border-top: none; 
+        border-bottom: none;
+    }
+    .space { padding-top: 250px; }
+ 
+    .10p { width: 10%; } .15p { width: 15%; } 
+    .25p { width: 25%; } .50p { width: 50%; } 
+    .60p { width: 60%; } .75p { width: 75%; }
+</style>
+
+
+{% set annonce = devis.annonce %}
+{% set object = devis.annonce.getObject() %}
+{% set client = devis.auteur %}
+{% set auteur = devis.annonce.auteur %}
+
+
+<page backtop="10mm" backleft="10mm" backright="10mm" backbottom="10mm" footer="page;">
+ 
+    <page_footer>
+        <hr />
+        <p>Fait par Formidrive.com </p>
+    </page_footer>
+ 
+    <table style="vertical-align: top;">
+        <tr>
+            <td class="75p">
+                <strong>{{ auteur.nom }} {{ auteur.prenom }}</strong><br />
+                {% if auteur.profile.ville %}{{ auteur.profile.ville.nom }}<br />{% endif %}
+                {% if auteur.profile.telephone %}{{ auteur.profile.telephone }}<br />{% endif %}
+                {{ auteur.email }}
+            </td>
+            <td class="25p">
+                <strong>{{ client.nom }} {{ client.prenom }}</strong><br />
+                {% if client.profile.ville %}{{ client.profile.ville.nom }}<br />{% endif %}
+                {% if client.profile.telephone %}{{ client.profile.telephone }}<br />{% endif %}
+                {{ client.email }}
+            </td>
+        </tr>
+    </table>
+ 
+    <table style="margin-top: 50px;">
+        <tr>
+            <td class="10p" colspan="2"><h2>Devis N° {{ devis.numero }}</h2></td>
+        </tr>
+        <tr>
+            <td class="50p">Emis le {{ devis.createdAt | date("d/m/Y") }}</td>
+            <td style="text-align: right;" ><strong>Objectif:</strong> Devis de {{ annonce.getType() }}</td>
+        </tr>
+    </table>
+ 
+    <table style="margin-top: 30px;" class="border">
+        <thead>
+            <tr>
+                <th class="60p">Description</th>
+                <th class="10p">{{ devis.typeDevis }}</th>
+                <th class="15p">Prix Unitaire</th>
+                <th class="15p">Montant</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td class="15p">
+                    <b>Départ</b> <br />{{ object.depart.adresse }}<br /><br />
+                    <b>Arrivée</b> <br />{{ object.arrivee.adresse }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+
+            <tr>
+                <td class="15p">Paiement {{ devis.typeDevis }}</td>
+                
+                <td>
+                    {% if devis.typeDevis == "Par kilomètres" %}{{ devis.distance }}
+                    {% elseif devis.typeDevis == "Par heures" %}{{ devis.duree | date("h:i") }}
+                    {% elseif devis.typeDevis == "Par places" %}{{ devis.nbPlaces }}
+                    {% elseif devis.typeDevis == "Au compteur" %}Au compteur
+                    {% elseif devis.typeDevis == "Prix unique" %}1
+                    {% else %}0{% endif %}
+                </td>
+
+                <td>
+                    {% if devis.typeDevis == "Par kilomètres" %}{{ devis.prixUnitaire }} &euro;
+                    {% elseif devis.typeDevis == "Par heures" %}{{ devis.prixUnitaire }} &euro;
+                    {% elseif devis.typeDevis == "Par places" %}{{ devis.prixUnitaire }} &euro;
+                    {% elseif devis.typeDevis == "Au compteur" %}Au compteur
+                    {% elseif devis.typeDevis == "Prix unique" %}{{ devis.prixUnitaire }} &euro;
+                    {% else %}0 &euro;{% endif %}
+                </td>
+
+
+                <td>
+                    {{ devis.montant }}
+                </td>
+            </tr>
+
+
+            <tr>
+                <td colspan="2" class="no-border"></td>
+                <td style="text-align: center;" rowspan="3"><strong>Total:</strong></td>
+                <td>
+                    {{ devis.montant }}&euro;
+                </td>
+            </tr>
+ 
+
+        </tbody>
+    </table>
+ 
+</page>

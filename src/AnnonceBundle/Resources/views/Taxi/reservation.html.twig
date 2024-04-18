@@ -1,0 +1,236 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Reservation d'un taxi{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/taxiCtrl.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<!-- CONTENT -->
+<div class="inscription_form modal_connexion_container creer_annonce col-xs-12 col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8" ng-controller="taxiReservationCtrl" ng-init="getAnnonce({{ taxi.id }})">
+    <h1>Reservation</h1>
+    <p class="info_creation col-xs-12 col-sm-8 col-sm-offset-2">
+        Si tu as besoins d'informations pour savoir comment effectuer une reservation, regardes ce <a href="{{ path('app_ccm') }}">tutoriel</a>
+    </p>
+
+    <div class=" col-xs-12 reservation">  
+            <div class="bloc_info row">
+                <h1 style="margin-bottom:5px;font-size:1.5em;"><i class="fa fa-car" style="background-color:#34a0b2;float:left;"></i> <span style="line-height:20px;">{{ taxi.nom }}</span></h1>
+                <h2>Recapitulatif trajet</h2>
+                <div class="from col-sm-6">
+                    <p>Départ : <span>{{ taxi.ville.nom }}</span></p>
+{#                     <p>Lieu de rendez-vous : Gare de Metz</p>
+ #}                </div>
+{#                 <div class="to col-sm-6">
+                    <p>Arrivée : <span>Paris</span></p>
+                    <p>Lieu de dépot : Gare de Metz</p>
+                </div> #}
+                <div class="date_prix row">
+                    <div class="date col-sm-6">
+                        <p>Heure de départ : entre {{ taxi.heureDebut|date('H:i') }} et {{ taxi.heureFin|date('H:i') }}</p>
+                    </div>
+                    <div class="prix col-sm-6">
+                        {% if taxi.typeTarif != "Au compteur" %}
+                        <p>Prix : <span>{[{ reservation.prix }]}€  {{ taxi.typeTarif|default('Par place')|lower }}    </span></p>
+                        {% else %}
+                        <p>Prix au compteur</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                
+            </div>
+
+            <div class="bloc_info row">
+                <h2>Paiement</h2>
+                <form method="POST" action="{{ path('annonce_taxi_reservation', {'id':taxi.id}) }}">
+                    
+                    <div class="row">
+                        <label class="col-xs-12 col-sm-5 " for="reservation_nombre_place">Heure de départ</label>
+
+                        <div class="col-xs-12 col-sm-3">
+                        <input type="text" class="form-control datepickerSpec" id="datepickerSpec" name="reservation_dateDepart" placeholder="Date" ng-model="disponnibilite.dateDepart" ng-change="isDispo({{ taxi.id }})" required="true"/>
+
+                        </div>
+                        <div class="col-xs-12 col-sm-2" ng-init="isDispo({{ taxi.id }})">
+                            <input type="time" class="form-control" name="reservation_heureDepart" id="reservation_heureDepart" ng-model="disponnibilite.heureDepart" required="true"
+                            ng-change="isDispo({{ taxi.id }})" ng-value="{{ taxi.heureDebut|date('H:i') }}" />
+                        </div>
+{#                         <div class="col-xs-8 col-sm-6">
+                            <div class="text-warning" ng-if="disponnibilite.dispo==false">Non disponnible à cette heure</div>
+                            <div class="text-success" ng-if="disponnibilite.dispo==true">Disponnible à cette heure</div>
+                            <div class="text-danger" ng-if="disponnibilite._erreur != false">Erreur {[{disponnibilite._erreur}]} </div>
+                        </div>
+ #}                    </div>
+
+                    <div class="row">
+                        <label class="col-xs-12 col-sm-5 " for="reservation_depart">Lieu de rendez-vous</label>
+                        <div class="col-xs-12 col-sm-5">
+                            <input type="text" class="form-control" id="reservation_depart" name="depart[adresse]" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='place.depart' ng-change="loadPlace('depart')" required="true"/>
+                            <input type="hidden" name="depart[latitude]" id="depart_latitude" value="">
+                            <input type="hidden" name="depart[longitude]" id="depart_longitude" value="">
+                            <input type="hidden" name="depart[street_number]" id="depart_street_number" value="">
+                            <input type="hidden" name="depart[route]" id="depart_route" value="">
+                            <input type="hidden" name="depart[locality]" id="depart_locality"value="">
+                            <input type="hidden" name="depart[administrative_area_level_1]" id="depart_administrative_area_level_1" value="">
+                            <input type="hidden" name="depart[country]" id="depart_country" value="">
+                            <input type="hidden" name="depart[postal_code]" id="depart_postal_code" value="">
+                            <input type="hidden" name="depart[place_id]" id="depart_place_id" value="">
+                            <input type="hidden" name="depart[adresse]" id="depart_adresse" value="">
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <label class="col-xs-12 col-sm-5 " for="reservation_arrivee">Lieu d'arrivée</label>
+                        <div class="col-xs-12 col-sm-5">
+                            <input type="text" class="form-control" id="reservation_arrivee" name="arrivee[adresse]" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='place.arrivee' ng-change="loadPlace('arrivee')" required="true"/>
+                            <input type="hidden" name="arrivee[latitude]" id="arrivee_latitude" value="">
+                            <input type="hidden" name="arrivee[longitude]" id="arrivee_longitude" value="">
+                            <input type="hidden" name="arrivee[street_number]" id="arrivee_street_number" value="">
+                            <input type="hidden" name="arrivee[route]" id="arrivee_route" value="">
+                            <input type="hidden" name="arrivee[locality]" id="arrivee_locality"value="">
+                            <input type="hidden" name="arrivee[administrative_area_level_1]" id="arrivee_administrative_area_level_1" value="">
+                            <input type="hidden" name="arrivee[country]" id="arrivee_country" value="">
+                            <input type="hidden" name="arrivee[postal_code]" id="arrivee_postal_code" value="">
+                            <input type="hidden" name="arrivee[place_id]" id="arrivee_place_id" value="">
+                            <input type="hidden" name="arrivee[adresse]" id="arrivee_adresse" value="">
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <label class="col-xs-12 col-sm-5 " for="reservation_nombre_place">Nombres de places</label>
+                        <div class="col-xs-12 col-sm-5">
+                            <select class="form-control" name="reservation_nombre_place" id="reservation_nombre_place" ng-model="reservation.nbPlaces" required="true">
+                                {% for i in 1 .. taxi.nbPlaces %}
+                                <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    
+
+                <div class="col-xs-12 facture_container">
+                    {% if taxi.typeTarif=="Par kilomètres" %}
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Tarif par Km</div>
+                        <div class="col-sm-4 item">Distance</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-4 item">{[{ reservation.prix }]}€</div>
+                        <div class="col-sm-4 item">{[{ reservation.distance }]} Km</div>
+                        <div class="col-sm-4 item">{[{ getTotal() }]}€</div>
+                    </div>
+
+                    {% elseif taxi.typeTarif=="Par heures" %}
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Tarif par Heure</div>
+                        <div class="col-sm-4 item">Duree</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-4 item">{[{ reservation.prix }]}€</div>
+                        <div class="col-sm-4 item">{[{ reservation.dureeTxt }]}</div>
+                        <div class="col-sm-4 item">{[{ getTotal() }]}€</div>
+                    </div>
+
+                    {% elseif taxi.typeTarif=="Par places" %}
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Prix trajet</div>
+                        <div class="col-sm-4 item">Nombres de places</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-4 item">{[{ reservation.prix }]}€</div>
+                        <div class="col-sm-4 item">{[{ reservation.nbPlaces }]}</div>
+                        <div class="col-sm-4 item">{[{ getTotal() }]}€</div>
+                    </div>
+
+                    {% elseif taxi.typeTarif=="Prix unique" %}
+                    <div class="infos row">
+                        <div class="col-sm-6 item">Prix trajet</div>
+                        <div class="col-sm-6 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-6 item">{[{ reservation.prix }]}€</div>
+                        <div class="col-sm-6 item">{[{ getTotal() }]}€</div>
+                    </div>
+
+                    {% else %}
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Prix trajet</div>
+                        <div class="col-sm-4 item">Nombres de places</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="infos row">
+                        <div class="col-sm-4 item">{[{ reservation.prix }]}€</div>
+                        <div class="col-sm-4 item">{[{ reservation.nbPlaces }]}</div>
+                        <div class="col-sm-4 item">{[{ getTotal() }]}€</div>
+                    </div>
+                    {% endif %}
+                    <div class="total row">
+                        <div class="col-sm-offset-8 col-sm-4 item">{[{ getTotal() }]}€ TTC</div>
+                    </div>
+                    <input type="hidden" name="reservation_prix" value="{[{ reservation.prix }]}" />
+                    <input type="hidden" name="reservation_places" value="{[{ reservation.nbPlaces }]}" />
+                    <input type="hidden" name="reservation_distance" value="{[{ reservation.distance }]}" />
+                    <input type="hidden" name="reservation_duree" value="{[{ reservation.duree }]}" />
+                    <input type="hidden" name="reservation_typeCout" value="{{ taxi.typeTarif }}" />
+                    {% if taxi.typeTarif != "Au compteur" %}
+                    <input type="submit" name="reservation_confirmer_online" class="button_payer col-xs-12 col-sm-offset-8 col-sm-4" value="Paiement en ligne">
+                    {% endif %}
+                    <input type="submit" name="reservation_confirmer_surPlace" class="button_payer_surplace col-xs-12 col-sm-offset-8 col-sm-4" value="Paiement sur place">
+                </div>
+
+                </form>
+            </div> 
+
+    </div>       
+</div>
+<div class="pas_membre_container deja_membre annule-reservation col-xs-12 col-sm-3 col-md-2">
+        <p>Retour vers la page d'annonce</p>
+        <a id="annule-reservation-button" href="{{ path('annonce_taxi_get', {'id':taxi.id}) }}">Annuler la réservation</a>
+</div>
+<!-- FIN CONTENT -->
+{% endblock %}
+
+
+
+
+{% block javascripts %}
+{{ parent() }}
+
+    <script>
+        var array = [];
+        {% for i in 0..300 %}
+        array.push("{{ taxi.genDate(i)|date('d-m-y') }}");
+        {% endfor %}
+        $(document).ready(function(){
+            $(".datepickerSpec").datepicker({ 
+                dateFormat: 'dd-mm-yy',
+                beforeShowDay: function(date){
+                    var string = jQuery.datepicker.formatDate('dd-mm-yy', date);
+                    return [ array.indexOf(string) !== -1 ]
+                },
+                closeText: 'Fermer',
+                prevText: 'Précédent',
+                nextText: 'Suivant',
+                currentText: 'Aujourd\'hui',
+                monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+                monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
+                dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+                dayNamesShort: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
+                dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+                weekHeader: 'Sem.',
+            });
+            $(".datepickerSpec").datepicker("setDate", new Date());
+        });
+    </script>
+
+{% endblock %}

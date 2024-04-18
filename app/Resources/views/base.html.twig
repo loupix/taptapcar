@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<!-- HEADER -->
+<html xmlns:fb="http://www.facebook.com/2008/fbml" ng-app="taptapcar">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="author" content="Simon Bruneaud | SmartRpi.com">
+
+        <meta property="og:url" content="http://www.formidrive.com" />
+        <meta property="og:type" content="formidrive.com" />
+        <meta property="og:title" content="formidrive.com" />
+        <meta property="og:description" content="formidrive.com" />
+        <base href="/">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}
+        <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,400italic,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="{{ asset('bundles/application/font-awesome/css/font-awesome.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/bootstrap/dist/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/bootstrap/dist/css/bootstrap-theme.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/ui-bootstrap/src/datepicker/datepicker.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/angular-socialshare/angular-socialshare.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/application/css/style.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/application/css/style-responsive.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/application/css/autocomplete.css') }}">
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+
+
+        {% block angular %}
+        <script type="text/javascript" src="{{ asset('assets/vendor/lodash/dist/lodash.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular/angular.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-simple-logger/dist/angular-simple-logger.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-i18n/angular-locale_fr-fr.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-animate/angular-animate.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-resource/angular-resource.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-aria/angular-aria.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-messages/angular-messages.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-route/angular-route.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-touch/angular-touch.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-cookies/angular-cookies.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-socialshare/angular-socialshare.min.js') }}"></script>
+
+        <script type="text/javascript" src="{{ asset('assets/vendor/ng-file-upload/ng-file-upload-shim.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/ng-file-upload/ng-file-upload.min.js') }}"></script>
+
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-bootstrap/ui-bootstrap.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-bootstrap/ui-bootstrap-tpls.min.js') }}"></script>
+
+        <script type="text/javascript" src="{{ asset('assets/vendor/ui-bootstrap/src/datepicker/datepicker.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/ui-bootstrap/src/pagination/pagination.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/ui-bootstrap/src/dropdown/dropdown.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-ui-router/release/angular-ui-router.min.js') }}"></script>
+
+
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyBEBW_t3MvbLz1lGyaNL2lmdW3TDwR2Rm8&libraries=places"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-google-maps/dist/angular-google-maps.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/ngGeolocation/ngGeolocation.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/angular-google-distance/src/angular-google-distance.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/application/js/Angular/autocomplete.js') }}"></script>
+
+        <!-- PARSE -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/parse/1.9.2/parse.min.js"></script>
+
+        <!-- Internationalisation -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/i18n/angular-locale_fr-fr.js
+"></script>
+
+        <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+        <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
+
+        <script type="text/javascript" src="{{ asset('bundles/application/js/Services/userServices.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/application/js/Services/notificationServices.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/application/js/Services/messageServices.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/application/js/Services/annonceServices.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/application/js/Services/adminServices.js') }}"></script>
+
+
+        <script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/appConfig.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/userCtrl.js') }}"></script>
+
+
+
+        {% endblock %}
+    </head>
+
+    <body ng-app="taptapcar">
+        {% block header %}
+            <header>
+                <nav class="main_menu row">
+                    <ul class="col-sm-5 menu_base">
+                        <li><a href="{{ path('homepage') }}"><img class="logo_menu" src="{{ asset('bundles/application/images/logotransp.png') }}"></a></li>
+                        <li><a href="choix_annonce.html"></a>
+                            <ul class="sub_menu">
+                                <li><a href="{{ path('annonce_demenagement_ajout') }}">Déménagement</a></li>
+                                <li><a href="{{ path('annonce_taxi_ajout') }}">Taxi</a></li>
+                                <li><a href="{{ path('annonce_vtc_ajout') }}">VTC</a></li>
+                                <li><a href="{{ path('annonce_covoiturage_ajout') }}">Covoiturage</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="col-sm-7 menu_profil" ng-controller="userCtrl" ng-init="getNotifications()">
+                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                        <li><a href="{{ path('annonce_default_ajout') }}">Publier une annonce</a></li>
+                        <li><a href="{{ path('fos_user_security_logout') }}">Déconnexion</a></li>
+                        <li>
+                            <a href="{{ path('profile_notifications') }}">
+                                <i class="fa fa-globe"></i>
+                                <div id="number_notification" ng-show="notifications.length>0" class="ng-hide">{[{ notifications.length }]}</div>
+                            </a>
+
+                            <!-- Dropdown des notifications -->
+{#                             <ul class="dropdown-menu modal_notifications_container" uib-dropdown-menu aria-labelledby="simple-dropdown" >
+
+                                <li ng-repeat="notification in notifications">
+                                    <div class="row">
+                                        <div class="col-xs-6 col-md-4">
+                                            <img src="{[{ notification.User.Profile.Src }]}" alt="{[{ notification.User.Nom }]} {[{ notification.User.Prenom }]}" class="img-thumbnail">
+                                        </div>
+                                        <p class="col-xs-12 col-md-8">{[{ notification.Texte }]}</p>
+                                    </div>
+                                </li>
+
+                                <li ng-if="notifications.length==0">
+                                    <a href>Pas de notifications</a>
+                                </li>
+                            </ul> #}
+                            <!-- fin dropdown -->
+                        </li>
+                        <li><a href="{{ path('profile_accueil') }}"><i class="fa fa-user"></i></a></li>
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <li><a href="{{ path('admin_admin_users') }}"><i class="fa fa-users"></i></a></li>
+                        {% endif %}
+                        {% else %}
+                        <li><a href="{{ path('annonce_default_ajout') }}">Publier une annonce</a></li>
+                        <li><a href="{{ path('fos_user_registration_register') }}">S'inscrire</a></li>
+                        <li><a id="se_connecter">Se connecter</a></li>
+                        {% endif %}
+                        
+                    </ul>
+                </nav>
+
+                
+
+                <!-- MODAL DE CONNEXION -->
+                <div style="z-index:1000 !important" class="modal_connexion_container connexion col-sm-offset-6 col-sm-6 col-md-offset-8 col-md-4 col-lg-offset-9 col-lg-3">  
+                    <h3>Connectez-vous</h3>
+                    
+                        <div class="submit facebook col-xs-12">
+                            <a href="{{ path('hwi_oauth_service_redirect', {'service': 'facebook' }) }}" 
+                                onclick="fb_login();"
+                                alt="Sign in with Facebook">
+                                    <i class="fa fa-facebook"></i>
+                                    Se connecter avec Facebook</a>
+                       </div> 
+                    <form action="{{ path('fos_user_security_check') }}" method="post">
+                        <input type="email" id="username" name="_username" class="connexion_input col-xs-12" placeholder="Mon email">
+                        <input type="password" id="password" name="_password" class="connexion_input col-xs-12" placeholder="Mon mot de passe">
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label class="souvenir" for="remember_me">
+                                    <input type="checkbox" id="remember_me" name="_remember_me">
+                                    Se souvenir de moi</label>
+                            </div>
+                        </div>
+
+                        <input type="submit" class="connexion_submit col-xs-12" name="connexion_submit" value="Se connecter">
+                        <a class="col-xs-12 oublie" href="{{ path('fos_user_resetting_request')}}">Mot de passe oublié</a>
+                    </form>
+                    <div class="pas_membre_container col-xs-12">
+                        <p>Pas encore membre?</p>
+                        <a class="pas_membre" href="{{ path('fos_user_registration_register') }}">Inscrivez-vous</a>
+                    </div>
+                </div>
+                 <!-- FIN MODAL DE CONNEXION -->
+            </header>
+            <!-- FIN HEADER -->
+        {% endblock %}
+
+        {% for type, messages in app.session.flashBag.all %}
+            {% for message in messages %}
+                <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" id="myModal">
+                  <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content alert alert-{{ type }}">
+                        <div class="modal-body">
+{#                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+ #}                            <h4>{{ message|trans({}, 'FOSUserBundle') }}</h4>
+                                {% if type == "error" or type=="warning" %}
+                                <br />
+                                <a href="{{ path('app_contact') }}" class="alert-link">Contacter l'administrateur</a>
+                                {% endif %}
+                        </div>
+{#                         <div class="modal-body">
+                            <p class="alert alert-{{ type }}">{{ message|trans({}, 'FOSUserBundle') }}</p>
+                        </div>
+ #}                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+{#                             <button type="button" class="btn btn-primary">Save changes</button>
+ #}                            </div>
+                        </div>
+
+                    </div>
+                  </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div id="fb-root"></div>
+        {% block body %}{% endblock %}
+
+
+        {% block footer %}
+
+
+        <!-- FOOTER -->
+        <footer class="col-xs-12">
+            <div class="footer_padding col-md-10 col-md-offset-1">
+                <div class="footer_item_container col-sm-4">
+                    <h2>Infos pratique</h2>
+                    <ul>
+                        <li><a href="{{ path('app_ccm') }}">Comment ça marche?</a></li>
+                        <li><a href="{{ path('app_assurance') }}">Assurances</a></li>
+                        <li><a href="{{ path('app_annulations') }}">Gestion des annulations</a></li>
+                        <li><a href="{{ path('app_faq') }}">Questions fréquentes</a></li>
+                        <li><a href="suppression-compte.html">Supprimer mon compte</a></li>
+                        <li><a href="{{ path('app_contact') }}">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer_item_container col-sm-4">
+                    <h2>A propos</h2>
+                    <ul>
+                        <li><a href="{{ path('app_infos') }}">Qui sommes nous?</a></li>
+                        <li><a href="{{ path('app_cookies') }}">Utilisation des cookies</a></li>
+                        <li><a href="{{ path('app_cgu') }}">Conditions générales</a></li>
+                        <li><a href="{{ path('app_charte') }}">Charte de bonne conduite</a></li>
+                    </ul>
+                </div>
+                <div class="footer_item_container col-sm-4">
+                     <h2>Téléchargement de l'application</h2>
+                    <p> Bientôt disponible sur l’App Store & Play Store</p>
+                    <a class="button appstore-button" href="#"><span class="icon appstore"></span>App Store</a>
+                    <a class="button playstore-button" href="#"><span class="icon playstore"></span>Play Store</a>
+                </div>
+            </div>
+            <div class="copyright_container col-xs-12">
+                <div class="logo_container col-xs-12 col-sm-6">
+                    <img class="logo_bot" src="{{ asset('bundles/application/images/logotransp.png') }}">  
+                </div>
+                <div class="social_container col-xs-12 col-sm-6">
+{#                     <ul>
+                        <li class="social_text"> Retrouvez-nous sur </li>
+                        <li><a href=""><i class="fa fa-facebook-square"></i></a></li>
+                        <li><a href=""><i class="fa fa-twitter-square"></i></a></li>
+                        <li><a href=""><i class="fa fa-youtube-square"></i></a></li>
+                    </ul> #}
+                </div>
+            </div>
+        </footer>
+
+        {% endblock %}
+
+        {% block javascripts %}
+        
+        <script type="text/javascript" src="{{ asset('bundles/application/js/jquery.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/application/js/jquery.geolocation.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script type="text/javascript" src="{{ asset('bundles/application/js/main.js') }}"></script>
+        <script>
+        $(document).ready(function(){
+            $('#myModal').modal('show');
+            $(".datepicker").datepicker({ 
+                dateFormat: 'dd/mm/yy',
+                closeText: 'Fermer',
+                prevText: 'Précédent',
+                nextText: 'Suivant',
+                currentText: 'Aujourd\'hui',
+                monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+                monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
+                dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+                dayNamesShort: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
+                dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+                weekHeader: 'Sem.',
+                minDate: new Date()
+            });
+            $(".datepicker.accueil").datepicker("setDate", new Date());
+        });
+        </script>
+
+
+        <!--Start of Tawk.to Script-->
+        <script type="text/javascript" src="https://embed.tawk.to/577a2f6c4cc88cf418f5e474/default" charset="UTF-8" crossorigin="*"></script>
+        <script type="text/javascript">
+            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+            Tawk_API.onLoad = function(){
+                Tawk_API.toggle();
+            };
+        </script>
+        <!--End of Tawk.to Script-->
+
+
+{#         {{ facebook_initialize({'xfbml': true, 'fbAsyncInit': 'onFbInit();'}) }}
+ #}
+        <script>
+            function goLogIn(){
+                window.location.href = "{{ path('_security_check') }}";
+            }
+            
+            function onFbInit() {
+                if (typeof(FB) != 'undefined' && FB != null ) {              
+                    FB.Event.subscribe('auth.statusChange', function(response) {
+                        if (response.session || response.authResponse) {
+                            setTimeout(goLogIn, 500);
+                        } else {
+                            window.location.href = "{{ path('_security_logout') }}";
+                        }
+                    });
+                }
+            }
+
+            window.fbAsyncInit = function() {
+                // init the FB JS SDK
+                FB.init({
+                    appId      : '12345678910',                        // App ID from the app dashboard
+                    channelUrl : '//formidrive.com',      // Channel file for x-domain comms
+                    status     : true,                                 // Check Facebook Login status
+                    xfbml      : true                                  // Look for social plugins on the page
+                });
+            };
+
+
+            // Load the SDK asynchronously
+            (function(d, s, id){
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) {return;}
+                js = d.createElement(s); js.id = id;
+                js.src = "https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v2.12&appId=184659712043375&autoLogAppEvents=1";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+
+            function fb_login() {
+                FB.getLoginStatus(function(response) {
+                    if (response.status === 'connected') {
+                        // connected
+                        alert('Already connected, redirect to login page to create token.');
+                        document.location = "{{ url("hwi_oauth_service_redirect", {service: "facebook"}) }}";
+                    } else {
+                        // not_authorized
+                        FB.login(function(response) {
+                            if (response.authResponse) {
+                                document.location = "{{ url("hwi_oauth_service_redirect", {service: "facebook"}) }}";
+                            } else {
+                                alert('Cancelled.');
+                            }
+                        }, {scope: 'email'});
+                    }
+                });
+            }
+        </script>
+
+{% endblock %}
+

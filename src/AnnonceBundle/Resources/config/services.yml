@@ -1,0 +1,42 @@
+services:
+#    annonce.example:
+#        class: AnnonceBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    smsbox:
+        class: AnnonceBundle\Service\Smsbox
+        arguments: [@security.context, %smsbox%]
+
+    paiement:
+        class: AnnonceBundle\Service\Paiement
+        arguments: [@doctrine.orm.entity_manager, @session, %mongopay%]
+
+    notification:
+        class: AnnonceBundle\Service\Notification
+        arguments: [@doctrine.orm.entity_manager, @session, @security.context, @router]
+
+    sendEmail:
+        class: AnnonceBundle\Service\sendEmail
+        arguments: [@mailer, @templating, @doctrine.orm.entity_manager, @session, @security.context, @router, %sendMail%]
+
+    annonce.form.DemenagementTypeTransporteur:
+        class: AnnonceBundle\Form\DemenagementTypeTransporteur
+        arguments: ["@libphonenumber.phone_number_util"] 
+        tags: 
+            - { name: form.type }
+
+    annonce.form.VtcType:
+        class: AnnonceBundle\Form\VtcType
+        arguments: ["@libphonenumber.phone_number_util"] 
+        tags: 
+            - { name: form.type }
+
+    annonce.form.TaxiType:
+        class: AnnonceBundle\Form\TaxiType
+        arguments: ["@libphonenumber.phone_number_util"] 
+        tags: 
+            - { name: form.type }
+
+    annonce.twig_extension:
+        class: AnnonceBundle\Twig\AppExtension
+        tags:
+            - { name: twig.extension }

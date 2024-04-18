@@ -1,0 +1,99 @@
+admin:
+    resource: "@AdminBundle/Controller/"
+    type:     annotation
+    prefix:   /admin/
+
+api:
+    resource: "@ApiBundle/Controller/"
+    type:     annotation
+    prefix:   /api/
+
+message:
+    resource: "@MessageBundle/Controller/"
+    type:     annotation
+    prefix:   /message/
+
+geographie:
+    resource: "@GeographieBundle/Controller/"
+    type:     annotation
+    prefix:   /geo/
+
+annonce:
+    resource: "@AnnonceBundle/Controller/"
+    type:     annotation
+    prefix:   /annonce/
+
+user:
+    resource: "@UserBundle/Controller/"
+    type:     annotation
+    prefix:   /user/
+
+fos_user_security:
+    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+
+fos_user_profile:
+    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+    prefix: /profile
+
+fos_user_register:
+    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+    prefix: /register
+
+fos_user_resetting:
+    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+    prefix: /resetting
+
+fos_user_change_password:
+    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+    prefix: /profile
+
+fos_message:
+    resource: "@FOSMessageBundle/Resources/config/routing.xml"
+    prefix: /messages
+
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
+
+
+
+# HWIOAuthBundle
+hwi_oauth_security:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix: /login
+ 
+hwi_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix:   /connect
+ 
+# We override this part of the routing
+hwi_oauth_connect: 
+     resource: "@AppBundle/Resources/config/routing/config.xml" 
+     prefix: /connect
+
+
+facebook_login:
+    pattern: /login/check-facebook
+ 
+google_login:
+    pattern: /login/check-google
+
+
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+
+
+    
+
+_security_login:
+    pattern: /login
+
+_security_check:
+    pattern: /connect
+
+_security_logout:
+    pattern:  /logout
+
+
+
+

@@ -1,0 +1,78 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Admin - Les utilisateurs{% endblock %}
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/adminCtrl.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+<!-- CONTENT -->
+    <!-- Contenu profil -->
+    <div class="admin_container col-xs-12 col-md-offset-2 col-md-8" ng-controller="adminUsersCtrl" ng-init="loadUser()">
+        
+        {% include 'AdminBundle:Admin:header.html.twig' %}
+
+        <div class="row">
+            <form class="form-inline col-md-offset-7 col-xs-12">
+                <div class="form-group">
+                    <label class="sr-only" for="exampleInputAmount">Rechercher</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="exampleInputAmount" placeholder="Nom, Adresse, Tel" ng-model="termeRecherche" ng-change="rechercheUser()">
+                        <div class="input-group-addon">
+                            <i class="glyphicon glyphicon-search" ng-click="rechercheUser()"></i>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <br>
+        <br>
+
+        <table class="table table-striped">
+        	<th>
+        		
+        		<td>Nom - Prénom</td>
+                <td>Photo</td>
+                <td>Téléphone</td>
+                <td>Email</td>
+                <td>Ville</td>
+        		<td>Age</td>
+                <td>Date d'inscription</td>
+                <td>Verifié</td>
+                <td>Admin</td>
+        		<td>Supprimer</td>
+        	</th>
+        	<tr ng-repeat="user in users">
+                <td></td>
+        		<td><a href="/user/profile/get/{[{ user.Id }]}">{[{ user.Nom }]} {[{ user.Prenom }]}</a></td>
+                <td><img ng-src="{[{ user.Profile.Photo.Src }]}" style="width:50%"/></td>
+                <td>{[{ user.Profile.Telephone }]}</td>
+                <td>{[{ user.Email }]}</td>
+                <td>{[{ user.Profile.Ville.Locality }]}</td>
+                <td>{[{ user.Age }]}</td>
+                <td>{[{ user.CreatedAt*1000 | date:"EEE dd MMM" }]}</td>
+                <td><div class="btn" ng-class="{'btn-warning':user.Verifie, 'btn-info':!user.Verifie}" ng-click="verifieUser(user.Id);">{[{ user.Verifie ? 'Verifié' : 'Non vérifié'}]}</div></td>
+                <td><div class="btn" ng-class="{'btn-warning':user.Admin, 'btn-info':!user.Admin}" ng-click="changeUser(user.Id);">{[{ user.Admin ? 'Admin' : 'User'}]}</div></td>
+        		<td><div class="btn btn-danger" ng-click="delUser(user.Id);">Supprimer</div></td>
+        	</tr>
+        </table>
+
+
+        <div class="bottom_annonces row" ng-if="totalItems > 0">
+            <div class="info col-md-4 col-xs-12 ">{[{ getMinPage() }]} à {[{ getMaxPage() }]} sur {[{ maxResult }]} résultats</div>
+            <div class="pagination col-xs-12 col-md-8">
+                <ul uib-pagination boundary-links="true"
+                    class="pagination-sm" 
+                    ng-model="$parent.currentPage" ng-change="pageChanged()"
+                    total-items="totalItems" items-per-page="maxSize"
+                    max-size="5" force-ellipses="true"></ul>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

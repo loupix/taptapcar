@@ -1,0 +1,465 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Mes reservations{% endblock %}
+
+{% block body %}
+    <!-- CONTENT -->
+    <div class="profil_container col-xs-12 col-md-offset-2 col-md-8">
+        
+        {% include 'UserBundle:Profile:menu_profile.html.twig' %}
+        
+         <div class="annonces annonces_profil">
+
+
+                {% if attentes|length >0 %}
+                <h2>Réservation(s) en attentes</h2>
+                {% for reservation in attentes %}
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <article class="row" >
+                    <a class="" href="{{ path('profile_get',{'id':reservation.auteur.id}) }}">
+                        <div class="bloc_photo col-sm-4">
+                            <div class="photo_annonce" 
+                            style="background: url('{{ reservation.auteur.profile.photo.src }}') center center no-repeat;
+                            background-size:cover"></div>
+                            <div class="name">
+                                <h4>{{ reservation.auteur.prenom }} {{ reservation.auteur.nom }}</h4>
+                                <p>{{ reservation.auteur.getAge() }} ans</p>
+                                <p><i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                </p>
+                                {% if reservation.auteur.profile.vehicule %}
+                                <p>{{ reservation.auteur.profile.vehicule.modele }} {{ reservation.auteur.profile.vehicule.Type }}</p>
+                                {% endif %}
+                            </div>
+                        <br />
+                        <a class="" href="{{ path('profile_get',{'id':reservation.auteur.id}) }}">Voir le profil complet</a>
+
+                    </div>
+                    <div class="bloc_info col-sm-8">
+                        <div class="trajet_bloc col-xs-9">
+
+                            <a href="{{path('user_reservation_getreservation', {'reservationId':reservation.id}) }}">
+                                {% if reservation.annonce.getType() == "Demenagement" or reservation.annonce.getType() == "Covoiturage" %}
+                                <div class="date">{{ reservation.date | localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EEE dd LLL YYYY")}} à {{ reservation.annonce.getObject().heureAller | date("h:i") }}</div>
+                                {% elseif reservation.annonce.getType() == "Vtc" or reservation.annonce.getType() == "Taxi" %}
+                                <div class="date">{{ reservation.date | localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EEE dd LLL YYYY") }} à {{ reservation.annonce.getObject().heureDebut | date("h:i") }}</div>
+                                {% endif %}
+
+                                {% if reservation.annonce.getType() == "Demenagement" or reservation.annonce.getType() == "Covoiturage" %}
+                                <div class="trajet">Metz <i class="fa fa-long-arrow-right"></i> Paris</div>
+                                <div class="info_trajet">RDV gare de Metz</div>
+                                {% elseif reservation.annonce.getType() == "Vtc" or reservation.annonce.getType() == "Taxi" %}
+                                <div class="trajet">{{ reservation.annonce.getObject().ville.nom }}</div>
+                                {% endif %}
+
+
+                                {% if reservation.annonce.getType() == "Demenagement" %}
+                                <div class="category"><i class="fa fa-truck"></i> Déménagement</div>
+                                {% elseif reservation.annonce.getType() == "Covoiturage" %}
+                                <div class="category"><i class="fa fa-car"></i> Covoiturage</div>
+                                {% elseif reservation.annonce.getType() == "Taxi" %}
+                                <div class="category"><i class="fa fa-taxi"></i> Taxi</div>
+                                {% elseif reservation.annonce.getType() == "Vtc" %}
+                                <div class="category"><i class="fa fa-car"></i> Vtc</div>
+                                {% else %}
+                                <div class="category"></div>
+                                {% endif %}
+                            </a>
+                        </div>
+{#                             <div class="prix_bloc col-xs-3">
+                            <div class="prix"><span>{{ reservation.prix }}€</span> par place</div>
+                            <div class="place_restantes"><span>{{ reservation.nbPlaces }}</span> places</div>
+                            {% if not reservation.valider %}
+                            <div class="col-xs-offset-6 btn btn-default">Valider</div>
+                            {% endif %}
+                        </div> #}
+                    </div>
+                </article>
+            </a>
+            {% endfor %}
+            {% endif %}
+
+
+
+                {% if confirmes|length >0 %}
+                <h2>Réservation(s) confirmée(s)</h2>
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                {% for reservation in confirmes %}
+                    <article class="row is-confirmed" >
+                    <a class="" href="{{ path('profile_get',{'id':reservation.auteur.id}) }}">
+                        <div class="bloc_photo col-sm-4">
+                            <div class="photo_annonce" 
+                            style="background: url('{{ reservation.auteur.profile.photo.src }}') center center no-repeat;
+                            background-size:cover"></div>
+                            <div class="name">
+                                <h4>{{ reservation.auteur.prenom }} {{ reservation.auteur.nom }}</h4>
+                                <p>{{ reservation.auteur.getAge() }} ans</p>
+                                <p><i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                </p>
+                                {% if reservation.auteur.profile.vehicule %}
+                                <p>{{ reservation.auteur.profile.vehicule.modele }} {{ reservation.auteur.profile.vehicule.Type }}</p>
+                                {% endif %}
+                            </div>
+                        <br />
+                        <a class="" href="{{ path('profile_get',{'id':reservation.auteur.id}) }}">Voir le profil complet</a>
+
+                    </div>
+                    <div class="bloc_info col-sm-8">
+                        <div class="trajet_bloc col-xs-9">
+
+                            <a href="{{path('user_reservation_getreservation', {'reservationId':reservation.id}) }}">
+                                {% if reservation.annonce.getType() == "Demenagement" or reservation.annonce.getType() == "Covoiturage" %}
+                                <div class="date">{{ reservation.date | localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EEE dd LLL YYYY")}} à {{ reservation.annonce.getObject().heureAller | date("h:i") }}</div>
+                                {% elseif reservation.annonce.getType() == "Vtc" or reservation.annonce.getType() == "Taxi" %}
+                                <div class="date">{{ reservation.date | localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EEE dd LLL YYYY") }} à {{ reservation.annonce.getObject().heureDebut | date("h:i") }}</div>
+                                {% endif %}
+
+                                {% if reservation.annonce.getType() == "Demenagement" or reservation.annonce.getType() == "Covoiturage" %}
+                                <div class="trajet">Metz <i class="fa fa-long-arrow-right"></i> Paris</div>
+                                <div class="info_trajet">RDV gare de Metz</div>
+                                {% elseif reservation.annonce.getType() == "Vtc" or reservation.annonce.getType() == "Taxi" %}
+                                <div class="trajet">{{ reservation.annonce.getObject().ville.nom }}</div>
+                                {% endif %}
+
+
+                                {% if reservation.annonce.getType() == "Demenagement" %}
+                                <div class="category"><i class="fa fa-truck"></i> Déménagement</div>
+                                {% elseif reservation.annonce.getType() == "Covoiturage" %}
+                                <div class="category"><i class="fa fa-car"></i> Covoiturage</div>
+                                {% elseif reservation.annonce.getType() == "Taxi" %}
+                                <div class="category"><i class="fa fa-taxi"></i> Taxi</div>
+                                {% elseif reservation.annonce.getType() == "Vtc" %}
+                                <div class="category"><i class="fa fa-car"></i> Vtc</div>
+                                {% else %}
+                                <div class="category"></div>
+                                {% endif %}
+                            </a>
+                        </div>
+{#                             <div class="prix_bloc col-xs-3">
+                            <div class="prix"><span>{{ reservation.prix }}€</span> par place</div>
+                            <div class="place_restantes"><span>{{ reservation.nbPlaces }}</span> places</div>
+                            {% if not reservation.valider %}
+                            <div class="col-xs-offset-6 btn btn-default">Valider</div>
+                            {% endif %}
+                        </div> #}
+                    </div>
+                </article>
+                </a>
+                {% endfor %}
+                {% endif %}
+
+                {% if nonConfirmes|length >0 %}
+                <h2>Réservation(s) Non confirmée(s)</h2>
+                {% for reservation in nonConfirmes %}
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <article class="row is-reserved" >
+                    <a class="" href="{{ path('profile_get',{'id':reservation.auteur.id}) }}">
+                        <div class="bloc_photo col-sm-4">
+                            <div class="photo_annonce" 
+                            style="background: url('{{ reservation.auteur.profile.photo.src }}') center center no-repeat;
+                            background-size:cover"></div>
+                            <div class="name">
+                                <h4>{{ reservation.auteur.prenom }} {{ reservation.auteur.nom }}</h4>
+                                <p>{{ reservation.auteur.getAge() }} ans</p>
+                                <p><i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                </p>
+                                {% if reservation.auteur.profile.vehicule %}
+                                <p>{{ reservation.auteur.profile.vehicule.modele }} {{ reservation.auteur.profile.vehicule.Type }}</p>
+                                {% endif %}
+                            </div>
+                        <br />
+                        <a class="" href="{{ path('profile_get',{'id':reservation.auteur.id}) }}">Voir le profil complet</a>
+
+                    </div>
+                    <div class="bloc_info col-sm-8">
+                        <div class="trajet_bloc col-xs-9">
+
+                            <a href="{{path('user_reservation_getreservation', {'reservationId':reservation.id}) }}">
+                                {% if reservation.annonce.getType() == "Demenagement" or reservation.annonce.getType() == "Covoiturage" %}
+                                <div class="date">{{ reservation.date | localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EEE dd LLL YYYY")}} à {{ reservation.annonce.getObject().heureAller | date("h:i") }}</div>
+                                {% elseif reservation.annonce.getType() == "Vtc" or reservation.annonce.getType() == "Taxi" %}
+                                <div class="date">{{ reservation.date | localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EEE dd LLL YYYY") }} à {{ reservation.annonce.getObject().heureDebut | date("h:i") }}</div>
+                                {% endif %}
+
+                                {% if reservation.annonce.getType() == "Demenagement" or reservation.annonce.getType() == "Covoiturage" %}
+                                <div class="trajet">Metz <i class="fa fa-long-arrow-right"></i> Paris</div>
+                                <div class="info_trajet">RDV gare de Metz</div>
+                                {% elseif reservation.annonce.getType() == "Vtc" or reservation.annonce.getType() == "Taxi" %}
+                                <div class="trajet">{{ reservation.annonce.getObject().ville.nom }}</div>
+                                {% endif %}
+
+
+                                {% if reservation.annonce.getType() == "Demenagement" %}
+                                <div class="category"><i class="fa fa-truck"></i> Déménagement</div>
+                                {% elseif reservation.annonce.getType() == "Covoiturage" %}
+                                <div class="category"><i class="fa fa-car"></i> Covoiturage</div>
+                                {% elseif reservation.annonce.getType() == "Taxi" %}
+                                <div class="category"><i class="fa fa-taxi"></i> Taxi</div>
+                                {% elseif reservation.annonce.getType() == "Vtc" %}
+                                <div class="category"><i class="fa fa-car"></i> Vtc</div>
+                                {% else %}
+                                <div class="category"></div>
+                                {% endif %}
+                            </a>
+                        </div>
+{#                             <div class="prix_bloc col-xs-3">
+                            <div class="prix"><span>{{ reservation.prix }}€</span> par place</div>
+                            <div class="place_restantes"><span>{{ reservation.nbPlaces }}</span> places</div>
+                            {% if not reservation.valider %}
+                            <div class="col-xs-offset-6 btn btn-default">Valider</div>
+                            {% endif %}
+                        </div> #}
+                    </div>
+                </article>
+                </a>
+                {% endfor %}
+                {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+                {% if devisClient|length >0 %}
+                <h2>Devi(s) reçu(s)</h2>
+                {% for devis in devisClient %}
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <article class="row" >
+                    <a class="" href="{{ path('profile_get',{'id':devis.auteur.id}) }}">
+                        <div class="bloc_photo col-sm-4">
+                            <div class="photo_annonce" 
+                            style="background: url('{{ devis.auteur.profile.photo.src }}') center center no-repeat;
+                            background-size:cover"></div>
+                            <div class="name">
+                                <h4>{{ devis.auteur.prenom }} {{ devis.auteur.nom }}</h4>
+                                <p>{{ devis.auteur.getAge() }} ans</p>
+                                <p><i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                </p>
+                                {% if devis.auteur.profile.vehicule %}
+                                <p>{{ devis.auteur.profile.vehicule.modele }} {{ devis.auteur.profile.vehicule.Type }}</p>
+                                {% endif %}
+                            </div>
+                        <br />
+                        <a class="" href="{{ path('profile_get',{'id':devis.auteur.id}) }}">Voir le profil complet</a>
+
+                    </div>
+                    <div class="bloc_info col-sm-8">
+                        <div class="trajet_bloc col-xs-9">
+
+                            <a href="{{path('user_reservation_getdevis', {'devisId':devis.id}) }}">
+                                {% if devis.annonce.getType() == "Demenagement" or devis.annonce.getType() == "Covoiturage" %}
+                                <div class="date">{{ devis.annonce.getObject().getJoursUnique() | localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EEE dd LLL YYYY")}} à {{ devis.annonce.getObject().heureAller | date("h:i") }}</div>
+                                {% elseif devis.annonce.getType() == "Vtc" or devis.annonce.getType() == "Taxi" %}
+                                <div class="date">{{ devis.annonce.getObject().getJoursUnique() | localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EEE dd LLL YYYY") }} à {{ devis.annonce.getObject().heureDebut | date("h:i") }}</div>
+                                {% endif %}
+
+                                {% if devis.annonce.getType() == "Demenagement" or devis.annonce.getType() == "Covoiturage" %}
+                                <div class="trajet">Metz <i class="fa fa-long-arrow-right"></i> Paris</div>
+                                <div class="info_trajet">RDV gare de Metz</div>
+                                {% elseif devis.annonce.getType() == "Vtc" or devis.annonce.getType() == "Taxi" %}
+                                <div class="trajet">{{ devis.annonce.getObject().ville.nom }}</div>
+                                {% endif %}
+
+
+                                {% if devis.annonce.getType() == "Demenagement" %}
+                                <div class="category"><i class="fa fa-truck"></i> Déménagement</div>
+                                {% elseif devis.annonce.getType() == "Covoiturage" %}
+                                <div class="category"><i class="fa fa-car"></i> Covoiturage</div>
+                                {% elseif devis.annonce.getType() == "Taxi" %}
+                                <div class="category"><i class="fa fa-taxi"></i> Taxi</div>
+                                {% elseif devis.annonce.getType() == "Vtc" %}
+                                <div class="category"><i class="fa fa-car"></i> Vtc</div>
+                                {% else %}
+                                <div class="category"></div>
+                                {% endif %}
+                            </a>
+                        </div>
+{#                             <div class="prix_bloc col-xs-3">
+                            <div class="prix"><span>{{ reservation.prix }}€</span> par place</div>
+                            <div class="place_restantes"><span>{{ reservation.nbPlaces }}</span> places</div>
+                            {% if not reservation.valider %}
+                            <div class="col-xs-offset-6 btn btn-default">Valider</div>
+                            {% endif %}
+                        </div> #}
+                    </div>
+                </article>
+            </a>
+            {% endfor %}
+            {% endif %}
+
+
+
+
+
+                {% if devisAccepter|length >0 %}
+                <h2>Devi(s) accepte(s)</h2>
+                {% for devis in devisAccepter %}
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <article class="row is-confirmed" >
+                    <a class="" href="{{ path('profile_get',{'id':devis.auteur.id}) }}">
+                        <div class="bloc_photo col-sm-4">
+                            <div class="photo_annonce" 
+                            style="background: url('{{ devis.auteur.profile.photo.src }}') center center no-repeat;
+                            background-size:cover"></div>
+                            <div class="name">
+                                <h4>{{ devis.auteur.prenom }} {{ devis.auteur.nom }}</h4>
+                                <p>{{ devis.auteur.getAge() }} ans</p>
+                                <p><i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                </p>
+                                {% if devis.auteur.profile.vehicule %}
+                                <p>{{ devis.auteur.profile.vehicule.modele }} {{ devis.auteur.profile.vehicule.Type }}</p>
+                                {% endif %}
+                            </div>
+                        <br />
+                        <a class="" href="{{ path('profile_get',{'id':devis.auteur.id}) }}">Voir le profil complet</a>
+
+                    </div>
+                    <div class="bloc_info col-sm-8">
+                        <div class="trajet_bloc col-xs-9">
+
+                            <a href="{{path('user_reservation_getdevis', {'devisId':devis.id}) }}">
+                                {% if devis.annonce.getType() == "Demenagement" or devis.annonce.getType() == "Covoiturage" %}
+                                <div class="date">{{ devis.annonce.getObject().getJoursUnique() | localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EEE dd LLL YYYY")}} à {{ devis.annonce.getObject().heureAller | date("h:i") }}</div>
+                                {% elseif devis.annonce.getType() == "Vtc" or devis.annonce.getType() == "Taxi" %}
+                                <div class="date">{{ devis.annonce.getObject().getJoursUnique() | localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EEE dd LLL YYYY") }} à {{ devis.annonce.getObject().heureDebut | date("h:i") }}</div>
+                                {% endif %}
+
+                                {% if devis.annonce.getType() == "Demenagement" or devis.annonce.getType() == "Covoiturage" %}
+                                <div class="trajet">Metz <i class="fa fa-long-arrow-right"></i> Paris</div>
+                                <div class="info_trajet">RDV gare de Metz</div>
+                                {% elseif devis.annonce.getType() == "Vtc" or devis.annonce.getType() == "Taxi" %}
+                                <div class="trajet">{{ devis.annonce.getObject().ville.nom }}</div>
+                                {% endif %}
+
+
+                                {% if devis.annonce.getType() == "Demenagement" %}
+                                <div class="category"><i class="fa fa-truck"></i> Déménagement</div>
+                                {% elseif devis.annonce.getType() == "Covoiturage" %}
+                                <div class="category"><i class="fa fa-car"></i> Covoiturage</div>
+                                {% elseif devis.annonce.getType() == "Taxi" %}
+                                <div class="category"><i class="fa fa-taxi"></i> Taxi</div>
+                                {% elseif devis.annonce.getType() == "Vtc" %}
+                                <div class="category"><i class="fa fa-car"></i> Vtc</div>
+                                {% else %}
+                                <div class="category"></div>
+                                {% endif %}
+                            </a>
+                        </div>
+{#                             <div class="prix_bloc col-xs-3">
+                            <div class="prix"><span>{{ reservation.prix }}€</span> par place</div>
+                            <div class="place_restantes"><span>{{ reservation.nbPlaces }}</span> places</div>
+                            {% if not reservation.valider %}
+                            <div class="col-xs-offset-6 btn btn-default">Valider</div>
+                            {% endif %}
+                        </div> #}
+                    </div>
+                </article>
+            </a>
+            {% endfor %}
+            {% endif %}
+
+
+
+
+
+            {% if devisRefuser|length >0 %}
+                <h2>Devi(s) refuse(s)</h2>
+                {% for devis in devisRefuser %}
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <article class="row is-reserved" >
+                    <a class="" href="{{ path('profile_get',{'id':devis.auteur.id}) }}">
+                        <div class="bloc_photo col-sm-4">
+                            <div class="photo_annonce" 
+                            style="background: url('{{ devis.auteur.profile.photo.src }}') center center no-repeat;
+                            background-size:cover"></div>
+                            <div class="name">
+                                <h4>{{ devis.auteur.prenom }} {{ devis.auteur.nom }}</h4>
+                                <p>{{ devis.auteur.getAge() }} ans</p>
+                                <p><i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                </p>
+                                {% if devis.auteur.profile.vehicule %}
+                                <p>{{ devis.auteur.profile.vehicule.modele }} {{ devis.auteur.profile.vehicule.Type }}</p>
+                                {% endif %}
+                            </div>
+                        <br />
+                        <a class="" href="{{ path('profile_get',{'id':devis.auteur.id}) }}">Voir le profil complet</a>
+
+                    </div>
+                    <div class="bloc_info col-sm-8">
+                        <div class="trajet_bloc col-xs-9">
+
+                            <a href="{{path('user_reservation_getdevis', {'devisId':devis.id}) }}">
+                                {% if devis.annonce.getType() == "Demenagement" or devis.annonce.getType() == "Covoiturage" %}
+                                <div class="date">{{ devis.annonce.getObject().getJoursUnique() | localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EEE dd LLL YYYY")}} à {{ devis.annonce.getObject().heureAller | date("h:i") }}</div>
+                                {% elseif devis.annonce.getType() == "Vtc" or devis.annonce.getType() == "Taxi" %}
+                                <div class="date">{{ devis.annonce.getObject().getJoursUnique() | localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EEE dd LLL YYYY") }} à {{ devis.annonce.getObject().heureDebut | date("h:i") }}</div>
+                                {% endif %}
+
+                                {% if devis.annonce.getType() == "Demenagement" or devis.annonce.getType() == "Covoiturage" %}
+                                <div class="trajet">Metz <i class="fa fa-long-arrow-right"></i> Paris</div>
+                                <div class="info_trajet">RDV gare de Metz</div>
+                                {% elseif devis.annonce.getType() == "Vtc" or devis.annonce.getType() == "Taxi" %}
+                                <div class="trajet">{{ devis.annonce.getObject().ville.nom }}</div>
+                                {% endif %}
+
+
+                                {% if devis.annonce.getType() == "Demenagement" %}
+                                <div class="category"><i class="fa fa-truck"></i> Déménagement</div>
+                                {% elseif devis.annonce.getType() == "Covoiturage" %}
+                                <div class="category"><i class="fa fa-car"></i> Covoiturage</div>
+                                {% elseif devis.annonce.getType() == "Taxi" %}
+                                <div class="category"><i class="fa fa-taxi"></i> Taxi</div>
+                                {% elseif devis.annonce.getType() == "Vtc" %}
+                                <div class="category"><i class="fa fa-car"></i> Vtc</div>
+                                {% else %}
+                                <div class="category"></div>
+                                {% endif %}
+                            </a>
+                        </div>
+{#                             <div class="prix_bloc col-xs-3">
+                            <div class="prix"><span>{{ reservation.prix }}€</span> par place</div>
+                            <div class="place_restantes"><span>{{ reservation.nbPlaces }}</span> places</div>
+                            {% if not reservation.valider %}
+                            <div class="col-xs-offset-6 btn btn-default">Valider</div>
+                            {% endif %}
+                        </div> #}
+                    </div>
+                </article>
+            </a>
+            {% endfor %}
+            {% endif %}
+
+
+
+        </div>
+    </div>
+    <!-- FIN CONTENT -->
+{% endblock %}

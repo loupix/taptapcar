@@ -1,0 +1,111 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Reservation{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/framework/js/Controllers/annonceCtrl.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+<!-- CONTENT -->
+<div class="inscription_form modal_connexion_container creer_annonce col-xs-12 col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8" ng-controller="reservationCtrl" ng-init="getAnnonce({{ annonce.id }});">
+    <h1>Reservation</h1>
+
+    <div class=" col-xs-12 reservation">  
+            <div class="bloc_info row">
+                <h2>Recapitulatif trajet</h2>
+                {% if annonce.getType() == "Vtc" || annonce.getType() == "Taxi" %}
+                {% set object = annonce.getObject() %}
+
+                <div class="from col-sm-6">
+                    <p>Départ : <span>{{ object.ville.nom }}</span></p>
+                </div>
+                
+
+
+                <div class="date_prix row">
+                    <div class="date col-sm-6">
+                        <p>Date : <span>{{ object.date|date("d/m/Y") }}</span></p>
+                        <p>Heure de départ : <span>{{ taxi.date|date('h:i') }}</span></p>
+                    </div>
+                    <div class="prix col-sm-6">
+                        <p>Prix : <span>{{ object.cout }}€ / place</span></p>
+                    </div>
+                </div>
+
+
+
+                {% elseif annonce.getType() == "Demenagement" || annonce.getType() == "Covoiturage" %}
+				{% set object = annonce.getObject() %}
+
+                <div class="from col-sm-6">
+                    <p>Départ : <span>{{ object.depart.ville.nom }}</span></p>
+                    <p>Lieu de rendez-vous : {{ object.rendezVous.adresse }}</p>
+                </div>
+                <div class="to col-sm-6">
+                    <p>Arrivée : <span>{{ object.arrivee.ville.nom }}</span></p>
+                    <p>Lieu de dépot : {{ object.depot.adresse }}</p>
+                </div>
+
+
+                {% if object.dateUnique %}
+                <div class="date_prix row">
+                    <div class="date col-sm-6">
+                        <p>Date : <span>{{ object.date|date("d/m/Y") }}</span></p>
+                        <p>Heure de départ : <span>{{ object.heureDebut|date('h:i') }}</span></p>
+                    </div>
+                    <div class="prix col-sm-6">
+                        <p>Prix : <span>{{ object.cout }}€ / place</span></p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% endif %}
+
+
+                
+
+                
+            </div>
+            <div class="bloc_info row">
+                <h2>Confirmation</h2>
+                <form method="POST" action="{{ path('annonce_vtc_reservation', {'id':taxi.id}) }}">
+                <label class="col-xs-12 col-sm-5 " for="reservation_nombre_place">Nombres de places</label>
+                <select class="col-xs-12 col-sm-5" name="reservation_nombre_place" id="reservation_nombre_place" ng-model="reservation.nbPlaces">
+                	{% for i in 1 .. taxi.nbPlaces %}
+                    <option value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
+                </select>
+                <div class="col-xs-12 facture_container">
+                    <div class="infos row">
+                        <div class="col-sm-4 item">Prix trajet</div>
+                        <div class="col-sm-4 item">Nombres de places</div>
+                        <div class="col-sm-4 item">Total</div>
+                    </div>
+                    <div class="facture row">
+                        <div class="col-sm-4 item">{[{ reservation.prix }]}€</div>
+                        <div class="col-sm-4 item">x {[{ reservation.nbPlaces }]}</div>
+                        <div class="col-sm-4 item">{[{ getTotal() }]}€</div>
+                    </div>
+                    <div class="total row">
+                        <div class="col-sm-offset-8 col-sm-4 item">{[{ getTotal() }]}€ TTC</div>
+                    </div>
+                    <input type="hidden" name="reservation_prix" value="{[{ reservation.prix }]}" />
+                    <input type="hidden" name="reservation_places" value="{[{ reservation.nbPlaces }]}" />
+                    <input type="submit" name="reservation_confirmer" class="button_payer col-xs-12 col-sm-offset-8 col-sm-4" value="Confirmez">
+                </div>
+
+                </form>
+            </div>    
+    </div>       
+</div>
+<div class="pas_membre_container deja_membre annule-reservation col-xs-12 col-sm-3 col-md-2">
+        <p>Retour vers la page d'annonce</p>
+        <a id="annule-reservation-button" href="{{ path('annonce_taxi_get', {'id':taxi.id}) }}">Annuler la réservation</a>
+</div>
+<!-- FIN CONTENT -->
+
+{% endblock %}

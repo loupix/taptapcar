@@ -1,0 +1,45 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Connexion à mon compte{% endblock %}
+
+{% block body %}
+    <!-- CONTENT -->
+    <div class="login_error modal_connexion_container col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4">  
+        <div class="submit facebook col-xs-12">
+            <a href="{{ path('hwi_oauth_service_redirect', {'service': 'facebook' }) }}" 
+                onclick="fb_login();"
+                alt="Sign in with Facebook">
+                    <i class="fa fa-facebook"></i> 
+                    Se connecter avec Facebook</a>
+       </div>
+       
+{#         <br>
+        <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}" alt="Sign in with Google">Sign in with Google</a>   
+ #}
+            {% if error %}
+            <h3>{{ error|trans([], 'FOSUserBundle') }}</h3>
+            {% endif %}
+{#             <div class="submit facebook col-xs-12">
+                {{ facebook_login_button({'autologoutlink': true, 'label':'Connexion avec Facebook', 'size':'large'}) }}
+            </div>
+ #}        <form action="{{ path("fos_user_security_check") }}" method="post">
+            <input type="email" id="username" name="_username" class="connexion_input col-xs-12" placeholder="Mon email">
+            <input type="password" id="password" name="_password" class="connexion_input col-xs-12" placeholder="Mon mot de passe">
+            <div class="form-group">
+                <div class="checkbox">
+                    <label class="souvenir" for="remember_me">
+                        <input type="checkbox" id="remember_me" name="remember_me">
+                        Se souvenir de moi</label>
+                </div>
+            </div>
+
+            <input type="submit" class="connexion_submit col-xs-12" id="_submit" name="_submit" value="Se connecter">
+            <a class="col-xs-12 oublie" href="{{ path('fos_user_resetting_request')}}">Mot de passe oublié</a>
+        </form>
+        <div class="pas_membre_container col-xs-12">
+            <p>Pas encore membre?</p>
+            <a class="pas_membre" href="{{ path('fos_user_registration_register') }}">Inscrivez-vous</a>
+        </div>
+    </div>
+    <!-- FIN CONTENT -->
+{% endblock %}

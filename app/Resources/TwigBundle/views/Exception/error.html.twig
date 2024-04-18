@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Une erreur est survenue : {{ status_text }}{% endblock %}
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/indexCtrl.js') }}"></script>
+
+{% endblock %}
+
+{% block body %}
+    <div class="profil_container col-xs-12 col-md-offset-2 col-md-8">
+        <h1>Oups! Une erreur est survenue</h1>
+        <h2>Le serveur a retourné une erreur "{{ status_code }} {{ status_text }}".</h2>
+    </div>
+{% endblock %}

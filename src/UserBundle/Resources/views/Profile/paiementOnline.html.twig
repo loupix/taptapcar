@@ -1,0 +1,125 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Reservation Vtc{% endblock %}
+
+
+
+{% block body %}
+<div class="inscription_form modal_connexion_container creer_annonce col-xs-12 col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+	<h1>Réglement en Ligne et Sérurisé.</h1>
+	<br />
+	<div class="row">
+		<div class="col col-md-8">
+			{% set annonce = reservation.annonce %}
+			{% set object = reservation.annonce.getObject() %}
+			<table class="table table-bordered table-condensed">
+				<thead>
+					<tr class="info">
+						<th>Item</th>
+						<th>Prix unitaire</th>
+						<th>Nb Places</th>
+						<th>subtotal</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						{% if annonce.getType()=="Vtc" or annonce.getType()=="Taxi" %}
+						<td>
+							<b>{{ annonce.getType() }} à {{ object.ville.nom }} ({{ reservation.date|date('D d M') }} à {{ reservation.date|date('H:i') }})</b>
+							<p><b>RDV</b> <small>{{ reservation.depart.adresse }}</small>
+							<p><b>Dépot</b> <small>{{ reservation.arrivee.adresse }}</small>
+
+						</td>
+						{% else %}
+						<td><b>{{ annonce.getType() }}</b></td>
+						{% endif %}
+						<td>{{ object.cout|number_format(2) }} €</td>
+						<td>{{ reservation.nbPlaces }} place(s)</td>
+						<td>{{ reservation.prix|number_format(2) }} €</td>
+					</tr>
+
+				</tbody>
+					
+				<tfoot>
+					<tr>
+						<td colspan="2" style="border:none;"></td>
+						<td>Total</td>
+						<td><b>{{ reservation.prix|number_format(2) }} €</b></td>
+					</tr>
+				</tfoot>
+			</table>
+
+		</div>
+
+		<div class="col col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">informations personnels</div>
+				<div class="panel-body">
+					<table>
+						<tr>
+							<td><b>Nom</b></td>
+							<td>&nbsp;{{ user.nom }}</td>
+						</tr>
+
+						<tr>
+							<td><b>Prenom</b></td>
+							<td>&nbsp;{{ user.prenom }}</td>
+						</tr>
+
+						<tr>
+							<td><b>Année de naissance</b></td>
+							<td>&nbsp;{{ user.anneeNaissance }}</td>
+						</tr>
+					</table>
+{# 					<b>Nom</b>&nbsp;{{ user.nom }}<br />
+					<b>Prenom</b>&nbsp;{{ user.prenom }}<br />
+					<b>Année de naissance</b>&nbsp;{{ user.anneeNaissance }}<br />
+ #}				</div>
+			</div>
+		</div>
+
+
+	</div>
+	<div class="row">
+		<div class="col col-md-8">
+
+			<form action="{{ path('profile_paiement_confirmation_online', {'reservationId':reservation.id, 'paiementId':paiement.id}) }}" method="post">
+
+			    <div class="row">
+			    	<div class="col col-md-7">
+			    		<input type="text" name="ibanNumber" class="connexion_input col-xs-12" value="" 
+			    			placeholder="Numéros de compte IBAN" />
+			    	</div>
+
+			    	<div class="col col-md-5">
+			    		<input type="text" name="bicNumber" class="connexion_input col-xs-12" value="" 
+			    			placeholder="Code de la banque BIC" />
+			    	</div>
+			    </div>
+
+{# 			    <div class="row">
+			    	<div class="col col-md-8">
+			    		<input type="number" name="cardExpirationDate" class="connexion_input col-xs-12" value="" 
+			    			placeholder="Date d'éxpiration ( format JJAA )" />
+			    	</div>
+			    </div> #}
+			    <input type="submit" class="connexion_submit col-xs-12" value="Régler en ligne" />
+			    <br />
+			    <br />
+			    <br />
+			    <br />
+			</form>
+
+		</div>
+
+		<div class="col col-md-4">
+			&nbsp;
+		</div>
+	</div>
+
+
+</div>
+
+
+<!-- FIN CONTENT -->
+{% endblock %}

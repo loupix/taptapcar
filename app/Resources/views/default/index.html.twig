@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+
+.dropdown-menu{
+    position: fixed;    
+    margin-top: 95px;
+    z-index: 9999;
+}
+
+</style>
+
+{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/indexCtrl.js') }}"></script>
+
+{% endblock %}
+
+
+{% block body %}
+    <!-- CONTENT -->
+    <main class="main">
+        <div class="slider_container">
+            <div class="home_search col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+                <h1 class="slogan" id="firstWord">Vos trajets du bout des doigts</h1>
+                <div class="form_container">
+                    {{ form_start(formRecherche, {'attr':{'ng-controller':'rechercheCtrl', 'ng-init':"changeCategorie('demenagement')", 'id':'formSearch'}}) }}
+                        <div class="checkbox">
+                            <div>
+                                <input type="radio" name="category" id="demenagement" required="required" ng-checked="categorie.demenagement" ng-value="categorie.demenagement">
+                                <label for="demenagement" ng-click="changeCategorie('demenagement')"><i class="fa fa-truck"></i>Transporteur</label>
+                            </div>
+
+                            <div>
+                                <input type="radio" name="category" id="vtc" required="required" ng-checked="categorie.vtc" ng-value="categorie.vtc">
+                                <label for="vtc" ng-click="changeCategorie('vtc')"><i class="fa fa-car"></i>VTC</label>
+                            </div>
+
+                            <div>
+                                <input type="radio" name="category" id="taxi" required="required" ng-checked="categorie.taxi"  ng-value="categorie.taxi">
+                                <label for="taxi" ng-click="changeCategorie('taxi')"><i class="fa fa-taxi"></i>Taxi</label>
+                            </div>
+
+                            <div>
+                                <input type="radio" name="category" id="covoiturage" required="required" ng-checked="categorie.covoiturage" ng-value="categorie.covoiturage">
+                                <label for="covoiturage" ng-click="changeCategorie('covoiturage')"><i class="fa fa-car"></i>Covoiturage</label>
+                            </div>
+                           
+                        </div>
+                        <div class="search_container row">
+                            <!-- SI ON RECHERCHE UN DEMENAGEMENT OU COVOITURAGE - input de destination -->
+                            <div class="demenagement_search" ng-class="{'is-open':categorie.covoiturage}">
+                                <div class="search from col-xs-12 col-sm-3">
+                                    <i class="fa fa-map-marker"></i>
+                                    <input type="text" id="from" name="from" placeholder="De" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='place.depard' ng-change="loadPlace('from')"  />
+                                </div>
+
+                                <div class="search to col-xs-12 col-sm-3">
+                                    <i class="fa fa-arrow-right"></i>
+                                    <input type="text" id="to" name="to" placeholder="A" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='place.arrivee' ng-change="loadPlace('to')" />
+                                </div>
+
+                                <div class="search to col-xs-12 col-sm-3">
+                                    <i class="fa fa-arrow-right"></i>
+                                    {{ form_widget(formRecherche.place.date, {'attr':{'ng-model':'place.date', 'class':'datepicker accueil'}}) }}
+                                </div>
+                            </div>
+                            <!-- FIN SI ON RECHERCHE UN DEMENAGEMENT OU COVOITURAGE - input de destination -->
+
+                            <!-- SI ON RECHERCHE UN TAXI OU VTC - rayon d'action -->
+                            <div class="taxi_search" ng-class="{'is-open':categorie.vtc || categorie.taxi || categorie.demenagement}">
+                               <!-- <p>Vous pouvez rechercher un taxi ou un VTC dans un perimètre proche de vous</p>-->
+                                <div class="search rayon col-xs-12 col-sm-5">
+                                    <i class="fa fa-circle-o-notch"></i>
+                                    {{ form_widget(formRecherche.rayon.radius, {'attr':{'ng-model':'place.rayon'}}) }}
+                                </div>
+                            </div>
+
+
+                            <!-- FIN SI ON RECHERCHE UN TAXI OU VTC - rayon d'action -->
+                            {{ form_widget(formRecherche.search, {'attr':{'class':'recherche search col-sm-3', 'value':'Rechercher', 'ng-click':'submitForm(this)'}})}}
+                        </div>
+                        <div style="display:none">{{ form_rest(formRecherche) }}</div>
+                    {{ form_end(formRecherche) }}
+                </div>
+            </div>
+        </div>
+        <div class="intro_container col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <div class="intro_item_container col-sm-4">
+                <h2><i class="fa fa-rocket"></i>Voyagez rapidement</h2>
+                <p>Nos transporteurs sont sélectionnés sur les critères suivants :<br>
+                - Disponibilité immédiate.<br>
+                - Révision, sécurité et confort du véhicule.<br>
+                - Courtoisie du conducteur.<br>
+                - Prestations ajoutées ou spécifiques (aide à déplacer des bagages, emballage, fixations...)<br>
+                - Equipement technique (GPS, climatisation...)</p>
+            </div>
+            <div class="intro_item_container col-sm-4">
+                <h2><i class="fa fa-credit-card"></i>Economique</h2>
+                <p>- Nos tarifs sont comparés et régulièrement adaptés à ceux de la concurrence.<br>
+                    - Vous disposez de différentes formules personnalisées à vos besoins :<br>
+                      Tarifs dégressifs.<br>
+                      Abonnements avantageux, pour sollicitations régulières.</p>
+            </div>
+            <div class="intro_item_container col-sm-4">
+                <h2><i class="fa fa-map-signs"></i>Adapté à tous vos besoins</h2>
+                <p>- Nous mettons à votre disposition une large gamme de véhicules (du transport individuel avec bagage léger, au déplacement collectif avec charge volumineuse).<br>
+            - Nos services adaptent leurs horaires aux vôtres : Nos transporteurs sont opérationnels 24/24 h.<br>
+            - Nos prestations longue distance sont souples : Aller-simple, aller-retour.</p>
+            </div>
+        </div>
+    </main>
+    <!-- FIN CONTENT -->
+{% endblock %}

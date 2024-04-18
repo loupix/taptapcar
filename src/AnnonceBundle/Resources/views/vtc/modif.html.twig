@@ -1,0 +1,193 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Modifier annonce de Vtc{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/vtcCtrl.js') }}"></script>
+{% endblock %}
+
+
+
+{% block body %}
+    <!-- CONTENT -->
+    <div class="inscription_form modal_connexion_container creer_annonce col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6">
+        <h1>Modifier votre annonce VTC</h1>
+       <!-- <p class="info_creation col-xs-12 col-sm-8 col-sm-offset-2">
+            N'oublies pas de selectionner la catégorie souhaitée. Si tu as besoins d'informations pour savoir comment publier une annonce, regardes ce <a href="template_info_comment.html">tutoriel</a>
+        </p>-->
+        <!-- TRAJET UNIQUE -->
+        <!-- TRAJET UNIQUE -->
+        <div class="trajet_unique_form col-xs-12 is-open">
+            {{ form_start(form, {'attr':{'ng-controller':'vtcModifCtrl', 'ng-model':'submit_form'}}) }}
+                <div class="bloc_info row" ng-init="init('{{ vtc.id }}')">
+                    <h2>Informations sur la société</h2>
+                    {{ form_label(form.nom_societe, "Nom de votre société", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.nom_societe) }}
+                    {{ form_widget(form.nom_societe, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+
+                    {{ form_label(form.ville, "Votre ville", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.ville) }}
+                    <input type="text" id="from" name="from" class="connexion_input col-xs-12 col-sm-8" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='place' ng-change="loadPlace('ville')" required="required" placeholder="De"  />
+
+                    {{ form_label(form.telephone_societe, "Téléphone", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.telephone_societe) }}
+                    {{ form_widget(form.telephone_societe, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+                </div>
+
+                
+                <div class="bloc_info row">
+                    <h2>Horaires de service</h2>
+
+                    <div class="info_important col-xs-12" for="annonce_prix">Les horaires correspondent au temps où souhaitez que l'annonce soit visible.</div>
+
+
+                    {{ form_label(form.heureDebut, "Heure de début", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.heureDebut) }}
+                    {{ form_widget(form.heureDebut, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+
+                    {{ form_label(form.heureFin, "Heure de fin", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.heureFin) }}
+                    {{ form_widget(form.heureFin, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+                    
+                </div>
+                <div class="bloc_info detail row">
+                    <h2>Détails concernant le trajet</h2>
+                    <div class="detail_sub_bloc row">
+                        <h3>Couleur du véhicule</h3>
+                        {{ form_errors(form.couleur) }}
+                        {% for i in 0..form.couleur|length-2 %}
+                        <div class="row">
+                            {{ form_widget(form.couleur[i], {'attr':{'class':'connexion_input col-xs-2 col-sm-1'}})}}
+                            {{ form_label(form.couleur[i], "", {'label_attr':{'class':'col-xs-10 col-sm-11'}})}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="detail_sub_bloc row">
+                        <h3>Wifi à bord</h3>
+                        {{ form_errors(form.wifi) }}
+                        {% for i in 0..form.wifi|length-2 %}
+                        <div class="row">
+                            {{ form_widget(form.wifi[i], {'attr':{'class':'connexion_input col-xs-2 col-sm-1'}})}}
+                            {{ form_label(form.wifi[i], "", {'label_attr':{'class':'col-xs-10 col-sm-11'}})}}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="detail_sub_bloc row">
+                        <h3>Paiement accepté</h3>
+                        {{ form_errors(form.paiements) }}
+                        {% for i in 0..form.paiements|length-2 %}
+                        <div class="row">
+                            {{ form_widget(form.paiements[i], {'attr':{'class':'connexion_input col-xs-2 col-sm-1'}})}}
+                            {{ form_label(form.paiements[i], "", {'label_attr':{'class':'col-xs-10 col-sm-11'}})}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="detail_sub_bloc row">
+                        <h3>Facture</h3>
+                        {{ form_errors(form.facture) }}
+                        {% for i in 0..form.facture|length-2 %}
+                        <div class="row">
+                            {{ form_widget(form.facture[i], {'attr':{'class':'connexion_input col-xs-2 col-sm-1'}})}}
+                            {{ form_label(form.facture[i], "", {'label_attr':{'class':'col-xs-10 col-sm-11'}})}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="detail_sub_bloc row">
+                        <h3>Siège Bébé</h3>
+                        {{ form_errors(form.siegeBebe) }}
+                        {% for i in 0..form.siegeBebe|length-2 %}
+                        <div class="row">
+                            {{ form_widget(form.siegeBebe[i], {'attr':{'class':'connexion_input col-xs-2 col-sm-1'}})}}
+                            {{ form_label(form.siegeBebe[i], "", {'label_attr':{'class':'col-xs-10 col-sm-11'}})}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="detail_sub_bloc row">
+                        <h3>Animaux acceptés ?</h3>
+                        {{ form_errors(form.animaux) }}
+                        {% for i in 0..form.animaux|length-2 %}
+                        <div class="row">
+                            {{ form_widget(form.animaux[i], {'attr':{'class':'connexion_input col-xs-2 col-sm-1'}})}}
+                            {{ form_label(form.animaux[i], "", {'label_attr':{'class':'col-xs-10 col-sm-11'}})}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="bloc_info row">
+                    <h2>Tarif</h2>
+                    <div class="info_important col-xs-12" for="annonce_prix">Le prix correspond au prix par personne ou par kilomètre.</div>
+                <div class="bloc_info row">
+                    <h2>Tarif</h2>
+                    <div class="info_important col-xs-12" for="annonce_prix">Le prix correspond au prix par personne ou par kilomètre.</div>
+                    {{ form_label(form.tarifJour, "Tarif de jour", {'label_attr':{'class':'col-xs-12 col-sm-5'}})}}
+                    {{ form_errors(form.tarifJour) }}
+                    {{ form_widget(form.tarifJour, {'attr':{'class':'connexion_input col-xs-12 col-sm-5'}})}}
+                </div>
+
+                <div class="bloc_info row">
+                    {{ form_label(form.tarifNuit, "Tarif de nuit", {'label_attr':{'class':'col-xs-12 col-sm-5'}})}}
+                    {{ form_errors(form.tarifNuit) }}
+                    {{ form_widget(form.tarifNuit, {'attr':{'class':'connexion_input col-xs-5'}})}}
+                </div>
+
+                <div class="bloc_info row">
+                    {{ form_label(form.typeTarif, "Type de tarif", {'label_attr':{'class':'col-xs-12 col-sm-5'}})}}
+                    {{ form_errors(form.typeTarif) }}
+                    {{ form_widget(form.typeTarif, {'attr':{'class':'connexion_input col-xs-5'}})}}
+                </div>
+
+                <div class="bloc_info row">
+                    {{ form_label(form.nbPlaces, "Nombre de place", {'label_attr':{'class':'col-xs-12 col-sm-5'}})}}
+                    {{ form_errors(form.nbPlaces) }}
+                    {{ form_widget(form.nbPlaces, {'attr':{'class':'connexion_input col-xs-5'}})}}
+                </div>
+
+
+{#                     {{ form_label(form.urgent, "Signaler mon annonce Urgent (Cout : 5€)", {'label_attr':{'class':'col-xs-12 col-sm-5'}})}}
+                    {{ form_errors(form.urgent) }}
+                    {{ form_widget(form.urgent, {'attr':{'class':'form-control col-xs-5'}})}} #}
+
+                </div>
+{#                   <div class="bloc_info row">
+                    <h2>Forfaits aéroports et gares</h2>
+                    
+                    <label class="col-xs-12 col-sm-5" for="annonce_prix">Forfait 1</label>
+                    <input type="text" id="annonce_prix" name="annonce_prix" class="connexion_input col-xs-12 col-sm-5  " placeholder="Exp: Paris rive droite => Roissy CDG : 55€">
+                    <label class="col-xs-12 col-sm-5" for="annonce_prix">Forfait 2</label>
+                    <input type="text" id="annonce_prix" name="annonce_prix" class="connexion_input col-xs-12 col-sm-5  " placeholder="Paris rive gauche => Roissy CDG : 50€">
+                    <label class="col-xs-12 col-sm-5" for="annonce_prix">Forfait 3</label>
+                    <input type="text" id="annonce_prix" name="annonce_prix" class="connexion_input col-xs-12 col-sm-5  " placeholder="Paris rive droite => Orly : 60€">
+                    <label class="col-xs-12 col-sm-5" for="annonce_prix">Forfait 4</label>
+                    <input type="text" id="annonce_prix" name="annonce_prix" class="connexion_input col-xs-12 col-sm-5  " placeholder="Paris rive gauche => Orly : 50€">
+                    
+
+                </div> #}
+                <div class="bloc_info info_complementaire row">
+                    <h2>Informations complémentaires</h2>
+                    {{ form_label(form.infosdivers, "Vous pouvez indiquez aux personnes des informations complémentaires, comme un lieu de rendez-vous plus précis, ou encore les lieux que vous pouvez desservir, etc.. ", {'label_attr':{'class':'col-xs-12'}})}}
+                    {{ form_errors(form.infosdivers) }}
+                    {{ form_widget(form.infosdivers, {'attr':{'class':'connexion_input col-xs-12'}})}}
+                </div>
+                <div class="bloc_info row">
+                    {{ form_widget(form.modif, {'attr': {'class': 'connexion_submit col-xs-12 col-sm-offset-8 col-sm-4'}}) }}
+
+                    {{ form_widget(form.supprime, {'attr': {'class': 'connexion_submit btn btn-danger col-xs-12 col-sm-offset-8 col-sm-4'}}) }}
+                </div>
+                <div style="display:none">{{ form_rest(form) }}</div>
+            {{ form_end(form) }}
+        </div>
+        <!-- FIN TRAJET UNIQUE -->
+        <!-- FIN TRAJET UNIQUE -->
+    </div>
+    <!-- FIN CONTENT -->
+{% endblock %}
+
+
+
+
+

@@ -1,0 +1,474 @@
+<?php
+
+namespace UserBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Paiement
+ *
+ * @ORM\Table(name="user_paiement")
+ * @ORM\Entity(repositoryClass="UserBundle\Repository\PaiementRepository")
+ */
+class Paiement
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\ManyToOne(targetEntity="UserBundle\Entity\User", inversedBy="auteurPaiement",cascade={"persist"})
+     * @ORM\JoinColumn(name="auteur_id", referencedColumnName="id")
+     */
+    private $auteur;
+
+    /**
+     * @var string
+     *
+     * @ORM\ManyToOne(targetEntity="UserBundle\Entity\User", inversedBy="transporteurPaiement",cascade={"persist"})
+     * @ORM\JoinColumn(name="transporteur_id", referencedColumnName="id")
+     */
+    private $transporteur;
+
+
+    /**
+     * @var string
+     *
+     * @ORM\OneToOne(targetEntity="UserBundle\Entity\Reservation", mappedBy="paiement",cascade={"persist"})
+     */
+    private $reservation;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="montant", type="float", nullable=true)
+     */
+    private $montant;
+
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="card_id", type="integer", nullable=true)
+     */
+    private $card;
+
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="wallet_id", type="integer", nullable=true)
+     */
+    private $wallet;
+
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="payin_id", type="integer", nullable=true)
+     */
+    private $payin;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="payout_id", type="integer", nullable=true)
+     */
+    private $payout;
+
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="valider", type="boolean")
+     */
+    private $valider;
+
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="enLigne", type="boolean")
+     */
+    private $enLigne;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="enLigneRegler", type="boolean")
+     */
+    private $enLigneRegler;
+
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="direct", type="boolean")
+     */
+    private $direct;
+
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="createdAt", type="datetime")
+     */
+    private $createdAt;
+
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+        $this->valider = false;
+        $this->direct = true;
+        $this->enLigne = false;
+        $this->enLigneRegler = false;
+    }
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set auteur
+     *
+     * @param string $auteur
+     *
+     * @return Paiement
+     */
+    public function setAuteur($auteur)
+    {
+        $this->auteur = $auteur;
+
+        return $this;
+    }
+
+    /**
+     * Get auteur
+     *
+     * @return string
+     */
+    public function getAuteur()
+    {
+        return $this->auteur;
+    }
+
+    /**
+     * Set transporteur
+     *
+     * @param string $transporteur
+     *
+     * @return Paiement
+     */
+    public function setTransporteur($transporteur)
+    {
+        $this->transporteur = $transporteur;
+
+        return $this;
+    }
+
+    /**
+     * Get transporteur
+     *
+     * @return string
+     */
+    public function getTransporteur()
+    {
+        return $this->transporteur;
+    }
+
+    /**
+     * Set montant
+     *
+     * @param float $montant
+     *
+     * @return Paiement
+     */
+    public function setMontant($montant)
+    {
+        $this->montant = $montant;
+
+        return $this;
+    }
+
+    /**
+     * Get montant
+     *
+     * @return float
+     */
+    public function getMontant()
+    {
+        return $this->montant;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param string $createdAt
+     *
+     * @return Paiement
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return string
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set valider
+     *
+     * @param boolean $valider
+     *
+     * @return Paiement
+     */
+    public function setValider($valider)
+    {
+        $this->valider = $valider;
+
+        return $this;
+    }
+
+    /**
+     * Get valider
+     *
+     * @return boolean
+     */
+    public function getValider()
+    {
+        return $this->valider;
+    }
+
+
+    /**
+     * Set reservation
+     *
+     * @param \UserBundle\Entity\Reservation $reservation
+     *
+     * @return Paiement
+     */
+    public function setReservation(\UserBundle\Entity\Reservation $reservation = null)
+    {
+        $this->reservation = $reservation;
+
+        return $this;
+    }
+
+    /**
+     * Get reservation
+     *
+     * @return \UserBundle\Entity\Reservation
+     */
+    public function getReservation()
+    {
+        return $this->reservation;
+    }
+
+    /**
+     * Set card
+     *
+     * @param integer $card
+     *
+     * @return Paiement
+     */
+    public function setCard($card)
+    {
+        $this->card = $card;
+
+        return $this;
+    }
+
+    /**
+     * Get card
+     *
+     * @return integer
+     */
+    public function getCard()
+    {
+        return $this->card;
+    }
+
+    /**
+     * Set wallet
+     *
+     * @param integer $wallet
+     *
+     * @return Paiement
+     */
+    public function setWallet($wallet)
+    {
+        $this->wallet = $wallet;
+
+        return $this;
+    }
+
+    /**
+     * Get wallet
+     *
+     * @return integer
+     */
+    public function getWallet()
+    {
+        return $this->wallet;
+    }
+
+    /**
+     * Set payin
+     *
+     * @param integer $payin
+     *
+     * @return Paiement
+     */
+    public function setPayin($payin)
+    {
+        $this->payin = $payin;
+
+        return $this;
+    }
+
+    /**
+     * Get payin
+     *
+     * @return integer
+     */
+    public function getPayin()
+    {
+        return $this->payin;
+    }
+
+
+    /**
+     * Set payout
+     *
+     * @param integer $payout
+     *
+     * @return Paiement
+     */
+    public function setPayout($payout)
+    {
+        $this->payout = $payout;
+
+        return $this;
+    }
+
+    /**
+     * Get payout
+     *
+     * @return integer
+     */
+    public function getPayout()
+    {
+        return $this->payout;
+    }
+
+    /**
+     * Set enLigne
+     *
+     * @param boolean $enLigne
+     *
+     * @return Paiement
+     */
+    public function setEnLigne($enLigne)
+    {
+        $this->enLigne = $enLigne;
+
+        return $this;
+    }
+
+    /**
+     * Get enLigne
+     *
+     * @return boolean
+     */
+    public function getEnLigne()
+    {
+        return $this->enLigne;
+    }
+
+    /**
+     * Set direct
+     *
+     * @param boolean $direct
+     *
+     * @return Paiement
+     */
+    public function setDirect($direct)
+    {
+        $this->direct = $direct;
+
+        return $this;
+    }
+
+    /**
+     * Get direct
+     *
+     * @return boolean
+     */
+    public function getDirect()
+    {
+        return $this->direct;
+    }
+
+
+    /**
+     * Set enLigneRegler
+     *
+     * @param boolean $enLigneRegler
+     *
+     * @return Paiement
+     */
+    public function setEnLigneRegler($enLigneRegler)
+    {
+        $this->enLigneRegler = $enLigneRegler;
+
+        return $this;
+    }
+
+    /**
+     * Get enLigneRegler
+     *
+     * @return boolean
+     */
+    public function getEnLigneRegler()
+    {
+        return $this->enLigneRegler;
+    }
+
+
+    public function toArray(){
+        return array(
+            "Id"=>$this->getId(),
+            "Auteur"=>$this->getAuteur()->toArray(),
+            "Transporteur"=>$this->getTransporteur()->toArray(),
+            "Montant"=>$this->getMontant(),
+            "CreatedAt"=>$this->getCreatedAt()->getTimestamp()
+
+        );
+    }
+
+
+}

@@ -1,0 +1,120 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Mes paiements et devis{% endblock %}
+
+{% block body %}
+    <!-- CONTENT -->
+    <!-- Contenu profil -->
+    <div class="profil_container col-xs-12 col-md-offset-2 col-md-8">
+        
+        {% include 'UserBundle:Profile:menu_profile.html.twig' %}
+        
+        <!-- AVIS profil -->
+        {% if paiements|length > 0 %}
+         <div class="avis_profil paiements_container">
+                <h1>Liste des paiements</h1>
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                {% for paiement in paiements %}
+                {% if paiement.reservation is not null %}
+                    {% set annonce = paiement.reservation.annonce %}
+                    {% set reservation = paiement.reservation %}
+                    {% set object = paiement.reservation.annonce.getObject() %}
+                    <article class="row">
+                        {% if annonce.getType() == "Vtc" or annonce.getType() == "Taxi" %}
+                        <div class="col-sm-3 col-xs-5 trajet">
+                            <p class="col-sm-5 col-xs-12">{{ annonce.getType() }}<p>
+                            <p class="col-sm-5 col-xs-12">{{ reservation.depart.ville.nom }}<p>
+                        </div>
+                        {% elseif annonce.getType() == "Demenagement" %}
+                        <div class="col-sm-3 col-xs-5 trajet">
+                            <p class="col-sm-5 col-xs-12">{{ annonce.getType() }}<p>
+                            <br />
+                            <p class="col-sm-5 col-xs-12">{{ reservation.depart.ville.nom }}<p>
+                            <i class="fa col-sm-2 col-xs-12 fa-long-arrow-right"></i>
+                            <p class="col-sm-5 col-xs-12">{{ reservation.arrivee.ville.nom }}</p>
+                        </div>
+                        {% elseif annonce.getType() == "Covoiturage" %}
+                        <div class="col-sm-3 col-xs-5 trajet">
+                            <p class="col-sm-5 col-xs-12">{{ annonce.getType() }}<p>
+                            <br />
+                            <p class="col-sm-5 col-xs-12">{{ object.depart.ville.nom }}<p>
+                            <i class="fa col-sm-2 col-xs-12 fa-long-arrow-right"></i>
+                            <p class="col-sm-5 col-xs-12">{{ object.arrivee.ville.nom }}</p>
+                        </div>
+                        {% endif %}
+                        <div class="col-sm-3 col-xs-5 conducteur">
+                            <a href="#">{{ paiement.auteur.nom }} {{ paiement.auteur.prenom }}</a>
+                        </div>
+                        <div class="col-sm-2 col-xs-3">{{ paiement.createdAt|date("d/m/Y") }}</div>
+                        <div class="prix col-sm-2 col-xs-3">{{ paiement.montant }}€</div>
+                        <div class="prix col-sm-2 col-xs-3">
+                            {% if paiement.direct %}Paiement sur place
+                            {% else %}
+                                {% if paiement.enligneRegler %}
+                                Régler
+                                {% else %}
+                                <a href="{{path('profile_paiement_confirmation',{'paiementId':paiement.id, 'reservationId':paiement.reservation.id}) }}" class="btn btn-info btn-sm">Régler en ligne</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endif %}
+                {% endfor %}       
+        </div>
+        {% else %}
+        <div class="avis_profil paiements_container">
+                <h1>Aucuns paiements</h1>
+        </div>
+        {% endif %}
+
+
+        {# {% if devisClient|length > 0 %}
+        <div class="avis_profil paiements_container">
+                <h1>Liste des devis</h1>
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                {% for devis in devisClient %}
+                {% if devis.annonce is not null %}
+                    {% set annonce = devis.annonce %}
+                    {% set object = devis.annonce.getObject() %}
+                    <article class="row">
+                        {% if annonce.getType() == "Vtc" or annonce.getType() == "Taxi" %}
+                        <div class="col-sm-3 col-xs-5 trajet">
+                            <p class="col-sm-5 col-xs-12">{{ annonce.getType() }}<p>
+                            <p class="col-sm-5 col-xs-12">{{ annonce.depart.ville.nom }}<p>
+                        </div>
+                        {% else %}
+                        <div class="col-sm-3 col-xs-5 trajet">
+                            <p class="col-sm-5 col-xs-12">{{ object.depart.adresse }}<p>
+                            <i class="fa col-sm-2 col-xs-12 fa-long-arrow-right"></i>
+                            <p class="col-sm-5 col-xs-12">{{ object.arrivee.adresse }}</p>
+                        </div>
+                        {% endif %}
+                        <div class="col-sm-3 col-xs-5 conducteur">
+                            <a href="#">{{ devis.auteur.nom }} {{ devis.auteur.prenom }}</a>
+                        </div>
+                        <div class="col-sm-2 col-xs-3">{{ devis.createdAt|date("d/m/Y") }}</div>
+                        <div class="prix col-sm-2 col-xs-3">{{ devis.montant }}€</div>
+                        <div class="prix col-sm-2 col-xs-3">
+                            {% if devis.refuser %}
+                            <span class="text-danger">Refuser</span>
+                            {% elseif devis.accepter %}
+                            <span class="text-success">Accepter</span>
+                            {% else %}
+                            <a href="{{path('profile_devis_get',{'devisId':devis.id, 'annonceId':annonce.id}) }}" class="btn btn-info btn-sm">Afficher</a>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endif %}
+                {% endfor %} 
+        </div>
+        {% else %}
+        <div class="avis_profil paiements_container">
+                <h1>Aucuns devis</h1>
+        </div>
+        {% endif %} #}
+    </div>
+    <!-- FIN AVIS -->
+    <!-- FIN CONTENT -->
+{% endblock %}

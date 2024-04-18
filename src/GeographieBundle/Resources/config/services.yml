@@ -1,0 +1,16 @@
+services:
+#    geographie.example:
+#        class: GeographieBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    lyssal.geographie.entity.ville.class: 
+        class: GeographieBundle\Entity\Ville
+    lyssal.geographie.entity.code_postal:
+        class: GeographieBundle\Entity\CodePostal
+    lyssal.geographie.entity.region:
+        class: GeographieBundle\Entity\Region
+    lyssal.geographie.entity.departement:
+        class: GeographieBundle\Entity\Departement
+    lyssal.geographie.entity.pays:
+        class: GeographieBundle\Entity\Pays
+    lyssal.geographie.entity.langue:
+        class: GeographieBundle\Entity\Langue

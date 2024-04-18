@@ -1,0 +1,47 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Admin - Les paiements{% endblock %}
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/adminCtrl.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+<!-- CONTENT -->
+    <div class="admin_container col-xs-12 col-md-offset-2 col-md-8" ng-controller="adminPaiementsCtrl" ng-init="loadPaiements()">
+        
+        {% include 'AdminBundle:Admin:header.html.twig' %}
+
+        <table class="table table-striped">
+        	<th>
+                <td>Auteur</td>
+                <td>Transporteur</td>
+        		<td>Creer</td>
+        		<td>Montant</td>
+        	</th>
+        	<tr ng-repeat="paiement in paiements">
+                <td></td>
+                <td>{[{ paiement.Auteur.Nom }]} {[{ paiement.Auteur.Prenom }]}</td>
+                <td>{[{ paiement.Transporteur.Nom }]} {[{ paiement.Transporteur.Prenom }]}</td>
+                <td>{[{ paiement.CreatedAt*1000 | date:"EEE dd MMM"}]}</td>
+                <td>{[{ paiement.Montant }]} €</td>
+        	</tr>
+        </table>
+
+
+        <div class="bottom_annonces row" ng-if="maxResult > 0">
+            <div class="info col-md-4 col-xs-12 ">{[{ getMinPage() }]} à {[{ getMaxPage() }]} sur {[{ maxResult }]} résultats</div>
+            <div class="pagination col-xs-12 col-md-8">
+                <ul uib-pagination boundary-links="true"
+                    class="pagination-sm" 
+                    ng-model="$parent.currentPage" ng-change="pageChanged()"
+                    total-items="totalItems" items-per-page="maxSize"
+                    max-size="5" force-ellipses="true"></ul>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

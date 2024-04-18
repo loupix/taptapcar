@@ -1,0 +1,54 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Choisissez votre activité{% endblock %}
+
+{% block body %}
+    <!-- CONTENT -->
+    <div class="inscription_form modal_connexion_container creer_annonce col-xs-12 col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+        <h1>Choisissez votre activité</h1>
+
+        <div class=" col-xs-12 choix_annonce_container">  
+            
+            <a class="lien_choix_annonce" href="{{ path('annonce_demenagement_ajout') }}">
+                <div class="col-sm-6 col-xs-12">
+                    <div class="item">
+                        <h2>Déménagement</h2>
+                        <p>Vous êtes un professionnel du Transport-Déménagement, ou vous recherchez un transporteur pas cher ? publiez ICI
+                        </p>
+                    </div>
+                </div>
+            </a>
+
+            <a class="lien_choix_annonce" href="{{ path('annonce_covoiturage_ajout') }}">
+                <div class="col-sm-6 col-xs-12">
+                    <div class="item">
+                        <h2>Covoiturage</h2>
+                        <p>Pour tous vos trajets, ne partez plus seul, partagez vos frais et faites vivre votre voyages grâce au covoiturage</p>
+                    </div>
+                </div>
+            </a>
+
+
+            <a class="lien_choix_annonce" href="{{ path('annonce_taxi_ajout') }}">
+                <div class="col-sm-6 col-xs-12">
+                    <div class="item">
+                        <h2>Taxi</h2>
+                        <p>Multipliez votre visibilité et touchez un nombre plus important de clients</p>
+                    </div>
+                </div>
+            </a>
+
+            <a class="lien_choix_annonce" href="{{ path('annonce_vtc_ajout') }}">
+                <div class="col-sm-6 col-xs-12">
+                    <div class="item">
+                        <h2>VTC</h2>
+                        <p>Chauffeur privé, publier une annonce et trouver des nouveaux clients</p>
+                    </div>
+                </div>
+            </a>
+
+        </div>     
+    </div>
+
+    <!-- FIN CONTENT -->
+{% endblock %}

@@ -1,0 +1,213 @@
+{% extends "::base.html.twig" %}
+
+
+{% set annonce = reservation.annonce %}
+{% set object = annonce.getObject() %}
+
+{% block title %}Reservation {{ annonce.getType() }}{% endblock %}
+
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/annonceCtrl.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+<!-- CONTENT -->
+<div class="inscription_form modal_connexion_container creer_annonce col-xs-12 col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8" ng-controller="reservationCtrl" ng-init="getReservation('{{ reservation.id }}');">
+    <h1>Reservation {{ annonce.getType() }}</h1>
+
+    <div class=" col-xs-12 reservation">  
+            <div class="bloc_info row">
+                <h2>Recapitulatif trajet</h2>
+                {% if annonce.getType() == "Vtc" or annonce.getType() == "Taxi" or (annonce.getType() == "Demenagement" and object.transporteur) %}
+                
+
+                <div class="from col-sm-6">
+                    <p>Départ : <span>{{ reservation.depart.adresse }}</span></p>
+                </div>
+
+                <div class="to col-sm-6">
+                    <p>Arrivée : <span>{{ reservation.arrivee.adresse }}</span></p>
+                </div>
+                
+
+
+                <div class="date_prix row">
+                    <div class="date col-sm-6">
+                        <p>Date : <span>{{ reservation.date|date("d/m/Y") }}</span></p>
+                        <p>Heure de départ : <span>{{ reservation.date|date('H:i') }}</span></p>
+                    </div>
+                    <div class="prix col-sm-6">
+                        <p>Prix : <span>
+                        	{% if reservation.typeCout=="Au compteur" %}
+                        	Au compteur
+                        	{% else %}
+                        	{{ reservation.tarif }}€ / {{ reservation.typeCout }}
+                        	{% endif %}
+                        </span></p>
+                    </div>
+                </div>
+
+
+
+                {% elseif annonce.getType() == "Demenagement" or annonce.getType() == "Covoiturage" %}
+
+
+                <div class="from col-sm-6">
+                    <p>Départ : <span>{{ object.depart.ville.nom }}</span></p>
+                    <p>Lieu de rendez-vous : {{ object.rendezVous.adresse }}</p>
+                </div>
+                <div class="to col-sm-6">
+                    <p>Arrivée : <span>{{ object.arrivee.ville.nom }}</span></p>
+                    <p>Lieu de dépot : {{ object.depot.adresse }}</p>
+                </div>
+
+
+                {% if object.dateUnique %}
+                <div class="date_prix row">
+                    <div class="date col-sm-6">
+                        <p>Date : <span>{{ object.dateUnique|date("d/m/Y") }}</span></p>
+                        <p>Heure de départ : <span>{{ object.heureUnique|date('h:i') }}</span></p>
+                    </div>
+                    <div class="prix col-sm-6">
+                        <p>Prix : <span>{{ object.cout }}€ / {{ reservation.typeCout }}</span></p>
+                    </div>
+                </div>
+                {% else %}
+                <div class="date_prix row">
+                    <div class="date col-sm-6">
+                        <p>Date : <span>{{ reservation.date|date("d/m/Y") }}</span></p>
+                        <p>Heure de départ : <span>{{ reservation.date|date('h:i') }}</span></p>
+                    </div>
+                    <div class="prix col-sm-6">
+                        <p>Prix : <span>{{ object.cout }}€ / {{ reservation.typeCout }}</span></p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% endif %}
+
+
+                
+
+                
+            </div>
+            <div class="bloc_info row">
+                <h2>Confirmation</h2>
+
+                {% if not annonce.getType() == "Covoiturage" %}
+                <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_distance">Distance</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <input type="text" disabled="disabled" class="form-control" name="reservation_distance" id="reservation_distance" value="{[{ reservation.Distance }]} Km" />
+                    </div>
+                </div>
+                {% endif %}
+
+
+                {% if reservation.nbPlaces %}
+                <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_nbPlaces">Nombre de place</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <input type="text" disabled="disabled" class="form-control" name="reservation_nbPlaces" id="reservation_nbPlaces" value="{[{ reservation.NbPlaces }]}" />
+                    </div>
+                </div>
+                {% endif %}
+
+<!--                 <div class="row">
+                    <label class="col-xs-12 col-sm-5 " for="reservation_duree">Duree</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <input type="time" disabled="disabled" class="form-control" name="reservation_duree" id="reservation_duree" value="{{ reservation.duree | date('H:i')}}" />
+                    </div>
+                </div> -->
+
+
+                <form method="POST" action="#">
+	                
+	                <div class="col-xs-12 facture_container">
+	                    {% if reservation.typeCout=="Par kilomètres" %}
+	                    <div class="infos row">
+	                        <div class="col-sm-4 item">Tarif par Km</div>
+	                        <div class="col-sm-4 item">Distance</div>
+	                        <div class="col-sm-4 item">Total</div>
+	                    </div>
+	                    <div class="facture row">
+	                        <div class="col-sm-4 item">{[{ reservation.Tarif }]}€</div>
+	                        <div class="col-sm-4 item">{[{ reservation.Distance }]} Km</div>
+	                        <div class="col-sm-4 item">{[{ reservation.Prix }]}€</div>
+	                    </div>
+
+	                    {% elseif reservation.typeCout=="Par heures" %}
+	                    <div class="infos row">
+	                        <div class="col-sm-4 item">Tarif par Heure</div>
+	                        <div class="col-sm-4 item">Duree</div>
+	                        <div class="col-sm-4 item">Total</div>
+	                    </div>
+	                    <div class="facture row">
+	                        <div class="col-sm-4 item">{[{ reservation.Tarif }]}€</div>
+	                        <div class="col-sm-4 item">{[{ reservation.Duree*1000 | date:"hh:mm" }]}</div>
+	                        <div class="col-sm-4 item">{[{ reservation.Prix }]}€</div>
+	                    </div>
+
+	                    {% elseif reservation.typeCout=="Par places" %}
+	                    <div class="infos row">
+	                        <div class="col-sm-4 item">Prix trajet</div>
+	                        <div class="col-sm-4 item">Nombres de places</div>
+	                        <div class="col-sm-4 item">Total</div>
+	                    </div>
+	                    <div class="facture row">
+	                        <div class="col-sm-4 item">{[{ reservation.Tarif }]}€</div>
+	                        <div class="col-sm-4 item">{[{ reservation.NbPlaces }]} Km</div>
+	                        <div class="col-sm-4 item">{[{ reservation.Prix }]}€</div>
+	                    </div>
+
+	                    {% elseif reservation.typeCout=="Prix unique" %}
+	                    <div class="infos row">
+	                        <div class="col-sm-6 item">Prix trajet</div>
+	                        <div class="col-sm-6 item">Total</div>
+	                    </div>
+	                    <div class="facture row">
+	                        <div class="col-sm-6 item">{[{ reservation.Tarif }]}€</div>
+	                        <div class="col-sm-6 item">{[{ reservation.Prix }]}€</div>
+	                    </div>
+
+	                    {% else %}
+	                    <div class="infos row">
+	                        <div class="col-sm-4 item">Prix trajet</div>
+	                        <div class="col-sm-4 item">Nombres de places</div>
+	                        <div class="col-sm-4 item">Total</div>
+	                    </div>
+	                    <div class="infos row">
+	                        <div class="col-sm-4 item">{[{ reservation.Tarif }]}€</div>
+	                        <div class="col-sm-4 item">{[{ reservation.NbPlaces }]}</div>
+	                        <div class="col-sm-4 item">{[{ reservation.Prix }]}€</div>
+	                    </div>
+	                    {% endif %}
+
+
+
+	                    <input type="hidden" name="reservation_id" value="{[{ reservation.Id }]}" />
+
+	                    <input type="button" name="reservation_confirmer" class="button_payer col-xs-12 col-sm-offset-8 col-sm-4 ng-hide" value="Confirmez" ng-show="reservation.EnCours" ng-click="validReservation('{{ reservation.id }}', true);">
+
+	                    <input type="button" name="reservation_annuler" class="button_payer col-xs-12 col-sm-offset-8 col-sm-4 ng-hide" value="Annuler" ng-show="reservation.EnCours" ng-click="validReservation('{{ reservation.id }}', false);">
+
+
+	                    <a href="{{ path('user_reservation_pdfreservation',{'reservationId':reservation.id}) }}" target="_blank" class="button_pdf col-xs-12 col-sm-offset-8 col-sm-4"><i class="fa fa-file-pdf-o" style="background:none;">&nbsp;</i>Télécharger le PDF</a>
+
+	                </div>
+
+                </form>
+
+
+
+            </div>    
+    </div>       
+</div>
+</div>
+<!-- FIN CONTENT -->
+
+{% endblock %}

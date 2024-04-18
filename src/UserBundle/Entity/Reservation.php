@@ -1,0 +1,791 @@
+<?php
+
+namespace UserBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use UserBundle\Entity\Paiement;
+
+/**
+ * Reservation
+ *
+ * @ORM\Table(name="user_reservation")
+ * @ORM\Entity(repositoryClass="UserBundle\Repository\ReservationRepository")
+ */
+class Reservation
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="guid")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="UUID")
+     */
+    private $id;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="numero", type="string")
+     */
+    private $numero;
+
+    /**
+     * @var string
+     *
+     * @ORM\ManyToOne(targetEntity="UserBundle\Entity\User", inversedBy="reservations", cascade={"persist"})
+     * @ORM\JoinColumn(name="auteur_id", referencedColumnName="id")
+     */
+    private $auteur;
+
+    /**
+     * @var string
+     *
+     * @ORM\ManyToOne(targetEntity="AnnonceBundle\Entity\Annonce", inversedBy="reservations", cascade={"persist"})
+     * @ORM\JoinColumn(name="annonce_id", referencedColumnName="id")
+     */
+    private $annonce;
+
+    /**
+     * @var string
+     *
+     * @ORM\OneToOne(targetEntity="UserBundle\Entity\Paiement", inversedBy="reservation",cascade={"persist"})
+     * @ORM\JoinColumn(name="paiement_id", referencedColumnName="id")
+     */
+    private $paiement;
+
+
+    /**
+     * @var date
+     *
+     * @ORM\Column(name="date", type="datetime", nullable=false)
+     */
+    private $date;
+
+
+    /**
+     * @var date
+     *
+     * @ORM\Column(name="duree", type="time", nullable=true)
+     */
+    private $duree;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="distance", type="integer", nullable=true)
+     */
+    private $distance;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="typeCout", type="string", nullable=true)
+     */
+    private $typeCout;
+
+    /**
+     * @var place
+     *
+     * @ORM\ManyToOne(targetEntity="GeographieBundle\Entity\Place",cascade={"persist"})
+     * @ORM\JoinColumn(name="place_id", referencedColumnName="id", nullable=true)
+     */
+    private $place;
+
+
+    /**
+     * @var depart
+     *
+     * @ORM\ManyToOne(targetEntity="GeographieBundle\Entity\Place",cascade={"persist"})
+     * @ORM\JoinColumn(name="depart_id", referencedColumnName="id", nullable=true)
+     */
+    private $depart;
+
+
+    /**
+     * @var arrivee
+     *
+     * @ORM\ManyToOne(targetEntity="GeographieBundle\Entity\Place",cascade={"persist"})
+     * @ORM\JoinColumn(name="arrivee_id", referencedColumnName="id", nullable=true)
+     */
+    private $arrivee;
+
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="nbPlaces", type="integer")
+     */
+    private $nbPlaces;
+
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="prix", type="float", nullable=true)
+     */
+    private $prix;
+
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="tarif", type="float", nullable=true)
+     */
+    private $tarif;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="repondSous", type="integer", nullable=true)
+     */
+    private $repondSous;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="autoroute", type="boolean", nullable=true)
+     */
+    private $autoroute;
+
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="enCours", type="boolean")
+     */
+    private $enCours;
+
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="valider", type="boolean", nullable=true)
+     */
+    private $valider;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="createdAt", type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="updatedAt", type="datetime")
+     */
+    private $updatedAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="expiredAt", type="datetime")
+     */
+    private $expiredAt;
+
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
+        $this->expiredAt = new \DateTime();
+        $this->expiredAt->modify("+2 months");
+        $this->enCours = true;
+        $this->valider = false;
+        $this->numero = uniqid();
+    }
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set auteur
+     *
+     * @param string $auteur
+     *
+     * @return Reservation
+     */
+    public function setAuteur($auteur)
+    {
+        $this->auteur = $auteur;
+
+        return $this;
+    }
+
+    /**
+     * Get auteur
+     *
+     * @return string
+     */
+    public function getAuteur()
+    {
+        return $this->auteur;
+    }
+
+    /**
+     * Set annonce
+     *
+     * @param string $annonce
+     *
+     * @return Reservation
+     */
+    public function setAnnonce($annonce)
+    {
+        $this->annonce = $annonce;
+
+        return $this;
+    }
+
+    /**
+     * Get annonce
+     *
+     * @return string
+     */
+    public function getAnnonce()
+    {
+        return $this->annonce;
+    }
+
+    /**
+     * Set repondSous
+     *
+     * @param integer $repondSous
+     *
+     * @return Reservation
+     */
+    public function setRepondSous($repondSous)
+    {
+        $this->repondSous = $repondSous;
+
+        return $this;
+    }
+
+    /**
+     * Get repondSous
+     *
+     * @return int
+     */
+    public function getRepondSous()
+    {
+        return $this->repondSous;
+    }
+
+    /**
+     * Set autoroute
+     *
+     * @param boolean $autoroute
+     *
+     * @return Reservation
+     */
+    public function setAutoroute($autoroute)
+    {
+        $this->autoroute = $autoroute;
+
+        return $this;
+    }
+
+    /**
+     * Get autoroute
+     *
+     * @return bool
+     */
+    public function getAutoroute()
+    {
+        return $this->autoroute;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Reservation
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param string $updatedAt
+     *
+     * @return Reservation
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return string
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set expiredAt
+     *
+     * @param \DateTime $expiredAt
+     *
+     * @return Reservation
+     */
+    public function setExpiredAt($expiredAt)
+    {
+        $this->expiredAt = $expiredAt;
+
+        return $this;
+    }
+
+    /**
+     * Get expiredAt
+     *
+     * @return \DateTime
+     */
+    public function getExpiredAt()
+    {
+        return $this->expiredAt;
+    }
+
+
+    /**
+     * Is expiredAt
+     *
+     * @return boolean
+     */
+    public function isExpired()
+    {
+        return $this->getExpiredAt() <= $this->getCreatedAt();
+    }
+
+    /**
+     * Add annonce
+     *
+     * @param \AnnonceBundle\Entity\Annonce $annonce
+     *
+     * @return Reservation
+     */
+    public function addAnnonce(\AnnonceBundle\Entity\Annonce $annonce)
+    {
+        $this->annonce[] = $annonce;
+
+        return $this;
+    }
+
+    /**
+     * Remove annonce
+     *
+     * @param \AnnonceBundle\Entity\Annonce $annonce
+     */
+    public function removeAnnonce(\AnnonceBundle\Entity\Annonce $annonce)
+    {
+        $this->annonce->removeElement($annonce);
+    }
+
+    /**
+     * Set enCours
+     *
+     * @param boolean $enCours
+     *
+     * @return Reservation
+     */
+    public function setEnCours($enCours)
+    {
+        $this->enCours = $enCours;
+
+        return $this;
+    }
+
+    /**
+     * Get enCours
+     *
+     * @return boolean
+     */
+    public function getEnCours()
+    {
+        return $this->enCours;
+    }
+
+    /**
+     * Set nbPlaces
+     *
+     * @param integer $nbPlaces
+     *
+     * @return Reservation
+     */
+    public function setNbPlaces($nbPlaces)
+    {
+        $this->nbPlaces = $nbPlaces;
+
+        return $this;
+    }
+
+    /**
+     * Get nbPlaces
+     *
+     * @return integer
+     */
+    public function getNbPlaces()
+    {
+        return $this->nbPlaces;
+    }
+
+    /**
+     * Set prix
+     *
+     * @param integer $prix
+     *
+     * @return Reservation
+     */
+    public function setPrix($prix)
+    {
+        $this->prix = $prix;
+
+        return $this;
+    }
+
+    /**
+     * Get prix
+     *
+     * @return integer
+     */
+    public function getPrix()
+    {
+        return $this->prix;
+    }
+
+
+    /**
+     * Set tarif
+     *
+     * @param float $tarif
+     *
+     * @return Reservation
+     */
+    public function setTarif($tarif)
+    {
+        $this->tarif = $tarif;
+
+        return $this;
+    }
+
+    /**
+     * Get tarif
+     *
+     * @return float
+     */
+    public function getTarif()
+    {
+        return $this->tarif;
+    }
+
+    /**
+     * Set valider
+     *
+     * @param boolean $valider
+     *
+     * @return Reservation
+     */
+    public function setValider($valider)
+    {
+        $this->valider = $valider;
+
+        return $this;
+    }
+
+    /**
+     * Get valider
+     *
+     * @return boolean
+     */
+    public function getValider()
+    {
+        return $this->valider;
+    }
+
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return Reservation
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * Set paiement
+     *
+     * @param \UserBundle\Entity\Paiement $paiement
+     *
+     * @return Reservation
+     */
+    public function setPaiement(\UserBundle\Entity\Paiement $paiement = null)
+    {
+        $this->paiement = $paiement;
+
+        return $this;
+    }
+
+    /**
+     * Get paiement
+     *
+     * @return \UserBundle\Entity\Paiement
+     */
+    public function getPaiement()
+    {
+        return $this->paiement;
+    }
+
+
+
+    /**
+     * Set duree
+     *
+     * @param \DateTime $duree
+     *
+     * @return Reservation
+     */
+    public function setDuree($duree)
+    {
+        $this->duree = $duree;
+
+        return $this;
+    }
+
+    /**
+     * Get duree
+     *
+     * @return \DateTime
+     */
+    public function getDuree()
+    {
+        return $this->duree;
+    }
+
+    /**
+     * Set distance
+     *
+     * @param float $distance
+     *
+     * @return Reservation
+     */
+    public function setDistance($distance)
+    {
+        $this->distance = $distance;
+
+        return $this;
+    }
+
+    /**
+     * Get distance
+     *
+     * @return float
+     */
+    public function getDistance()
+    {
+        return $this->distance;
+    }
+
+
+    /**
+     * Set place
+     *
+     * @param \GeographieBundle\Entity\Place $place
+     *
+     * @return Reservation
+     */
+    public function setPlace(\GeographieBundle\Entity\Place $place = null)
+    {
+        $this->place = $place;
+
+        return $this;
+    }
+
+    /**
+     * Get place
+     *
+     * @return \GeographieBundle\Entity\Place
+     */
+    public function getPlace()
+    {
+        return $this->place;
+    }
+
+
+    /**
+     * Set depart
+     *
+     * @param \GeographieBundle\Entity\Place $depart
+     *
+     * @return Reservation
+     */
+    public function setDepart(\GeographieBundle\Entity\Place $depart = null)
+    {
+        $this->depart = $depart;
+
+        return $this;
+    }
+
+    /**
+     * Get depart
+     *
+     * @return \GeographieBundle\Entity\Place
+     */
+    public function getDepart()
+    {
+        return $this->depart;
+    }
+
+    /**
+     * Set arrivee
+     *
+     * @param \GeographieBundle\Entity\Place $arrivee
+     *
+     * @return Reservation
+     */
+    public function setArrivee(\GeographieBundle\Entity\Place $arrivee = null)
+    {
+        $this->arrivee = $arrivee;
+
+        return $this;
+    }
+
+    /**
+     * Get arrivee
+     *
+     * @return \GeographieBundle\Entity\Place
+     */
+    public function getArrivee()
+    {
+        return $this->arrivee;
+    }
+
+
+    /**
+     * Set typeCout
+     *
+     * @param string $typeCout
+     *
+     * @return Reservation
+     */
+    public function setTypeCout($typeCout)
+    {
+        $this->typeCout = $typeCout;
+
+        return $this;
+    }
+
+    /**
+     * Get typeCout
+     *
+     * @return string
+     */
+    public function getTypeCout()
+    {
+        return $this->typeCout;
+    }
+
+
+
+    public function toArray(){
+        return array(
+            'Id'=>$this->getId(),
+            'Numero'=>$this->getNumero(),
+            'Auteur'=>$this->getAuteur()->toArray(),
+            'Annonce'=>$this->getAnnonce()->toArray(),
+
+            'NbPlaces'=>$this->getNbPlaces(),
+            'Distance'=>$this->getDistance(),
+            'Duree'=>is_null($this->getDuree()) ? false : $this->getDuree()->getTimestamp(),
+
+            'Prix'=>$this->getPrix(),
+            'Tarif'=>$this->getTarif(),
+            'TypeCout'=>$this->getTypeCout(),
+            'Depart'=>$this->getDepart()->toArray(),
+            'Arrivee'=>$this->getArrivee()->toArray(),
+
+
+            'RepondSous'=>$this->getRepondSous(),
+            'Autoroute'=>$this->getAutoroute(),
+            'EnCours'=>$this->getEnCours(),
+            'Valider'=>$this->getValider(),
+
+            'CreatedAt'=>$this->getCreatedAt()->getTimestamp(),
+            'UpdatedAt'=>$this->getUpdatedAt()->getTimestamp(),
+            'ExpiredAt'=>$this->getExpiredAt()->getTimestamp()
+        );
+    }
+
+
+    
+
+    
+
+    /**
+     * Set numero
+     *
+     * @param integer $numero
+     *
+     * @return Reservation
+     */
+    public function setNumero($numero)
+    {
+        $this->numero = $numero;
+
+        return $this;
+    }
+
+    /**
+     * Get numero
+     *
+     * @return integer
+     */
+    public function getNumero()
+    {
+        return $this->numero;
+    }
+}

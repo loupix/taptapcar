@@ -1,0 +1,258 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Annonce de Taxi{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/taxiCtrl.js') }}"></script>
+
+<script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+<script type="text/javascript" src="//assets.pinterest.com/js/pinit.js"></script>
+<script type="text/javascript" src="https://platform.tumblr.com/v1/share.js"></script>
+        
+{% endblock %}
+
+{% set currentPath = path(app.request.attributes.get('_route'),
+        app.request.attributes.get('_route_params')) %}
+
+
+
+{% block body %}
+<!-- CONTENT -->
+    <main ng-controller="taxiAnnonceCtrl" ng-init="getAnnonce('{{ taxi.id }}')">
+        <div class="template_annonce_container col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6">
+            <div class="info_principale">
+                <div class="socialShare">
+                    <div class="fb-share-button" data-href="{{ currentPath }}" data-layout="button_count" data-size="small" data-mobile-iframe="true"></div>
+
+                    <a twitter  data-lang="en" data-count='horizontal' data-url='{{ currentPath }}' data-via='notsosleepy' data-size="medium" data-text='Formidrive - Taxi' ></a>
+
+                    <div gplus class="g-plus" data-size="tall" data-annotation="bubble" data-href='{{ currentPath }}' data-action='share'></div>
+                </div>
+
+                <h1 style="margin-bottom:5px;font-size:1.5em;"><i class="fa fa-car" style="background-color:#34a0b2;float:left;"></i> <span style="line-height:20px;">{{ taxi.nom }}</span></h1>
+                <h3 class="place" style="margin-bottom:0;">{{ taxi.ville.nom }}</h3>
+                <h3 class="place" style="margin-top:0;">{{ taxi.annonce.auteur.profile.vehicule.modele }}&nbsp;<span style="color:#34a0b2">{{ taxi.nbPlaces }}</span> places</h3>
+                <br />  
+
+                <div class="row info">
+                    <div class="col-sm-3"><i class="fa fa-calendar"></i> <span>Horraires :</span></div>
+                    <div class="col-sm-9 date">de {{ taxi.heureDebut|date('H:i') }} à {{ taxi.heureFin|date('H:i') }}</div>
+                </div>
+               <div class="row info">
+                    <div class="col-sm-3 "><i class="fa fa-eur"></i> <span>Prix :</span></div>
+                    <div class="col-sm-9 prix">
+                    {% if taxi.typeTarif != "Au compteur" %}{{ taxi.getIsDay() ? taxi.tarifJour : taxi.tarifNuit }} Euros {% endif %}{{ taxi.typeTarif|lower }}</div>
+                </div>
+{#                 <div class="row info">
+                    <div class="col-sm-3 "><i class="fa fa-map-marker"></i> <span>Départ :</span></div>
+                    <div class="col-sm-9 to">180 avenue de france 57000 Metz</div>
+                </div>
+                <div class="row info">
+                    <div class="col-sm-3 "><i class="fa fa-arrow-right"></i> <span>Arrivée :</span></div>
+                    <div class="col-sm-9 from">19 place de tilleul 75000 Paris</div>
+                </div> #}
+
+                <div class="row info details">
+                    <div class="col-sm-3"><i class="fa fa-plus"></i><span>Détails :</span></div>
+                    <div class="list_detail col-sm-9">
+
+                        {% if taxi.couleur %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            Couleur : {{ taxi.couleur }}
+                        </div>
+                        {% endif %}
+
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            {% if taxi.wifi %}
+                            Wifi
+                            {% else %}
+                            Pas de wifi
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            {% if taxi.facture %}
+                            Facture
+                            {% else %}
+                            Pas de facture
+                            {% endif %}
+                        </div>
+
+                        {% if taxi.paiements %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            Paiements : {{ taxi.paiements|join(', ') }}
+                        </div>
+                        {% endif %}
+
+
+
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            {% if taxi.siegeBebe %}
+                            Siège bébé
+                            {% else %}
+                            Pas de siège bébé
+                            {% endif %}
+                        </div>
+
+
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            {% if taxi.animaux %}
+                            Animaux authorisés
+                            {% else %}
+                            Pas d'animaux authorisés
+                            {% endif %}
+                        </div>
+
+
+                        {% if taxi.greencab %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            {% if taxi.greencab %}
+                            GreenCab
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+
+                        {% if taxi.secuSocial %}
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            {% if taxi.secuSocial %}
+                            Agrée sécurité sociale
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+
+                        <div>
+                            <i class="fa fa-circle-o"></i>
+                            {% if taxi.animaux %}
+                            Animaux authorisés
+                            {% else %}
+                            Pas d'animaux authorisés
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                
+
+
+                <div class="info_complementaire row">
+                <h2>Infos complémentaires de l'annonceur</h2>
+                {% if taxi.infosdivers %}
+                <div class="bloc_info col-xs-12">
+                   {{ taxi.infosdivers }}
+                </div>
+                {% endif %}
+           
+                  <!--  <div class="col-sm-3"><i class="fa fa-plus"></i> <span>Détails :</span></div>
+                    <div class="list_detail col-sm-9">
+                        <div><i class="fa fa-circle-o"></i> Animaux acceptés</div>
+                        <div><i class="fa fa-circle-o"></i> Pas de cigarette à bord</div>
+                        <div><i class="fa fa-circle-o"></i> Je peux manger à bord</div>
+                    </div>-->
+                </div>
+            </div>
+            <div class="info_annonceur row">
+                <h2><a href="{{ path('profile_get',{'id':taxi.annonce.auteur.id}) }}">{{ taxi.annonce.auteur.nom }} {{ taxi.annonce.auteur.prenom }}</a></h2>
+                <div class="col-xs-12 col-sm-3 col-md-2 bloc_photo">
+                    <div style='background: url("{{ taxi.annonce.auteur.profile.photo.src }}") center center no-repeat; background-size:cover;' class="photo"></div>
+                </div>
+                <div class="col-xs-12 col-sm-9 col-md-10">
+                    <div class="main_info col-sm-8">
+                        <p class="info age"><i class="fa fa-male"></i> {{ taxi.annonce.auteur.getAge() }} ans</p>
+                        {% if taxi.annonce.auteur.profile.ville %}
+                        <p class="info"><i class="fa fa-map-marker"></i> {{ taxi.annonce.auteur.profile.ville.nom }} - {{ taxi.annonce.auteur.profile.ville.departement.nom }}</p>
+                        {% endif %}   
+                        
+
+                        <label class="info" for="star"><i class="fa fa-thumbs-up"></i> Note
+                            <i class="fa" ng-class="{'fa-star':annonce.Annonce.Auteur.Note >= 1, 'fa-star-o':annonce.Annonce.Auteur.Note < 1}"></i>
+                            <i class="fa" ng-class="{'fa-star':annonce.Annonce.Auteur.Note >= 2, 'fa-star-o':annonce.Annonce.Auteur.Note < 2}"></i>
+                            <i class="fa" ng-class="{'fa-star':annonce.Annonce.Auteur.Note >= 3, 'fa-star-o':annonce.Annonce.Auteur.Note < 3}"></i>
+                            <i class="fa" ng-class="{'fa-star':annonce.Annonce.Auteur.Note >= 4, 'fa-star-o':annonce.Annonce.Auteur.Note < 4}"></i>
+                        </label>
+
+
+                        {% if taxi.annonce.auteur.verifie %}
+                        <p class="info"><i class="fa fa-address-card"></i><span class="label label-info">Profile vérifié</span></p>
+                        {% else %}
+                        <p class="info"><i class="fa fa-address-card"></i><span class="label label-warning">Profile non vérifié</span></p>
+                        {% endif %}
+
+
+                        {% if taxi.annonce.auteur.profile.vehicule %}
+                        <p class="info"><i class="fa fa-car"></i> Model : {{ taxi.annonce.auteur.profile.vehicule.marque }}</p>
+                        <p class="info"><i class="fa fa-car"></i> Marque : {{ taxi.annonce.auteur.profile.vehicule.modele }}</p>
+                        <p class="info"><i class="fa fa-road"></i> {{ taxi.annonce.auteur.profile.vehicule.kilometrage }} km | {{ taxi.annonce.auteur.profile.vehicule.places }} places</p>
+                        {% endif %}
+
+
+                        <p class="info"><i class="fa fa-car"></i> Annonces publiées : {{ taxi.annonce.auteur.annonces|length }}</p>
+                        <p class="info"><i class="fa fa-car"></i> Dernière connexion : {{ taxi.annonce.auteur.lastLogin|localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EE dd LLL") }}</p>
+                        <p class="info"><i class="fa fa-car"></i> Date d'insription : {{ taxi.annonce.auteur.createdAt|localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EE dd LLL") }}</p>
+
+
+                    </div>
+                    <div class="main_info col-sm-4">
+{#                         <p class="info"><i class="fa fa-envelope"></i> williamthomas2@gmail.com</p>
+                        <p class="info"><i class="fa fa-phone"></i> 06 74 89 57 41</p>
+                        <p class="info"><i class="fa fa-map"></i> 8 Rue Jeanne d'Arc</p>-->
+
+ #}                     
+
+                    </div>
+                </div>
+            </div>
+            <!--<div class="info_complementaire row">
+                <h2>Infos complémentaires de l'annonceur</h2>
+                <div class="bloc_info col-xs-12">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis fugiat similique sint quo consequuntur fugit ipsa ab facilis, illo maiores deleniti, cum accusamus animi laudantium itaque, distinctio quae aspernatur excepturi voluptas nihil nisi expedita modi ullam.
+                </div>
+            </div>-->
+            <div class="message_container row">
+                <h2>Discutez avec l'annonceur</h2>
+                <!-- POST REPONSE ANNONCEUR -->
+                <div class="commentaire col-xs-12 col-sm-9" 
+                    ng-repeat="message in messages"
+                    ng-class="{'annonceur_post':message.Sender.Id == user.Id, 'question_post':message.Sender.Id != user.Id}">
+                    <a href="profil.html"><p class=" title">{[{ message.Sender.Prenom }]} {[{ message.Sender.Nom }]}</p></a>
+                    <p class="date">{[{ message.CreatedAt.date }]}</p>
+                    <div class="content">
+                        {[{ message.Body }]}
+                    </div>
+                    <div class="arrow"></div>
+                    <a class="remove_comment" href="#" ng-click="removeMessage(message.Id)"><i class="fa fa-times" aria-hidden="true"></i></a>
+                </div>
+                <!-- POST REPONSE ANNONCEUR -->
+                
+            </div>
+            <!-- Commentaire du profil -->
+        <div class="comment_container row">
+            <form>
+                <h3>Posez une question à <a href="profil.html">William</a></h3>
+                <input type="hidden" ng-model="message.thread" />
+                <textarea class="col-xs-12" name="commentaire" id="commentaire" cols="30" rows="5" placeholder="Votre message ici" ng-model="message.text"></textarea>
+                <input class="envoyer" type="submit" name="envoyer" value="Envoyer" ng-click="sendMessage()">    
+            </form>
+        </div>
+        <!-- FIN Commentaire du profil -->
+
+
+        </div>
+        <div class="pas_membre_container deja_membre reserve col-xs-12 col-sm-3 col-md-2" ng-hide="user.Id==annonce.Auteur.Id"  >
+            <p>Déjà inscrit</p>
+            <a href="{{ path('annonce_taxi_reservation', {'id':taxi.id}) }}">Réserver</a>
+        </div>
+    </main>
+    <!-- FIN CONTENT -->
+{% endblock %}

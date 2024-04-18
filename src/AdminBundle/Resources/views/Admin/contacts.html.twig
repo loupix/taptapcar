@@ -1,0 +1,50 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Admin - Les messages{% endblock %}
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/adminCtrl.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<!-- CONTENT -->
+    <div class="admin_container col-xs-12 col-md-offset-2 col-md-8" ng-controller="adminContactsCtrl" ng-init="loadContacts()">
+        
+        {% include 'AdminBundle:Admin:header.html.twig' %}
+
+        <table class="table table-striped">
+        	<th>
+                <td>Auteur</td>
+                <td>Email</td>
+                <td>Objet</td>
+                <td>Message</td>
+        		<td>Creer</td>
+        		<td>Supprimer</td>
+        	</th>
+        	<tr ng-repeat="contact in contacts">
+                <td></td>
+                <td>{[{ contact.Nom }]} {[{ contact.Prenom }]}</td>
+                <td>{[{ contact.Email }]}</td>
+                <td>{[{ contact.Objet }]}</td>
+                <td>{[{ contact.Message }]}</td>
+        		<td>{[{ contact.CreatedAt*1000 | date:"EEE dd MMM"}]}</td>
+        		<td><div class="btn btn-warning" ng-click="delContact({[{ contact.Id }]});">Supprimer</div></td>
+        	</tr>
+        </table>
+
+
+        <div class="bottom_annonces row" ng-if="maxResult > 0">
+            <div class="info col-md-4 col-xs-12 ">{[{ getMinPage() }]} à {[{ getMaxPage() }]} sur {[{ maxResult }]} résultats</div>
+            <div class="pagination col-xs-12 col-md-8">
+                <ul uib-pagination boundary-links="true"
+                    class="pagination-sm" 
+                    ng-model="$parent.currentPage" ng-change="pageChanged()"
+                    total-items="totalItems" items-per-page="maxSize"
+                    max-size="5" force-ellipses="true"></ul>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

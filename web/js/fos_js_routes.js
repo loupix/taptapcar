@@ -1,0 +1,1 @@
+fos.Router.setData({"base_url":"","routes":{"annonce_vtc_get":{"tokens":[["text","\/annonce\/vtc\/"]],"defaults":[],"requirements":[],"hosttokens":[]}},"prefix":"","host":"localhost","scheme":"http"});

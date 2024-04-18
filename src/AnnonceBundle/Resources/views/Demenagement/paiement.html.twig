@@ -1,0 +1,159 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Paiement Demenagement{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/DemenagementCtrl.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<div class="inscription_form modal_connexion_container creer_annonce col-xs-12 col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+	<h1>Paiement en Ligne et Sérurisé.</h1>
+	<br />
+	<div class="row">
+		<div class="col col-md-8">
+
+			<table class="table table-bordered table-condensed">
+				<thead>
+					<tr class="info">
+						<th>Item</th>
+						<th>Prix unitaire</th>
+						{% if demenagement.tarification=="Par kilomètres" %}
+						<th>Distance</th>
+						{% elseif demenagement.tarification=="Par heures" %}
+						<th>Durée</th>
+						{% elseif demenagement.tarification=="Par places" %}
+						<th>Quantité</th>
+						{% elseif demenagement.tarification=="Prix unique" %}
+						<th>Quantité</th>
+						{% else %}
+						<th>Quantité</th>
+						{% endif %}
+						<th>sous total</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<tr>
+						<td>
+							<b>Demenagement de {{ demenagement.lieu.ville.nom }}</b> {{ reservation.date|localizeddate('none', 'none', app.request.locale, "Europe/Paris", "EE dd LLL") }} à {{ reservation.date|date('H:i') }}
+							<br />
+							<b>Rendez-vous</b> {{ reservation.depart.adresse }}
+							<br />
+							<b>Destination</b> {{ reservation.arrivee.adresse }}
+						</td>
+						<td>{{ (reservation.tarif)|number_format(2) }} €</td>
+						{% if demenagement.tarification=="Par kilomètres" %}
+						<td>{{ reservation.distance }} Km</td>
+						{% elseif demenagement.tarification=="Par heures" %}
+						<td>{{ reservation.duree | date("H:i") }}</td>
+						{% elseif demenagement.tarification=="Par places" %}
+						<td>{{ reservation.nbPlaces }} Place(s)</td>
+						{% elseif demenagement.tarification=="Prix unique" %}
+						<td>1 voyage</td>
+						{% else %}
+						<td>{{ reservation.nbPlaces }} Place(s)</td>
+						{% endif %}
+						<td>{{ reservation.prix|number_format(2) }} €</td>
+					</tr>
+
+					<tr>
+						<td><i>Frais de fonctionnement ({{ percentEntreprise }} %)</i></td>
+						<td>{{ (reservation.prix)|number_format(2) }} €</td>
+						<td>{{ percentEntreprise }} %</td>
+						<td>{{ partEntreprise|number_format(2) }} €</td>
+					</tr>
+
+				</tbody>
+					
+				<tfoot>
+					<tr>
+						<td colspan="2" style="border:none;"></td>
+						<td><b>Total</b></td>
+						<td><b>{{ (reservation.prix + partEntreprise)|number_format(2) }} €</b></td>
+					</tr>
+				</tfoot>
+			</table>
+
+		</div>
+
+		<div class="col col-md-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">informations personnels</div>
+				<div class="panel-body">
+					<table>
+						<tr>
+							<td><b>Nom</b></td>
+							<td>&nbsp;{{ user.nom }}</td>
+						</tr>
+
+						<tr>
+							<td><b>Prenom</b></td>
+							<td>&nbsp;{{ user.prenom }}</td>
+						</tr>
+
+						<tr>
+							<td><b>Année de naissance</b></td>
+							<td>&nbsp;{{ user.anneeNaissance }}</td>
+						</tr>
+					</table>
+{# 					<b>Nom</b>&nbsp;{{ user.nom }}<br />
+					<b>Prenom</b>&nbsp;{{ user.prenom }}<br />
+					<b>Année de naissance</b>&nbsp;{{ user.anneeNaissance }}<br />
+ #}				</div>
+			</div>
+		</div>
+
+
+	</div>
+	<div class="row">
+		<div class="col col-md-8">
+
+			<form action="{{ cardUrl }}" method="post">
+				<input type="hidden" name="data" value="{{ cardData }}" />
+				<input type="hidden" name="accessKeyRef" value="{{ accessKeyRef }}" />
+			    <input type="hidden" name="returnURL" value="{{ returnURL }}" />
+
+			    <div class="row">
+			    	<div class="col col-md-8">
+			    		<input type="number" name="cardNumber" class="connexion_input col-xs-12" value="" 
+			    			placeholder="Numéros de carte" />
+			    	</div>
+
+			    	<div class="col col-md-4">
+			    		<input type="number" name="cardCvx" class="connexion_input col-xs-12" value="" 
+			    			placeholder="Code de validation" />
+			    	</div>
+			    </div>
+
+			    <div class="row">
+			    	<div class="col col-md-8">
+			    		<input type="number" name="cardExpirationDate" class="connexion_input col-xs-12" value="" 
+			    			placeholder="Date d'éxpiration ( format JJAA )" />
+			    	</div>
+			    </div>
+			    <input type="submit" class="connexion_submit col-xs-12" value="Payer en ligne" />
+			    <br />
+			    <br />
+			    <br />
+			    <br />
+			</form>
+
+		</div>
+
+		<div class="col col-md-4">
+			&nbsp;
+		</div>
+	</div>
+
+
+</div>
+
+<div class="pas_membre_container deja_membre annule-reservation col-xs-12 col-sm-3 col-md-2">
+        <p>Retour vers la page d'annonce</p>
+        <a id="annule-reservation-button" href="{{ path('annonce_demenagement_get', {'id':demenagement.id}) }}">Annuler la réservation</a>
+</div>
+<!-- FIN CONTENT -->
+{% endblock %}

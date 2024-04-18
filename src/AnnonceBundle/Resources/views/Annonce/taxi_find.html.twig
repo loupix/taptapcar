@@ -1,0 +1,293 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Recherche de taxi{% endblock %}
+
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/taxiCtrl.js') }}"></script>
+{% endblock %}
+
+
+
+{% block body %}
+    <!-- CONTENT -->
+    <main class="main list_page" ng-controller="taxiRechercheCtrl" ng-init="loadRecherche()">
+        <div class="search_container row">
+            <div class="home_search list_search col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+                <div class="form_container">
+                    {{ form_start(formRecherche) }}
+                        <div class="search_container">
+                            <div class="search date col-sm-offset-2 col-sm-4">
+                                <i class="fa fa-circle-o-notch"></i>
+                                {{ form_widget(formRecherche.rayon.radius, {'attr':{'ng-model':'recherche.rayon'}})}}
+                            </div>
+                            {{ form_widget(formRecherche.search, {'attr':{'class':'recherche search col-sm-3', 'value':'Rechercher', 'ng-click':'loadRecherche()'}})}}
+                        </div>
+                    <div style="display:none">{{ form_rest(formRecherche) }}</div>
+                    {{ form_end(formRecherche) }}
+                </div>
+            </div>
+        </div>
+        <div class="liste_container col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <!-- SIDEBAR  -->
+            <!-- SIDEBAR  -->
+            <div class="sidebar_container col-md-4">
+                <div class="top">Filtrer les résultats<i id="button_menu_filtre" class="fa fa-chevron-circle-down"></i></div>
+                <div class="sidebar_content row">
+                    <form class="form_container" action="">
+                        <div class="col-sm-6 col-md-12 filtre_item category">
+                            <h3>Wifi à bord</h3>
+                            <div class="row">
+                                <input type="radio" name="annonce_wifi" id="cb_oui" ng-model="recherche.wifi" ng-click="uncheck($event)" ng-change="loadRecherche()" ng-value="true" value="true">
+                                <label for="cb_oui"><i class="fa fa-wifi"></i> Oui</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_wifi" id="cb_non" ng-model="recherche.wifi" ng-click="uncheck($event)" ng-change="loadRecherche()" ng-value="false" value="false">
+                                <label for="cb_non"><i class="fa fa-wifi"></i> Non</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-12 filtre_item category">
+                            <h3>GreebCab</h3>
+                            <div class="row">
+                                <input type="radio" name="annonce_greencab" id="green_oui" ng-model="recherche.greencab" ng-click="uncheck($event)" ng-change="loadRecherche()" ng-value="true" value="true">
+                                <label for="green_oui"><i class="fa fa-leaf"></i> Oui</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_greencab" id="green_non" ng-model="recherche.greencab" ng-click="uncheck($event)" ng-change="loadRecherche()" value="false">
+                                <label for="green_non"><i class="fa fa-leaf"></i> Non</label>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-12 filtre_item category">
+                            <h3>Siège bébé</h3>
+                            <div class="row">
+                                <input type="radio" name="annonce_siegeBebe" id="bebe_oui" ng-model="recherche.siegeBebe" ng-click="uncheck($event)" ng-change="loadRecherche()" ng-value="true" value="true">
+                                <label for="bebe_oui"><i class="fa fa-list-alt"></i> Oui</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_siegeBebe" id="bebe_non" ng-model="recherche.siegeBebe" ng-click="uncheck($event)" ng-change="loadRecherche()" ng-value="false" value="false">
+                                <label for="bebe_non"><i class="fa fa-list-alt"></i> Non</label>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-12 filtre_item category">
+                            <h3>Animaux accepté</h3>
+                            <div class="row">
+                                <input type="radio" name="annonce_animaux" id="animaux_oui" ng-model="recherche.animaux" ng-click="uncheck($event)" ng-change="loadRecherche()" ng-value="true" value="true">
+                                <label for="animaux_oui"><i class="fa fa-list-alt"></i> Oui</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_animaux" id="animaux_non" ng-model="recherche.animaux" ng-click="uncheck($event)" ng-change="loadRecherche()" ng-value="false" value="false">
+                                <label for="animaux_non"><i class="fa fa-list-alt"></i> Non</label>
+                            </div>
+                        </div>
+
+                        
+                        <div class="col-sm-6 col-md-12 filtre_item category">
+                            <h3>Paiement acceptés</h3>
+                            <div class="row">
+                            <input type="radio" name="annonce_mode_paiement" id="cb" value="0" ng-model="recherche.paiement" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label for="cb"><i class="fa fa-credit-card"></i> Carte bleue</label>
+                        </div>
+                        <div class="row">
+                            <input type="radio" name="annonce_mode_paiement" id="espece" value="1" ng-model="recherche.paiement" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label for="espece"><i class="fa fa-money"></i> Espèce</label>
+                        </div>
+                        <div class="row">
+                            <input type="radio" name="annonce_mode_paiement" id="cheque" value="2" ng-model="recherche.paiement" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label for="cheque"><i class="fa fa-pencil"></i> Chèque</label>
+                        </div>
+                        </div>
+                        <div class="col-sm-6 col-md-12 filtre_item category">
+                            <h3>Avec facture</h3>
+                            <div class="row">
+                                <input type="radio" name="annonce_facture" id="fact_oui" ng-model="recherche.facture" ng-click="uncheck($event)" ng-change="loadRecherche()" ng-value="true" value="true">
+                                <label for="fact_oui"><i class="fa fa-list-alt"></i> Oui</label>
+                            </div>
+                            <div class="row">
+                                <input type="radio" name="annonce_facture" id="fact_non" ng-model="recherche.facture" ng-click="uncheck($event)" ng-change="loadRecherche()" ng-value="false" value="false">
+                                <label for="fact_non"><i class="fa fa-list-alt"></i> Non</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-12 filtre_item prix">
+                            <h3>Prix</h3>
+                            <div>
+                                <input id="faible" name="prix" type="radio" value="bas" ng-model="recherche.prix" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="faible">
+                                    <i class="fa fa-eur"></i> Meilleurs prix
+                                </label>
+                            </div>
+                            <div>
+                                <input id="moyen" name="prix" type="radio" value="moyens" ng-model="recherche.prix" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="moyen">
+                                    <i class="fa fa-eur"></i>
+                                    <i class="fa fa-eur"></i> Prix moyens
+                                </label>
+                            </div>
+                            <div>
+                                <input id="eleve" name="prix" type="radio" value="haut" ng-model="recherche.prix" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="eleve">
+                                    <i class="fa fa-eur"></i>
+                                    <i class="fa fa-eur"></i>
+                                    <i class="fa fa-eur"></i> Prix élevés</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-12 filtre_item note">
+                            <h3>Note de l'annonceur</h3>
+                            <div>
+                                <input id="star4" name="note" type="radio" value="4" ng-model="recherche.note" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="star4">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i> Exceptionnel
+                                </label>
+                            </div>
+                            <div>
+                                <input id="star3" name="note" type="radio" value="3" ng-model="recherche.note" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="star3">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i> Super
+                                </label>
+                            </div>
+                            <div>
+                                <input id="star2" name="note" type="radio" value="2" ng-model="recherche.note" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="star2">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i> Bien
+                                </label>
+                            </div>
+                            <div>
+                                <input id="star1" name="note" type="radio" value="1" ng-model="recherche.note" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                                <label for="star1">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i> A éviter
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- FIN SIDEBAR  -->
+            <!-- FIN SIDEBAR  -->
+            <div class="annonces_container col-md-8 ">
+                <!-- Systeme de TRI  -->
+                <!-- Systeme de TRI  -->
+                <div class="tri_container row">
+                    <div class="info col-sm-4">
+                        <div>{[{ totalItems }]} Taxi(s) trouvé(s)</div>
+                        <div>dans votre zone</div>
+                    </div>
+                    <div class="tri col-sm-8">
+                        <div class="trier-par">Trier par :</div>
+                        <div class="tri_choix">
+                            <input id="heuredecroissant" value="DESC" name="triHeure" type="radio" ng-model="recherche._tri.heure" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label class="decroiss" for="heuredecroissant"><i class="fa fa-clock-o"></i><i class="fa fa-long-arrow-down"></i></label>
+                        </div>
+                        <div class="tri_choix">
+                            <input id="heurecroissant" value="ASC" name="triHeure" type="radio" ng-model="recherche._tri.heure"  ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label class="croiss" for="heurecroissant"><i class="fa fa-clock-o"></i><i class="fa fa-long-arrow-up"></i></label>
+                        </div>
+                        <div class="tri_choix">
+                            <input id="prixdecroissant" value="DESC" name="triPrix" type="radio" ng-model="recherche._tri.prix" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label class="decroiss" for="prixdecroissant"><i class="fa fa-eur"></i><i class="fa fa-long-arrow-down"></i>
+                            </label>
+                        </div>
+                        <div class="tri_choix">
+                            <input id="prixcroissant" value="ASC" name="triPrix" type="radio" ng-model="recherche._tri.prix" ng-click="uncheck($event)" ng-change="loadRecherche()">
+                            <label class="croiss" for="prixcroissant"><i class="fa fa-eur"></i><i class="fa fa-long-arrow-up"></i></label>
+                        </div>
+                    </div>
+                </div>
+                <!-- FIN Systeme de TRI  -->
+                <!-- FIN Systeme de TRI  -->
+
+
+                <div class="row" ng-if="recherche.enCours==true">
+                    <div class="col-md-6 col-md-offset-3">
+                        <h2>Recherche en cours</h2>
+                    </div>
+                </div>
+
+
+                <div class="row" ng-if="recherche.enCours==false && totalItems==0">
+                    <div class="col-md-6 col-md-offset-3">
+                        <h2>Aucuns résultats</h2>
+                    </div>
+                </div>
+
+
+                <div class="row" ng-if="recherche.enCours==false && recherche._erreur > 0 ">
+                    <div class="col-md-6 col-md-offset-3">
+                        <h2>Oupss ! Erreur {[{ recherche._erreur }]}</h2>
+                        <br />
+                        <p><a href="{{ path('app_contact') }}">Contacter l'administrateur</a>
+                    </div>
+                </div>
+
+
+                <!-- BOUCLE a faire dans la div annonces -->
+                <div class="annonces" ng-repeat="taxi in annonces" ng-id="recherche.enCours==false">
+
+                    <!-- BLOC D'UNE ANNONCE UNIQUE -->
+                    <a ng-href="{[{ taxi.Url }]}">
+                        <article class="row" ng-click="go(taxi)">
+                            <div class="bloc_photo col-sm-4">
+                                <div class="photo_annonce" style="background: #fff url({[{ taxi.Annonce.Auteur.Profile.Photo.Src }]}) center center no-repeat;
+                            background-size:cover"></div>
+                                <div class="name">
+                                    <h4>{[{ taxi.Annonce.Auteur.Nom }]} {[{ taxi.Annonce.Auteur.Prenom }]}</h4>
+                                    <p>{[{ taxi.Annonce.Auteur.Age }]} ans</p>
+                                    <p>
+                                        <i ng-class="x<taxi.Annonce.Auteur.Note ? 'fa fa-star' : 'fa fa-star-o'" ng-repeat="x in [0,1,2,3]"></i>
+                                    </p>
+                                    <p ng-if="taxi.Annonce.Auteur.Profile.Vehicule">{[{ taxi.Annonce.Auteur.Profile.Vehicule.Modele }]} {[{ taxi.Annonce.Auteur.Profile.Vehicule.Marque }]}</p>
+                                </div>
+                                <a class="profil_link" href="/user/profile/get/{[{ taxi.Annonce.Auteur.Id }]} ">Voir le profil complet</a>
+                            </div>
+                            <div class="bloc_info col-sm-8">
+                                <div class="trajet_bloc col-xs-9">
+                                    <div class="date">à {[{ taxi.Distance }]}km de vous</div>
+                                    <div class="trajet" ng-if="taxi.Ville">{[{ taxi.Ville.Locality }]} </div>
+                                    <div class="info_trajet">Disponible de {[{ taxi.HeureDebut*1000 | date:"HH:mm" }]} à {[{ taxi.HeureFin*1000 | date:"HH:mm" }]}</div>
+                                    <div class="category"><i class="fa fa-car"></i> Taxi</div>
+                                </div>
+                                <div class="prix_bloc col-xs-3">
+                                    <div class="prix">
+                                        <span ng-hide="taxi.TypeTarif=='Au compteur'">{[{ taxi.IsDay ? taxi.TarifJour : taxi.TarifNuit }]}</span>
+                                        <span> {[{ taxi.TypeTarif }]}</span>
+                                    </div>
+                                    <div class="place_restantes"><span>{[{ taxi.NbPlaces }]}</span> places disponibles</div>
+                                </div>
+                            </div>
+                        </article>
+                    </a>
+                    <!-- FIN BLOC D'UNE ANNONCE UNIQUE -->
+                </div>
+                <!-- Systeme de pagination -->
+                <!-- Systeme de pagination -->
+                <div class="bottom_annonces row" ng-if="totalItems > 0">
+                    <div class="info col-md-4 col-xs-12 ">{[{ getMinPage() }]} à {[{ getMaxPage() }]} sur {[{ totalItems }]} résultats</div>
+                    <div class="pagination col-xs-12 col-md-8">
+                        <ul uib-pagination boundary-links="true"
+                            class="pagination-sm" 
+                            ng-model="$parent.currentPage" ng-change="pageChanged()"
+                            total-items="totalItems" items-per-page="maxSize"
+                            max-size="5" force-ellipses="true"></ul>
+                    </div>
+                </div>
+                <!-- Fin Systeme de pagination -->
+                <!-- Fin Systeme de pagination -->
+            </div>
+        </div>
+    </main>
+    <!-- FIN CONTENT -->
+
+{% endblock %}

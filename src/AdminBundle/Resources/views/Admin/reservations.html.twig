@@ -1,0 +1,47 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Admin - Les reservations{% endblock %}
+
+{% block angular %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('bundles/application/js/Controllers/adminCtrl.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+<!-- CONTENT -->
+    <div class="admin_container col-xs-12 col-md-offset-2 col-md-8" ng-controller="adminReservationsCtrl" ng-init="loadReservations()">
+        
+        {% include 'AdminBundle:Admin:header.html.twig' %}
+
+        <table class="table table-striped">
+        	<th>
+                <td>Depart</td>
+                <td>Arrivee</td>
+        		<td>Auteur</td>
+        		<td>Creer</td>
+        	</th>
+        	<tr ng-repeat="reservation in reservations">
+                <td></td>
+                <td>{[{ reservation.Depart.Adresse }]}</td>
+                <td>{[{ reservation.Arrivee.Adresse }]}</td>
+                <td>{[{ reservation.Auteur.Nom }]} {[{ reservation.Auteur.Prenom }]}</td>
+                <td>{[{ reservation.CreatedAt*1000 | date:"EEE dd MMM"}]}</td>
+        	</tr>
+        </table>
+
+
+        <div class="bottom_annonces row" ng-if="maxResult > 0">
+            <div class="info col-md-4 col-xs-12 ">{[{ getMinPage() }]} à {[{ getMaxPage() }]} sur {[{ maxResult }]} résultats</div>
+            <div class="pagination col-xs-12 col-md-8">
+                <ul uib-pagination boundary-links="true"
+                    class="pagination-sm" 
+                    ng-model="$parent.currentPage" ng-change="pageChanged()"
+                    total-items="totalItems" items-per-page="maxSize"
+                    max-size="5" force-ellipses="true"></ul>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

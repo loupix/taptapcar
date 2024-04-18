@@ -1,0 +1,123 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Modifié mon profile{% endblock %}
+
+{% block body %}
+    <!-- CONTENT -->
+    <div class="profil_container col-xs-12 col-md-offset-2 col-md-8">
+        
+        {% include 'UserBundle:Profile:menu_profile.html.twig' %}
+        
+        <!-- info profil -->
+        <div class="info_profil row" ng-controller="profileCtrl" ng-init="getMe()">
+            <div class="modification_container col-xs-12 inscription_form modal_connexion_container">
+                <h2>Modification du profil</h2>
+                {{ form_start(form, {'attr':{'id':'formProfile'}}) }}
+                    <div class="photo_modif col-xs-12">
+                        <div class="photo col-sm-6">
+                            <img ngf-thumbnail="file || '/images/profil.jpg'">
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="button" style="cursor:pointer;" ngf-pattern="'image/*'"
+                                ngf-accept="'image/*'" ngf-max-size="20MB"
+                                ngf-select="upload($file)">Choisissez une nouvelle photo</div>
+                        </div>
+                    </div>
+{#                     {{ form_label(form.prenom, "Prenom", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.prenom) }}
+                    {{ form_widget(form.prenom, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+
+                    {{ form_label(form.nom, "Nom", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.nom) }}
+                    {{ form_widget(form.nom, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+
+                    {{ form_label(form.age, "Age", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.age) }}
+                    {{ form_widget(form.age, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+
+                    {{ form_label(form.pays, "Pays", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.pays) }}
+                    {{ form_widget(form.pays, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}}
+
+
+                    {{ form_label(form.region, "Region", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.region) }}
+                    {{ form_widget(form.region, {'attr':{'class':'connexion_input col-xs-12 col-sm-8'}})}} #}
+
+
+                    {{ form_label(form.ville, "Ville", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.ville) }}
+                    <input type="text" id="ville" name="ville" class="connexion_input col-xs-12 col-sm-8" placeholder="Nom de ville ou code postal" g-places-autocomplete options="autocompleteOptions" force-selection="true" ng-model='place' ng-change="loadPlace()" required="required"   />
+
+                    {{ form_label(form.vehicule.type, "Type de vehicule", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.vehicule.type) }}
+                    {{ form_widget(form.vehicule.type, {'attr':{'class':'connexion_input col-sm-8'}})}}
+
+
+                    {{ form_label(form.vehicule.modele, "Modèle de voiture", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.vehicule.modele) }}
+                    {{ form_widget(form.vehicule.modele, {'attr':{'class':'connexion_input col-sm-8'}})}}
+
+
+                    {{ form_label(form.vehicule.marque, "Marque du vehicule", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.vehicule.marque) }}
+                    {{ form_widget(form.vehicule.marque, {'attr':{'class':'connexion_input col-sm-8'}})}}
+
+                    <br />
+                    {{ form_label(form.vehicule.places, "Nombres de places", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.vehicule.places) }}
+                    {{ form_widget(form.vehicule.places, {'attr':{'class':'connexion_input col-sm-8'}})}}
+
+                    <br />
+                    {{ form_label(form.vehicule.kilometrage, "Kilométrage", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.vehicule.kilometrage) }}
+                    {{ form_widget(form.vehicule.kilometrage, {'attr':{'class':'connexion_input col-sm-8'}})}}
+
+
+{#                     {{ form_label(form.vehicule.longueur, "Longueur", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.vehicule.longueur) }}
+                    {{ form_widget(form.vehicule.longueur, {'attr':{'class':'connexion_input col-sm-8'}})}}
+
+
+                    {{ form_label(form.vehicule.largeur, "Largeur", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.vehicule.largeur) }}
+                    {{ form_widget(form.vehicule.largeur, {'attr':{'class':'connexion_input col-sm-8'}})}}
+
+
+                    {{ form_label(form.vehicule.hauteur, "Hauteur", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.vehicule.hauteur) }}
+                    {{ form_widget(form.vehicule.hauteur, {'attr':{'class':'connexion_input col-sm-8'}})}}
+
+
+                    {{ form_label(form.vehicule.volume, "Volume", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.vehicule.volume) }}
+                    {{ form_widget(form.vehicule.volume, {'attr':{'class':'connexion_input col-sm-8'}})}} #}
+
+
+{#                     {{ form_label(form.email, "Adresse email", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.email) }}
+                    {{ form_widget(form.email, {'attr':{'class':'connexion_input col-sm-8'}})}}
+ #}
+
+{#                     {{ form_label(form.telephone, "Numéro de téléphone", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.telephone) }}
+                    {{ form_widget(form.telephone, {'attr':{'class':'connexion_input col-sm-8'}})}}
+
+
+                    {{ form_label(form.adresse, "Adresse", {'label_attr':{'class':'col-xs-12 col-sm-4'}})}}
+                    {{ form_errors(form.adresse) }}
+                    {{ form_widget(form.adresse, {'attr':{'class':'connexion_input col-sm-8'}})}}
+ #}
+                    <div style="display:none">{{ form_rest(form) }}</div>
+                    <input type="submit" class="submit_modification col-sm-offset-8 col-sm-4 col-xs-12" value="Enregistrer">
+                {{ form_end(form) }}
+            </div>
+        </div>
+        <!-- FIN info profil -->
+    </div>
+    <!-- FIN CONTENT -->
+{% endblock %}
+

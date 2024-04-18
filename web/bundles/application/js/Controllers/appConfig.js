@@ -17,7 +17,7 @@ myApp.config(function($interpolateProvider){
 
 .config(function(uiGmapGoogleMapApiProvider) {
     uiGmapGoogleMapApiProvider.configure({
-        key: 'AIzaSyBEBW_t3MvbLz1lGyaNL2lmdW3TDwR2Rm8',
+        key: 'KeyApi',
         v: '3.20', //defaults to latest 3.X anyhow
         libraries: 'places,weather,geometry,visualization'
     });
